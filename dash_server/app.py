@@ -11,9 +11,7 @@ def run():
     """
     Run the dash server
     """
-    # fig = go.Figure() # or any Plotly Express function e.g. px.bar(...)
-    # # fig.add_trace( ... )
-    # # fig.update_layout( ... )
+    
     df = px.data.gapminder()
     fig = get_figure(df)
 
