@@ -1,21 +1,28 @@
+import dash
+import dash_core_components as dcc
+import dash_html_components as html
+import plotly.express as px
+import sys
+
+
 SCRIPT_NO_CALLABLE :str = "this script cannot be called"
 
-def run(fig):
+def run():
     """
     Run the dash server
-    @param fig
     """
     # fig = go.Figure() # or any Plotly Express function e.g. px.bar(...)
     # # fig.add_trace( ... )
     # # fig.update_layout( ... )
-
+    df = px.data.gapminder()
+    fig = get_figure(df)
 
     app = dash.Dash()
     app.layout = html.Div([
         dcc.Graph(figure=fig)
     ])
 
-    app.run_server(debug=True, use_reloader=False)
+    app.run_server(debug=True,port=sys.argv[1],host=sys.argv[2], use_reloader=False)
 
 def get_figure(data_frame):
     """
@@ -30,12 +37,6 @@ def get_figure(data_frame):
     return fig
 
 if __name__ == "__main__":
-    import dash
-    import dash_core_components as dcc
-    import dash_html_components as html
-    import plotly.express as px
-
-    df = px.data.gapminder()
-    run(get_figure(df))
+    run()
 else:
     print (SCRIPT_NO_CALLABLE)
