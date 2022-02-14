@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instructions</title>
+</head>
+<body style="text-align:center;padding:5rem 20rem">
+    <header >
+        <img src="../doc/logo/logo.png" alt="World With Clean Air" / style="width:100px;display:inline">
+        <h1 style="display:inline;">World With Clean Air</h1>
+    </header>
+    
+    <h2>What is Dash?</h2>
+        <p><a href="https://dash.plotly.com/">Dash</a> is a python framework created by plotly for creating interactive web applications. 
+            Dash is written on the top of <a href="https://flask.palletsprojects.com/en/2.0.x/">Flask</a>, Plotly.js and React.js. With Dash, you don’t have to learn HTML, 
+            CSS and Javascript in order to create interactive dashboards, you only need python. 
+            Dash is open source and the application build using this framework are viewed on the web browser.</p>
+    <h2>Execution steps</h2>
+    <ol >
+        <li>Requirements to install have at least version 3.8 of python with the pip package manager.</li>
+        <li>In the current dash server folder there should be three more files apart from this one.</li>
+        <li>You only need to focus on the start.sh file, this executable can have two arguments the port and the host.</li>
+        <code style="display:block;background-color:gainsboro;width:500px;margin: auto;padding: 0.3rem;">sh start <span style="color:gray">#default arguments port="8050" host="localhost"</span></code>
+        <code style="display:block;background-color:gainsboro;width:500px;margin: auto;padding: 0.3rem;">sh start -p 4000 <span style="color:gray">#port 4000 default argument host="localhost"</span></code>
+        <code style="display:block;background-color:gainsboro;width:500px;margin: auto;padding: 0.3rem;">sh start -h 0.0.0.0 <span style="color:gray">#host 0.0.0.0 default argument port="8050"</span></code>
+        <code style="display:block;background-color:gainsboro;width:500px;margin: auto;padding: 0.3rem;">sh start -h 0.0.0.0 -p 4000 <span style="color:gray">#host 0.0.0.0 port 4000</span></code>
+        <li>The program downloads the dependencies from the requirements file and then executes the app.py file.</li>
+        <li>If everything went well you should see that the console is waiting and shows a web address.</li>
+    </ol>
+    <footer>
+        If you have any problem do not hesitate to contact us.
+        <a href="mailto:worldwithcleanair@gmail.com"> worldwithcleanair@gmail.com </a>
+    </footer>
+</body>
+</html>
