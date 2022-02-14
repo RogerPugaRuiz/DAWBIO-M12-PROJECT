@@ -6,7 +6,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./menu.component.css']
 })
 export class MenuComponent implements OnInit {
-
+  path = {
+    img_src:"assets/images/logo.jpg"
+  };
   constructor() { }
 
   ngOnInit(): void {
