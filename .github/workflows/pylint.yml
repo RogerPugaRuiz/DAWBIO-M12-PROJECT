@@ -24,4 +24,4 @@ jobs:
         pip install plotly
     - name: Analysing the code with pylint
       run: |
-        pylint $(git ls-files '*.py')
+        pylint dash_server/*.py
