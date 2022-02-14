@@ -1,0 +1,13 @@
+.box{
+    background-color: rgb(228, 87, 46);
+    color: white;
+    display:block;
+    width: 70%;
+    margin: auto;
+    text-align: center;
+}
+.box div{
+
+    padding: 1rem;
+    display: inline-block;
+}
