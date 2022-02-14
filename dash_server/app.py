@@ -1,8 +1,9 @@
+"""Module that manages the temporary map server"""
+import sys
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import plotly.express as px
-import sys
 
 
 SCRIPT_NO_CALLABLE :str = "this script cannot be called"
@@ -11,9 +12,9 @@ def run():
     """
     Run the dash server
     """
-    
-    df = px.data.gapminder()
-    fig = get_figure(df)
+
+    data_frame = px.data.gapminder()
+    fig = get_figure(data_frame)
 
     app = dash.Dash()
     app.layout = html.Div([
