@@ -3,20 +3,16 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { MapComponent } from './map/map.component';
 import { MenuComponent } from './menu/menu.component';
 import { FooterComponent } from './footer/footer.component';
-import { NewsComponent } from './news/news.component';
-import { LoginComponent } from './login/login.component';
+import { NewsComponent } from './news-module/news/news.component';
+import { LoginComponent } from './login-module/login/login.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    MapComponent,
     MenuComponent,
     FooterComponent,
-    NewsComponent,
-    LoginComponent
   ],
   imports: [
     BrowserModule,
