@@ -1,10 +1,10 @@
 <img src="{{ path.img_src }}" alt="logo world with clean air" />
 <nav class="gradient_like_logo">
     <ul>
-        <li>Home</li> 
+        <a [routerLink]="['/home']"  routerLinkActive="active" ><li>Home</li></a> 
         <span>|</span>
-        <li>News</li>
+        <a [routerLink]="['/news']"  routerLinkActive="active"><li>News</li></a>
         <span>|</span>
-        <li>Login</li>
+        <a [routerLink]="['/login']"  routerLinkActive="active"><li>Login</li></a>
     </ul>
 </nav>

@@ -7,8 +7,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MenuComponent implements OnInit {
   path = {
-    img_src:"assets/images/logo.jpg"
+    img_src:"assets/images/logo.jpg",
   };
+  rutings = {
+    home: ['/home',"home"], 
+    news: ['/news',"new"], 
+    login: ['login',"new"]
+  }
+
   constructor() { }
 
   ngOnInit(): void {

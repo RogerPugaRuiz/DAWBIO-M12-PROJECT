@@ -24,6 +24,7 @@ nav li{
     cursor: pointer;
     padding: 1rem 3rem;
     border-radius: 1rem 1rem 0rem 0rem;
+    color: rgba(255, 255, 255, 0.733);
 }
 nav li:hover{
     background: rgba(0, 0, 0, 0.062);

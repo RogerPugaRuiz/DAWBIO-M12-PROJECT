@@ -6,7 +6,8 @@ import { AppComponent } from './app.component';
 import { MapComponent } from './map/map.component';
 import { MenuComponent } from './menu/menu.component';
 import { FooterComponent } from './footer/footer.component';
-import { ContentComponent } from './content/content.component';
+import { NewsComponent } from './news/news.component';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { ContentComponent } from './content/content.component';
     MapComponent,
     MenuComponent,
     FooterComponent,
-    ContentComponent
+    NewsComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
