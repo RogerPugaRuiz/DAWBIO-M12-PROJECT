@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class MapLinkService {
-  private link: string = "";
+  private link: string = "httpd://localhost:8050";
   constructor() { }
 
   public getLink(): string {
