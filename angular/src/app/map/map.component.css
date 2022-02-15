@@ -5,10 +5,3 @@ iframe{
     margin: auto;
     border: none;
 }
-
-@media only screen and (max-width: 800px){
-    iframe {
-        width: 100%;
-        
-    }
-}
