@@ -1,5 +1,6 @@
 .box{
-    background-color: rgb(228, 87, 46);
+    background: rgb(255,126,0);
+    background: linear-gradient(153deg, rgba(255,126,0,1) 0%, rgba(255,157,0,1) 61%, rgba(247,255,0,1) 100%); 
     color: white;
     display:block;
     width: 70%;
