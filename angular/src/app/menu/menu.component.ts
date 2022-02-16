@@ -9,11 +9,7 @@ export class MenuComponent implements OnInit {
   path = {
     img_src:"assets/images/logo.jpg",
   };
-  rutings = {
-    home: ['/home',"home"], 
-    news: ['/news',"new"], 
-    login: ['login',"new"]
-  }
+  rutings = ["home","news","login","register"]
 
   constructor() { }
 
