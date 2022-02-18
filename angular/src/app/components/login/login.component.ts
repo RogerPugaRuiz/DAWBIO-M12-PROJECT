@@ -16,16 +16,15 @@ import {
     trigger('openClose', [
       // ...
       state('open', style({
-        height: '80px',
-
-      })),
-      state('closed', style({
         height: '570px',
         "border-bottom-left-radius": "1rem",
         "border-bottom-right-radius": "1rem",
       })),
+      state('closed', style({
+        height: '80px',
+      })),
       transition('open => closed', [
-        animate('1s')
+        animate('0.7s')
       ]),
       transition('closed => open', [
         animate('0.5s')

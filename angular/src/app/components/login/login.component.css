@@ -24,6 +24,9 @@
     text-shadow: -1px -1px 1px rgba(255,255,255,.1), 1px 1px 1px rgba(0,0,0,.5);
     text-align: center;
 }
+.login h1{
+    cursor: pointer;
+}
 .login *{
     padding: 0.3rem 0;
     margin:0.7rem 0;
@@ -32,7 +35,7 @@
     position: relative;
     margin: 0;
     width:600px;
-    background-image: url("src/assets/images/nature1.jpg");
+    background-image: url("src/assets/nature1.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     max-height: 650px;
@@ -60,11 +63,8 @@
     color: black;
     text-align: center;
     background-color: white;
-
-    border-top-left-radius: 1rem;
-    border-top-right-radius: 1rem;
-    border-bottom-left-radius: 100rem;
-    border-bottom-right-radius: 100rem;
+    height: 570px;
+    border-radius:1rem;
     cursor: pointer;
     overflow: hidden;
 }
@@ -84,6 +84,7 @@
 }
 .register h1{
     padding: 0.5rem;
+    cursor: pointer;
 }
 
 #login-button, #register-button{

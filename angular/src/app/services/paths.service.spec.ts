@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { MapLinkService } from './map-link.service';
+import { PathsService } from './paths.service';
 
-describe('MapLinkService', () => {
-  let service: MapLinkService;
+describe('PathsService', () => {
+  let service: PathsService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(MapLinkService);
+    service = TestBed.inject(PathsService);
   });
 
   it('should be created', () => {

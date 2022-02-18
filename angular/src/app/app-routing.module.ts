@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LoginComponent } from './login-module/login/login.component';
-import { MapComponent } from './map-module/map/map.component';
-import { NewsComponent } from './news-module/news/news.component';
+import { HomeComponent } from './components/home/home.component';
+import { NewsComponent } from './components/news/news.component';
+import { UserComponent } from './components/user/user.component';
 
 const routes: Routes = [
-  {path: 'home', component: MapComponent},
-  {path: 'news', component: NewsComponent},
-  {path: 'login', component: LoginComponent}
+  {path:"home",component: HomeComponent},
+  {path:"news",component: NewsComponent},
+  {path:"user",component: UserComponent}
 ];
 
 @NgModule({

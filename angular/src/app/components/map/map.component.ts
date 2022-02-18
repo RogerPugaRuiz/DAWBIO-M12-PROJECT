@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { MapLinkService } from '../map-link.service';
+import { PathsService } from 'src/app/services/paths.service';
 
 @Component({
   selector: 'app-map',
@@ -9,8 +9,8 @@ import { MapLinkService } from '../map-link.service';
 })
 export class MapComponent implements OnInit {
   private safeLink: SafeResourceUrl;
-  constructor(private mapLinkService: MapLinkService, private sanitazer: DomSanitizer) {
-    this.safeLink = this.sanitazer.bypassSecurityTrustResourceUrl(this.mapLinkService.getLink());
+  constructor(private pathsService: PathsService, private sanitazer: DomSanitizer) {
+    this.safeLink = this.sanitazer.bypassSecurityTrustResourceUrl(this.pathsService.paths.map);
    }
 
   ngOnInit(): void {
@@ -19,4 +19,5 @@ export class MapComponent implements OnInit {
   getLink(): SafeResourceUrl {
     return this.safeLink;
   }
+
 }
