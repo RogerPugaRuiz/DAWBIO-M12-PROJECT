@@ -1,0 +1,83 @@
+#logo{
+    width: 150px;
+    border-radius: 5rem;
+}
+
+.slogan{
+    font-family: 'Beau Rivage', cursive;
+    color: rgba(31, 31, 31, 0.733);
+    font-size: 2rem;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.493);
+}
+
+.banner{
+    text-align: center;
+    background-size: cover;
+    background-image: url("src/assets/banner.svg");
+    background-color: gainsboro;
+    background-repeat: repeat;
+    border-radius: 1rem;
+    margin: 2rem;
+    padding: 2rem;
+}
+
+.papper{
+    background-color: white;
+    max-width: 500px;
+    border-radius: 1rem;
+    padding: 2rem;
+    margin: auto;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.527);
+    text-align: center;
+}
+.pappers{
+    /* display flex inline */
+    width: 70%;
+    display: flex;
+    flex-wrap: wrap;
+    margin: auto;
+}
+
+.chincheta{
+    position: absolute;
+    width: 50px;
+    bottom: 170px;
+}
+.mission{
+    position: relative;
+    /* rotate -2deg */
+    transform: rotate(-2deg);
+}
+
+.vision{
+    position: relative;
+    /* rotate 2deg */
+    transform: rotate(2deg);
+}
+
+.values{
+    position: relative;
+    /*rotate -2deg */
+    transform: rotate(-2deg);
+
+}
+
+h1{
+    text-align: center;
+    font-family: 'Ubuntu', sans-serif;
+    /* color: rgb(231, 150, 0); */
+}
+p{
+    text-align: center;
+    font-family: 'Ubuntu', sans-serif;
+    max-width: 500px;
+    margin: auto;
+}
+
+@media screen and (max-width: 900px) {
+    .banner{
+        margin: 0;
+    }
+}

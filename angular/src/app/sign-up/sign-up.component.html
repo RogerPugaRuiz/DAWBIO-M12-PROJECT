@@ -1,0 +1,12 @@
+<div class="darken-windows" (click)="sendSignUpEvent()">
+    <div class="sign-up-container" (click)="onClick($event)">
+        <img src="assets/close-white.svg" alt="close" class="close-button" (click)="sendSignUpEvent()">
+        <h1>Sign Up</h1>
+        <div class="form">
+            <input type="text" name="username" id="username" placeholder="Username">
+            <input type="text" name="email" id="email" placeholder="E-mail">
+            <input type="password" name="pass" id="pass" placeholder="Password">
+            <input type="button" value="Submit">
+        </div>
+    </div>
+</div>
