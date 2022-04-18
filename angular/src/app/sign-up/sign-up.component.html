@@ -2,11 +2,12 @@
     <div class="sign-up-container" (click)="onClick($event)">
         <img src="assets/close-white.svg" alt="close" class="close-button" (click)="sendSignUpEvent()">
         <h1>Sign Up</h1>
-        <div class="form">
-            <input type="text" name="username" id="username" placeholder="Username">
-            <input type="text" name="email" id="email" placeholder="E-mail">
-            <input type="password" name="pass" id="pass" placeholder="Password">
-            <input type="button" value="Submit">
-        </div>
+        <form class="form" [formGroup]="signUpForm" (ngSubmit)="this.signUpRequest()">
+            <input type="text" name="username-sign-up" id="username-sign-up" placeholder="Username" formControlName="username">
+            <input type="text" name="email-sign-up" id="email-sign-up" placeholder="E-mail" formControlName="email">
+            <input type="password" name="pass-sign-up" id="pass-sign-up" placeholder="Password" formControlName="password">
+            <input type="password" name="pass-sign-up-confirm" id="pass-sign-up-confirm" placeholder="Confirm password" formControlName="confirmPassword">
+            <input type="submit" value="Submit" id="submit-sign-up" name="submit-sign-up">
+        </form>
     </div>
 </div>

@@ -2,11 +2,15 @@
     <div class="sign-in-container" (click)="onClick($event)">
         <img src="assets/close-white.svg" alt="close" class="close-button" (click)="closeSignIn()">
         <h1>Sign In</h1>
-        <div class="form">
-            <input type="text" name="email-or-name" id="email-or-name" placeholder="E-mail or username">
-            <input type="password" name="pass" id="pass" placeholder="Password">
-            <input type="button" value="Submit">
-        </div>
+        <form  class="form" [formGroup]="signInForm" (ngSubmit)="this.signInRequest()">
+            <input type="text" name="email-or-name-sign-in" id="email-or-name-sign-in" placeholder="E-mail or username" formControlName="id">
+            <input type="password" name="pass-sign-in" id="pass-sign-in" placeholder="Password" formControlName="pass">
+            <input type="submit" value="Submit" id="submit-sign-in">
+            <!-- if login not succes show message -->
+            <div class="error-message" *ngIf="this.signInError">
+                <p class="error-message">non-existing account</p>
+            </div>
+        </form>
     </div>
 </div>
 <!-- <div class="align-center">
