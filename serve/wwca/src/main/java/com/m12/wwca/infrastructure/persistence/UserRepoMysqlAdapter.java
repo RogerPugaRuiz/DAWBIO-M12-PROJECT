@@ -9,6 +9,7 @@ import javax.persistence.PersistenceContext;
 import com.m12.wwca.domain.AppUser;
 import com.m12.wwca.domain.Role;
 import com.m12.wwca.domain.repo.UserRepo;
+import com.m12.wwca.infrastructure.shared.Utils;
 
 import org.springframework.stereotype.Repository;
 
@@ -87,7 +88,7 @@ public class UserRepoMysqlAdapter implements UserRepo {
      */
     public boolean login(String id, String password) {
         // if id is email
-        if (isAnEmail(id)){
+        if (Utils.isAnEmail(id)){
             // get user by email
             AppUser user = getUserByEmail(id);
             // if password is correct and user is not null
@@ -115,19 +116,6 @@ public class UserRepoMysqlAdapter implements UserRepo {
         return false;
     }
 
-    /**
-     * Check if id is an email
-     * @param id
-     * @return true if id is an email
-     */
-    private boolean isAnEmail(String id) {
-
-        // pattern for email
-        Pattern pattern = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-        // check if id is an email
-        return pattern.matcher(id).matches();
-    }
-
     @Override
     /**
      * Get a user by username
@@ -143,6 +131,16 @@ public class UserRepoMysqlAdapter implements UserRepo {
         } catch (Exception e){
             return null;
         }
+    }
+
+    @Override
+    /**
+     * Delete user
+     * @param user
+     *
+     */
+    public void deleteUser(AppUser user) {
+        entityManager.remove(user);
     }
 
 }

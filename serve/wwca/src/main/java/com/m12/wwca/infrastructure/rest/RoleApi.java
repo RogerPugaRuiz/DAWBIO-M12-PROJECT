@@ -5,15 +5,11 @@ import java.util.List;
 
 import com.m12.wwca.application.RoleService;
 import com.m12.wwca.domain.Role;
-import com.m12.wwca.infrastructure.mapper.RoleMapper;
-import com.m12.wwca.infrastructure.mapper.dto.RoleDto;
-import com.m12.wwca.infrastructure.mapper.exception.InvalidMapperException;
-import com.m12.wwca.infrastructure.shared.MapperFactory;
+import com.m12.wwca.infrastructure.dto.RoleDto;
 import com.m12.wwca.infrastructure.shared.Status;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -58,7 +54,7 @@ public class RoleApi {
 
         try{
             Role role = roleService.getRole(name);
-            RoleDto roleDto = (RoleDto) MapperFactory.getMapper(RoleMapper.class).map(RoleDto.class, role);
+            RoleDto roleDto = roteToRoleDto(role);
             return ResponseEntity.ok(roleDto);
         } catch(Exception e){
             return ResponseEntity.ok(new Status(false , e.getMessage()));
@@ -75,7 +71,7 @@ public class RoleApi {
             List<Role> roles = roleService.getRoles();
             List<RoleDto> roleDtos = new ArrayList<>();
             for (Role role : roles) {
-                RoleDto roleDto = (RoleDto) MapperFactory.getMapper(RoleMapper.class).map(RoleDto.class, role);
+                RoleDto roleDto = roteToRoleDto(role);
                 roleDtos.add(roleDto);
             }
             return ResponseEntity.ok(roleDtos);
@@ -113,5 +109,16 @@ public class RoleApi {
         } catch(Exception e){
             return ResponseEntity.ok(new Status(false, e.getMessage()));
         }
+    }
+
+    /**
+     * Convert a Role to a RoleDto
+     * @param role
+     * @return RoleDto
+     *
+     */
+    private RoleDto roteToRoleDto(Role role){
+        RoleDto roleDto = new RoleDto(role.getName());
+        return roleDto;
     }
 }

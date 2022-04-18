@@ -1,6 +1,7 @@
 package com.m12.wwca.domain;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,13 +39,12 @@ public class AppUser {
 
     @ManyToOne
     private Role role; // role of the user (admin, user, etc)
-
     /**
      * Constructor with parameters
      * @param builder
      */
     public AppUser (Builder builder) {
-        this.id = builder.id;
+        this.id = UUID.randomUUID().toString();
         this.username = builder.username;
         this.email = builder.email;
         this.password = builder.password;
@@ -55,7 +55,7 @@ public class AppUser {
      * Default constructor
      */
     public AppUser(){
-        
+        this.id = UUID.randomUUID().toString();
     }
 
     /**
@@ -105,14 +105,6 @@ public class AppUser {
      */
     public LocalDateTime getSubscribed(){
         return subscribed;
-    }
-
-    /**
-     * Setter for the id
-     * @param id
-     */
-    public void setId(String id) {
-        this.id = id;
     }
 
     /**
@@ -229,26 +221,11 @@ public class AppUser {
         }
 
         /**
-         * id setter
-         * @param id
-         * @return Builder
-         */
-        public Builder id(String id) {
-            this.id = id;
-            return this;
-        }
-
-        /**
          * build method. It returns an AppUser object
          * @return AppUser
          */
         public AppUser build() {
             AppUser user = new AppUser(this);
-            user.setUsername(username);
-            user.setEmail(email);
-            user.setPassword(password);
-            user.setRole(role);
-            user.setId(id);
             validateObject(user); // if the object is invalid, it throws an exception with the message
             return user;
         }

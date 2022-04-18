@@ -8,13 +8,11 @@ public class AppUser_BuilderTest {
     private static final String USERNAME = "Ab01";
     private static final String EMAIL = "emailuser@example.com";
     private static final String PASSWORD = "password";
-    private static final String ID = UUID.randomUUID().toString();
 
     private AppUser appUser;
 
     public AppUser_BuilderTest() {
         appUser = new AppUser.Builder()
-                .id(ID)
                 .username(USERNAME)
                 .email(EMAIL)
                 .password(PASSWORD)
@@ -25,10 +23,9 @@ public class AppUser_BuilderTest {
     @Test
     void testBuild() {
         assert appUser.getEmail().equals(EMAIL) &&
-        appUser.getId().equals(ID) &&
-        appUser.getPassword().equals(PASSWORD) &&
-        appUser.getUsername().equals(USERNAME) &&
-        appUser.getRole().toString().equals("user");
+                appUser.getPassword().equals(PASSWORD) &&
+                appUser.getUsername().equals(USERNAME) &&
+                appUser.getRole().toString().equals("user");
     }
 
     @Test
@@ -47,7 +44,7 @@ public class AppUser_BuilderTest {
     }
 
     @Test
-    void testRole(){
+    void testRole() {
         assert appUser.getRole().toString().equals("user");
     }
 
@@ -57,20 +54,17 @@ public class AppUser_BuilderTest {
         final String newPassword = "new password";
         final String newUsername = "newusername";
         final Role newRole = new Role("new role");
-        final String newId = UUID.randomUUID().toString();
         AppUser newAppUser = new AppUser.Builder()
-            .id(newId)
-            .username(newUsername)
-            .password(newPassword)
-            .email(newEmail)
-            .role(newRole)
-            .build();
-        
+                .username(newUsername)
+                .password(newPassword)
+                .email(newEmail)
+                .role(newRole)
+                .build();
+
         AppUser appUser2 = new AppUser.Builder(newAppUser).build();
-        assert appUser2.getEmail().equals(newEmail) && 
-        appUser2.getId().equals(newId) && 
-        appUser2.getPassword().equals(newPassword) && 
-        appUser2.getUsername().equals(newUsername) &&
-        appUser2.getRole().toString().equals("new role");
+        assert appUser2.getEmail().equals(newEmail) &&
+                appUser2.getPassword().equals(newPassword) &&
+                appUser2.getUsername().equals(newUsername) &&
+                appUser2.getRole().toString().equals("new role");
     }
 }

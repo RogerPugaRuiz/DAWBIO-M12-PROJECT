@@ -12,4 +12,5 @@ public interface UserRepo {
     public AppUser getUserByEmail(String email); // Get a user by email
     public AppUser getUserByUsername (String username); // Get a user by username
     public boolean login(String id, String password); // Check if user is logged in
+    public void deleteUser(AppUser user); // Delete user
 }

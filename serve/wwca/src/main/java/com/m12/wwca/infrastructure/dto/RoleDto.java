@@ -1,4 +1,4 @@
-package com.m12.wwca.infrastructure.mapper.dto;
+package com.m12.wwca.infrastructure.dto;
 
 import com.m12.wwca.domain.Role;
 
@@ -18,6 +18,10 @@ public class RoleDto {
      */
     public RoleDto(Role role) {
         this.name = role.getName();
+    }
+
+    public RoleDto(String name) {
+        this.name = name;
     }
     
     /**

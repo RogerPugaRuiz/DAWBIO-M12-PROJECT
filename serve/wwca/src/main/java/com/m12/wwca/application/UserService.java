@@ -9,6 +9,8 @@ import com.m12.wwca.domain.AppUser;
 import com.m12.wwca.domain.Role;
 import com.m12.wwca.domain.repo.RoleRepo;
 import com.m12.wwca.domain.repo.UserRepo;
+import com.m12.wwca.infrastructure.dto.AddUserDto;
+import com.m12.wwca.infrastructure.dto.UserDto;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,17 +24,21 @@ import org.springframework.stereotype.Service;
  * @since 11/04/2022
  */
 public class UserService {
-    
-    @Autowired
+
+    private RoleRepo roleRepo; // RoleRepoMysqlAdapter
     private UserRepo userRepo; // UserRepoMysqlAdapter
+    private final String DEFAULT_ROLE = "USER";
 
     @Autowired
-    private RoleRepo roleRepo; // RoleRepoMysqlAdapter
+    public UserService(RoleRepo roleRepo, UserRepo userRepo) {
+        this.roleRepo = roleRepo;
+        this.userRepo = userRepo;
+    }
+
 
     // Logger debug
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    private UUID uuid = UUID.randomUUID(); // generate random uuid
 
     @Transactional
     /**
@@ -42,21 +48,24 @@ public class UserService {
      * @param password
      * @param role
      */
-    public void addUser(String name, String password, String email, String role){
+    public void addUser(AddUserDto addUserDto){
         // info add new user
-        logger.info("add new user: " + name);
+        logger.info("add new user: " + addUserDto.getUsername());
         // create new user
-        AppUser user = new AppUser.Builder()
-                .id(uuid.toString())
-                .username(name)
-                .password(password)
-                .email(email)
-                .role(roleRepo.getRole(role))
+        AppUser user;
+            // user = (AppUser) MapperFactory.getMapper(UserMapper.class).map(AppUser.class, addUserDto);
+        user = new AppUser.Builder()
+                .username(addUserDto.getUsername())
+                .password(addUserDto.getPassword())
+                .email(addUserDto.getEmail())
+                .role(roleRepo.getRole(DEFAULT_ROLE))
                 .build();
+            userRepo.addUser(user);
+
         
         // try to add user to database and if it fails, throw exception
         
-        userRepo.addUser(user);
+        
     }
 
     @Transactional
@@ -109,5 +118,31 @@ public class UserService {
         // info login
         logger.info("login: " + id + ", " + password);
         return userRepo.login(id, password);
+    }
+
+    @Transactional
+    /**
+     * Method to delete user
+     * @param user
+     * @return true if user is deleted
+     *
+     */
+    public void deleteUser(AppUser user){
+        // info delete user
+        logger.info("delete user: " + user.getUsername());
+        userRepo.deleteUser(user);
+    }
+
+    @Transactional
+    /**
+     * Method to get user by username
+     * @param username
+     * @return AppUser
+     *
+     */
+    public AppUser getUserByUsername(String username){
+        // info get user by username
+        logger.info("get user by username: " + username);
+        return userRepo.getUserByUsername(username);
     }
 }
