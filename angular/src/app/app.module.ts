@@ -10,6 +10,8 @@ import { ClickOutsideModule } from 'ng-click-outside';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NewsComponent } from './news/news.component';
+import { NewsBoardComponent } from './news-board/news-board.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +19,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     NavMenuComponent,
     HomeComponent,
     SignInComponent,
-    SignUpComponent
+    SignUpComponent,
+    NewsComponent,
+    NewsBoardComponent,
   ],
   imports: [
     BrowserModule,

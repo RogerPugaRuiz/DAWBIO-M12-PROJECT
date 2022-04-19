@@ -1,11 +1,12 @@
 <div class="darken-windows" (click)="closeSignIn()">
     <div class="sign-in-container" (click)="onClick($event)">
         <img src="assets/close-white.svg" alt="close" class="close-button" (click)="closeSignIn()">
-        <h1>Sign In</h1>
+        <h1>Login</h1>
         <form  class="form" [formGroup]="signInForm" (ngSubmit)="this.signInRequest()">
             <input type="text" name="email-or-name-sign-in" id="email-or-name-sign-in" placeholder="E-mail or username" formControlName="id">
             <input type="password" name="pass-sign-in" id="pass-sign-in" placeholder="Password" formControlName="pass">
-            <input type="submit" value="Submit" id="submit-sign-in">
+            <input type="submit" value="Login" id="submit-sign-in">
+            <p class="go">You do not have an account? <span class="go-sign-up" (click)="this.openSignUp()">Sign up</span></p>
             <!-- if login not succes show message -->
             <div class="error-message" *ngIf="this.signInError">
                 <p class="error-message">non-existing account</p>

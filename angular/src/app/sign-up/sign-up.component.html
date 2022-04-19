@@ -1,13 +1,58 @@
 <div class="darken-windows" (click)="sendSignUpEvent()">
     <div class="sign-up-container" (click)="onClick($event)">
         <img src="assets/close-white.svg" alt="close" class="close-button" (click)="sendSignUpEvent()">
-        <h1>Sign Up</h1>
+        <h1>Register</h1>
         <form class="form" [formGroup]="signUpForm" (ngSubmit)="this.signUpRequest()">
-            <input type="text" name="username-sign-up" id="username-sign-up" placeholder="Username" formControlName="username">
-            <input type="text" name="email-sign-up" id="email-sign-up" placeholder="E-mail" formControlName="email">
-            <input type="password" name="pass-sign-up" id="pass-sign-up" placeholder="Password" formControlName="password">
-            <input type="password" name="pass-sign-up-confirm" id="pass-sign-up-confirm" placeholder="Confirm password" formControlName="confirmPassword">
-            <input type="submit" value="Submit" id="submit-sign-up" name="submit-sign-up">
+            <input type="text" name="username-sign-up" id="username-sign-up" placeholder="Username"
+                formControlName="username"
+                [ngClass]="{'invalid' : (this.signUpForm.controls['username'].invalid && signUpForm.controls['username'].dirty)}">
+            <div class="error-message"
+                *ngIf="signUpForm.controls['username'].hasError('required') && signUpForm.controls['username'].touched">
+                Username is required
+            </div>
+            <div class="error-message"
+                *ngIf="signUpForm.controls['username'].hasError('minlength') && signUpForm.controls['username'].touched">
+                Username must be at least 3 characters long
+            </div>
+            <div class="error-message"
+                *ngIf="signUpForm.controls['username'].hasError('pattern') && signUpForm.controls['username'].touched">
+                Username must contain only letters, numbers and underscores
+            </div>
+            <input type="text" name="email-sign-up" id="email-sign-up" placeholder="E-mail" formControlName="email"
+                [ngClass]="{'invalid' : (this.signUpForm.controls['email'].invalid && signUpForm.controls['email'].dirty)}">
+
+            <div class="error-message"
+                *ngIf="signUpForm.controls['email'].hasError('required') && signUpForm.controls['email'].touched">
+                E-mail is required
+            </div>
+            <div class="error-message"
+                *ngIf="signUpForm.controls['email'].hasError('pattern') && signUpForm.controls['email'].touched">
+                E-mail is not valid
+            </div>
+
+            <input type="password" name="pass-sign-up" id="pass-sign-up" placeholder="Password"
+                formControlName="password" (input)="this.confirmPassword=''"
+                [ngClass]="{'invalid' : (this.signUpForm.controls['password'].invalid && signUpForm.controls['password'].dirty)}">
+
+            <div class="error-message" *ngIf="signUpForm.controls['password'].hasError('required') && signUpForm.controls['password'].touched">
+                Password is required
+            </div>
+            <div class="error-message" *ngIf="signUpForm.controls['password'].hasError('pattern') && signUpForm.controls['password'].touched">
+                Password must contain at least one number, one uppercase and one lowercase letter and be at least 8 characters long
+            </div>
+            <input type="password" name="pass-sign-up-confirm" id="pass-sign-up-confirm" placeholder="Confirm password"
+                formControlName="confirmPassword"
+                [ngClass]="{'invalid' : (this.signUpForm.controls['confirmPassword'].invalid && signUpForm.controls['confirmPassword'].dirty)}">
+            <div class="error-message" *ngIf="signUpForm.controls['confirmPassword'].hasError('required') && signUpForm.controls['confirmPassword'].touched">
+                Confirm password is required
+            </div>
+            <div class="error-message" *ngIf="signUpForm.hasError('confirmPasswordValidator') && signUpForm.controls['confirmPassword'].touched">
+                Passwords do not match
+            </div>
+            <input type="submit" value="Create account" id="submit-sign-up" name="submit-sign-up">
+
+            <p class="go">Do you already have an account? <span class="go-sign-in" (click)="this.openSignIn()">Log
+                    in</span></p>
         </form>
     </div>
 </div>

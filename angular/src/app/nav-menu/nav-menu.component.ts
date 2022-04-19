@@ -1,4 +1,6 @@
 import { AfterViewChecked, AfterViewInit, Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { SignInService } from '../services/sign-in.service';
+import { SignUpService } from '../services/sign-up.service';
 import { SignInComponent } from '../sign-in/sign-in.component';
 
 @Component({
@@ -15,40 +17,25 @@ export class NavMenuComponent implements OnInit{
     "Air pollution map",
     "Water pollution map",
     "News",
-    "Sign up",
-    "Sign in",
+    "Login"
   ];
-  constructor() { }
+  constructor(
+    private signInService: SignInService,
+    private signUpService: SignUpService
+  ) { }
 
   ngOnInit(): void {
+    this.signInService.getSignIn().subscribe(signIn => { this.signIn = signIn; });
+    this.signUpService.getSignUp().subscribe(signUp => { this.signUp = signUp; });
   }
 
   public navFunction(item : string) : void {
     // if item is sign in
-    if(item == "Sign in") {
+    if(item == "Login") {
       this.signIn = true;
-    }
-    // if item is sign up
-    if(item == "Sign up") {
-      this.signUp = true;
+      this.signUp = false;
+      this.signInService.setSignIn(this.signIn);
     }
   }
 
-  public toggleSignIn() : void {
-    this.signIn = !this.signIn;
-  }
-
-  public toggleSignUp() : void {
-    this.signUp = !this.signUp;
-  }
-
-  // recieve event sign in from child
-  public recieveSignInEvent($event: boolean) : void {
-    this.signIn = $event;
-  }
-
-  // recieve event sign up from child
-  public recieveSignUpEvent($event: boolean) : void {
-    this.signUp = $event;
-  }
 }
