@@ -27,7 +27,7 @@ public class JWToken {
                 .setSubject(user.getUsername())
                 .signWith(SignatureAlgorithm.HS256, key.getBytes())
                 .setIssuedAt(Utils.getCurrentDate())
-                .setExpiration(Utils.getExpirationDate())
+                .setExpiration(Utils.getExpirationDate(0,24,0))
                 .claim("authorities", user.getRole().toString())
                 .claim("email", user.getEmail())
                 .claim("user_id", user.getId())

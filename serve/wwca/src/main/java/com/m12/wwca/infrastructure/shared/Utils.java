@@ -127,8 +127,8 @@ public class Utils {
      * get the expiration date
      */
 
-    public static Date getExpirationDate() {
-        return new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 7));
+    public static Date getExpirationDate(int days, int hours, int minutes) {
+        return new Date(System.currentTimeMillis() + (days * 24 * 60 * 60 * 1000) + (hours * 60 * 60 * 1000) + (minutes * 60 * 1000));
     }
 
 }

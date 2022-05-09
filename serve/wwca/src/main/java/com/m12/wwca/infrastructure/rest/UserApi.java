@@ -142,14 +142,21 @@ public class UserApi {
     @GetMapping("/myaccount")
     public ResponseEntity getMyAccount(HttpServletRequest request) {
         String jwt = request.getHeader("Authorization");
-        AppUser user = userService.getUser(JWToken.getUserId(jwt));
-        MyAccount myAccount = new MyAccount.Builder().from(user).build();
 
-        Status status = new Status(true, "User found");
-        Map<Object, Object> data = new HashMap<>();
-        data.put("myAccount", myAccount);
-        status.setData(data);
-        return ResponseEntity.ok().body(status);
+        // verify if jwt is valid
+        if (JWToken.validate(jwt)) {
+            AppUser user = userService.getUser(JWToken.getUserId(jwt));
+            MyAccount myAccount = new MyAccount.Builder().from(user).build();
+    
+            Status status = new Status(true, "User found");
+            Map<Object, Object> data = new HashMap<>();
+            data.put("myAccount", myAccount);
+            status.setData(data);
+            return ResponseEntity.ok().body(status);
+        } else {
+            Status response = new Status(false, "Invalid token");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
     }
 
     @PostMapping("/myaccount")
@@ -167,6 +174,17 @@ public class UserApi {
         }
 
         return ResponseEntity.ok().body(new Status(true, "User updated"));
+    }
+
+    @GetMapping("/jwt/verify")
+    public ResponseEntity verifyJwt(HttpServletRequest request) {
+        String jwt = request.getHeader("Authorization");
+        try{
+            JWToken.validate(jwt);
+            return ResponseEntity.ok().body(new Status(true, "Token valid"));
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Status(false, e.getMessage()));
+        }
     }
 
 }
