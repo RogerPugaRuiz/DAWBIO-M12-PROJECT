@@ -1,0 +1,8 @@
+<div [ngClass]="this.darkmode ? 'dark-mode': 'light-mode'">
+    <div class="content" >
+        <div class="language-and-appearance">
+            <h1>Language and Appearance</h1>
+            <a (click)="this.toggleDarkMode()" [ngClass]="{'btn-dark-mode' : this.darkmode == true, 'btn-light-mode' : this.darkmode == false}">{{this.buttonDarkModeText}}</a>
+        </div>
+    </div>
+</div>

@@ -1,2 +1,5 @@
-<app-nav-menu></app-nav-menu>
-<app-home></app-home>
+<div [ngClass]="this.darkmode ? 'dark-mode': 'light-mode'">
+    <app-nav-menu></app-nav-menu>
+    <router-outlet></router-outlet>
+    <app-footer></app-footer>
+</div>

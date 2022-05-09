@@ -5,12 +5,18 @@ import java.util.UUID;
 
 import javax.transaction.Transactional;
 
-import com.m12.wwca.domain.AppUser;
-import com.m12.wwca.domain.Role;
+import com.m12.wwca.domain.entity.AppUser;
+import com.m12.wwca.domain.entity.Message;
+import com.m12.wwca.domain.entity.Role;
+import com.m12.wwca.domain.repo.MessageRepo;
 import com.m12.wwca.domain.repo.RoleRepo;
 import com.m12.wwca.domain.repo.UserRepo;
-import com.m12.wwca.infrastructure.dto.AddUserDto;
-import com.m12.wwca.infrastructure.dto.UserDto;
+import com.m12.wwca.infrastructure.dto.SignUpDto;
+import com.m12.wwca.infrastructure.dto.UserManageDto;
+import com.m12.wwca.infrastructure.persistence.MessageRepoMysqlAdapter;
+import com.m12.wwca.infrastructure.shared.Cryptography;
+import com.m12.wwca.infrastructure.shared.Utils;
+import com.m12.wwca.infrastructure.shared.jwt.JWToken;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,12 +33,13 @@ public class UserService {
 
     private RoleRepo roleRepo; // RoleRepoMysqlAdapter
     private UserRepo userRepo; // UserRepoMysqlAdapter
-    private final String DEFAULT_ROLE = "USER";
+    private MessageRepo messageRepo; // MessageRepoMysqlAdapter
 
     @Autowired
-    public UserService(RoleRepo roleRepo, UserRepo userRepo) {
+    public UserService(RoleRepo roleRepo, UserRepo userRepo, MessageRepo messageRepo) {
         this.roleRepo = roleRepo;
         this.userRepo = userRepo;
+        this.messageRepo = messageRepo;
     }
 
     // Logger debug
@@ -47,24 +54,24 @@ public class UserService {
      * @param password
      * @param role
      */
-    public void addUser(AddUserDto addUserDto){
+    public void addUser(AppUser user) {
         // info add new user
-        logger.info("add new user: " + addUserDto.getUsername());
-        // create new user
-        AppUser user;
-        // user = (AppUser) MapperFactory.getMapper(UserMapper.class).map(AppUser.class,
-        // addUserDto);
-        user = new AppUser.Builder()
-                .username(addUserDto.getUsername())
-                .password(addUserDto.getPassword())
-                .email(addUserDto.getEmail())
-                .role(roleRepo.getRole(DEFAULT_ROLE))
-                .build();
-
+        logger.info("add new user: " + user.getUsername());
         userRepo.addUser(user);
 
         // try to add user to database and if it fails, throw exception
-
+    }
+    @Transactional
+    /**
+     * Get user by id
+     * @param id Long
+     * @return AppUser
+     *
+     */
+    public AppUser getUser(String id){
+        // info get user by id
+        logger.info("get user by id: " + id);
+        return userRepo.getUser(id);
     }
 
     @Transactional
@@ -117,10 +124,22 @@ public class UserService {
      * @param password
      * @return true if login is successful
      */
-    public boolean login(String id, String password) {
+    public String login(String id, String password) {
         // info login
-        logger.info("login: " + id + ", " + password);
-        return userRepo.login(id, password);
+        logger.info("login: " + id);
+        if (userRepo.login(id, password)) {
+            if (Utils.isAnEmail(id)) {
+                AppUser user = userRepo.getUserByEmail(id);
+                return JWToken.getJWT(user);
+            } else {
+                AppUser user = userRepo.getUserByUsername(id);
+                return JWToken.getJWT(user);
+            }
+            
+        } else {
+            return null;
+        }
+
     }
 
     @Transactional
@@ -133,8 +152,10 @@ public class UserService {
      */
     public void deleteUser(AppUser user) {
         // info delete user
-        logger.info("delete user: " + user.getUsername());
-        userRepo.deleteUser(user);
+        if (user != null) {
+            logger.info("delete user: " + user.getUsername());
+            userRepo.deleteUser(user);
+        }
     }
 
     @Transactional
@@ -149,5 +170,61 @@ public class UserService {
         // info get user by username
         logger.info("get user by username: " + username);
         return userRepo.getUserByUsername(username);
+    }
+
+    /**
+     * Method to get all messages
+     * @return List<Message>
+     *
+     */
+    public List<Message> getMessages() {
+        // info get all messages
+        logger.info("get all messages");
+        return messageRepo.findAll();
+    }
+
+    @Transactional
+    /**
+     * Method to save message
+     * @param message
+     */
+    public void saveMessage(Message message) {
+        // info save message
+        logger.info("save message: " + message.getId());
+        messageRepo.save(message);
+    }
+
+    @Transactional
+    /**
+     * Method to update user
+     * @param user
+     * @return void
+     */
+    public void updateUser(AppUser user) {
+        // info update user
+        logger.info("update user: " + user.getUsername());
+        userRepo.updateUser(user);
+    }
+
+    /**
+     * Method find message by id
+     * @param id
+     * @return Message
+     *
+     */
+    public Message findMessageById(Long id) {
+        // info find message by id
+        logger.info("find message by id: " + id);
+        return messageRepo.findById(id);
+    }
+
+    /**
+     * Method find message by sender
+     * @param sender
+     */
+    public List<Message> findMessageBySender(String sender) {
+        // info find message by sender
+        logger.info("find message by sender: " + sender);
+        return messageRepo.findBySender(sender);
     }
 }

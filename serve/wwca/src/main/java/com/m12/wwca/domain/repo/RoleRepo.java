@@ -1,8 +1,8 @@
 package com.m12.wwca.domain.repo;
 
-import com.m12.wwca.domain.Role;
-
 import java.util.List;
+
+import com.m12.wwca.domain.entity.Role;
 
 public interface RoleRepo {
     public void addRole(Role role); // Add a new role

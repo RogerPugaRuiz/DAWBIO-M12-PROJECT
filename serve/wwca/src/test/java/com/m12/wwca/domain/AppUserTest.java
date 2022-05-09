@@ -2,6 +2,10 @@ package com.m12.wwca.domain;
 
 import java.util.UUID;
 
+import com.m12.wwca.domain.entity.AppUser;
+import com.m12.wwca.domain.entity.Role;
+import com.m12.wwca.infrastructure.shared.Utils;
+
 import org.junit.jupiter.api.Test;
 
 public class AppUserTest {

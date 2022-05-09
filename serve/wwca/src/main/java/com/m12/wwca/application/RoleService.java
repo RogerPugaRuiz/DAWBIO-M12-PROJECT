@@ -2,7 +2,7 @@ package com.m12.wwca.application;
 
 import javax.transaction.Transactional;
 
-import com.m12.wwca.domain.Role;
+import com.m12.wwca.domain.entity.Role;
 import com.m12.wwca.domain.repo.RoleRepo;
 
 import org.slf4j.Logger;

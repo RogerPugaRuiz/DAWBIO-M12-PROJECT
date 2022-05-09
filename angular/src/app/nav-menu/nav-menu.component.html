@@ -1,8 +1,44 @@
-<nav>
-    <ul>
-        <li class="nav-element" *ngFor="let element of this.navItems" (click)="navFunction(element)">{{element}}</li>
-    </ul>
-</nav>
+<nav [ngClass]="this.darkmode ? 'dark-mode' : 'light-mode'">
+    <i class="icon"><img src="assets/img/WORLD WITH AIR CLEAN.png" alt="WORLD WITH AIR CLEAN"></i>
+    <ul class="menu" (clickOutside)="this.onClickedOutside($event)">
 
-<app-sign-in [ngClass]="this.signIn == false ? 'disabled': ''" ></app-sign-in>
-<app-sign-up [ngClass]="this.signUp == false ? 'disabled': ''" ></app-sign-up>
+        <li><a class="menu-element" [routerLink]="['/']" (click)="this.setMenu(1)"
+                [ngClass]="this.menu == 1 ? 'activate-menu' : ''">Home
+            </a>
+        </li>
+        <li><a class="menu-element" [routerLink]="['/maps']" (click)="this.setMenu(2)"
+                [ngClass]="this.menu == 2 ? 'activate-menu' : ''">Maps
+            </a>
+        </li>
+        <li><a class="menu-element" [routerLink]="['/comunity']" (click)="this.setMenu(3)"
+                [ngClass]="this.menu == 3 ? 'activate-menu' : ''">Comunity
+            </a>
+        </li>
+        <li><a class="menu-element" [routerLink]="['/about']" (click)="this.setMenu(4)"
+                [ngClass]="this.menu == 4 ? 'activate-menu' : ''">About
+            </a>
+        </li>
+        <li><a class="menu-element" [routerLink]="['/contact']" (click)="this.setMenu(5)"
+                [ngClass]="this.menu == 5 ? 'activate-menu' : ''">Contact
+            </a>
+        </li>
+        <li><a class="menu-element"><i class="material-icons" (click)="this.setMenu(6)"
+                    [ngClass]="this.menu == 6 ? 'activate-menu' : ''">account_circle</i>
+            </a>
+        </li>
+        <div class="expand" *ngIf="this.menu == 6 && this.isRegistered()">
+            <a class="expand-element" [routerLink]="['myAccount']">My Account</a>
+            <a class="expand-element" [routerLink]="['messages']">Messages</a>
+            <a class="expand-element" [routerLink]="['settings']">Settings</a>
+            <a class="expand-element" (click)="this.logout()">Logout</a>
+        </div>
+
+        <div class="expand" *ngIf="this.menu == 6 && !this.isRegistered()">
+            <a class="expand-element" [routerLink]="['/register']">Register</a>
+            <a class="expand-element" [routerLink]="['settings']">Settings</a>
+            
+        </div>
+
+    </ul>
+
+</nav>

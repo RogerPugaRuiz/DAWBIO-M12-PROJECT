@@ -1,5 +1,8 @@
 package com.m12.wwca.infrastructure.shared;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 /**
  * @author Roger Puga Ruiz
  * @version 1.0
@@ -10,6 +13,8 @@ public class Status{
 
     // is the status of the operation
     private boolean isOk;
+    private Map<Object,Object> data;
+    private int length = 0;
 
     // message of the operation, if any error occurred or if the operation was successful
     private String message;
@@ -39,4 +44,27 @@ public class Status{
     public String getMessage() {
         return message;
     }
+
+    public void setOk(boolean isOk) {
+        this.isOk = isOk;
+    }
+
+    public Map<Object,Object> getData() {
+        return data;
+    }
+
+    public void setData(Map<Object,Object> data) {
+        this.data = data;
+        this.length = data.size();
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    
 }

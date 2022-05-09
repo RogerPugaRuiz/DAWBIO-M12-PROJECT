@@ -1,34 +1,43 @@
 package com.m12.wwca.infrastructure.rest;
 
-// import java util
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 // import project classes
 import com.m12.wwca.application.UserService;
-import com.m12.wwca.domain.AppUser;
-import com.m12.wwca.infrastructure.dto.AddUserDto;
+import com.m12.wwca.domain.entity.AppUser;
+import com.m12.wwca.domain.repo.RoleRepo;
+import com.m12.wwca.infrastructure.dto.SignUpDto;
 import com.m12.wwca.infrastructure.dto.LoginUserDto;
-import com.m12.wwca.infrastructure.dto.UserDto;
+import com.m12.wwca.infrastructure.dto.MyAccount;
+import com.m12.wwca.infrastructure.dto.ProfileDto;
 import com.m12.wwca.infrastructure.shared.Status;
-import com.m12.wwca.infrastructure.shared.Utils;
+import com.m12.wwca.infrastructure.shared.jwt.JWToken;
 
+import org.apache.catalina.connector.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 // import spring classes
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 /**
  * @author Roger Puga Ruiz
  * @version 1.0
@@ -39,119 +48,125 @@ public class UserApi {
     // inject the UserService by Spring
     private UserService userService;
 
-    @GetMapping("")
-    /**
-     * Get all the users
-     * 
-     * @return ResponseEntity
-     */
-    public ResponseEntity getUsers() {
-        try {
-            List<AppUser> users = userService.getUsers();
-            List<UserDto> usersDto = Utils.usersToDto(users);
-    
-            return ResponseEntity.ok(usersDto);
-    
-        } catch (Exception e) {
-            return ResponseEntity.ok(new Status(false, e.getMessage()));
-        }
-    }
-    
-    @PostMapping("/add")
-    /**
-     * Add a new user to the database with the name provided in the path parameter
-     * 
-     * @param addUserDto
-     * @return ResponseEntity
-     *
-     */
-    public ResponseEntity addUser(@RequestBody AddUserDto addUserDto) {
-        try {
-            userService.addUser(addUserDto);
-            return ResponseEntity.ok(new Status(true, "User added"));
-        } catch (Exception e) {
-            return ResponseEntity.ok(new Status(false, e.getMessage()));
-        }
-    }
+    @Autowired
+    private RoleRepo roleRepo;
 
-    @GetMapping("/search")
-    /**
-     * Get all the users with the username, email and role provided in the path
-     * parameter
-     * 
-     * @param username
-     * @param email
-     * @param role
-     * @return ResponseEntity
-     */
-    public ResponseEntity getUsersFilter(
-            @RequestParam(value = "username", required = false, defaultValue = "") String username,
-            @RequestParam(value = "email", required = false, defaultValue = "") String email,
-            @RequestParam(value = "role", required = true) String role) {
-        try {
-            List<AppUser> users = userService.getUsersFilter(username, email, role);
-            List<UserDto> usersDto = Utils.usersToDto(users);
-            return ResponseEntity.ok(usersDto);
-        } catch (Exception e) {
-            return ResponseEntity.ok(new Status(false, e.getMessage()));
-        }
-    }
-
-    @GetMapping("/email/{email}")
-    /**
-     * Get all the users with the email provided in the path parameter
-     * 
-     * @param email
-     * @return ResponseEntity
-     */
-    public ResponseEntity getUsersByEmail(@PathVariable(value = "email", required = true) String email) {
-        try {
-            AppUser user = userService.getUserByEmail(email);
-            UserDto userDto = Utils.appUserToUserDto(user);
-            return ResponseEntity.ok(userDto);
-        } catch (Exception e) {
-            return ResponseEntity.ok(new Status(false, e.getMessage()));
-        }
-    }
-
+    private Logger logger = LoggerFactory.getLogger(UserApi.class);
 
     @PostMapping("/login")
-    /**
-     * Check if the user can login with the username or email and password provided
-     * in the path parameter
-     * 
-     * @param user
-     * @return ResponseEntity
-     */
-    
-    public @ResponseBody ResponseEntity login(
-            @RequestBody LoginUserDto user) {
-        if (userService.login(user.getId(), user.getPassword())) {
-            return ResponseEntity.ok(new Status(true, "User logged in"));
+    public ResponseEntity login(@RequestBody LoginUserDto loginUserDto) {
+        // info login user
+        // get user
+        String jwt = userService.login(loginUserDto.getId(), loginUserDto.getPassword());
+        HttpHeaders authorization = new HttpHeaders();
+        authorization.set("Authorization", jwt);
+
+        if (jwt == null) {
+            Status response = new Status(false, "User or password incorrect");
+            return ResponseEntity.ok().body(response);
+
         } else {
-            return ResponseEntity.ok(new Status(false, "User not logged in"));
+            AppUser user = userService.getUser(JWToken.getUserId(jwt));
+            ProfileDto profile = new ProfileDto(user);
+
+            Status response = new Status(true, "User found");
+            Map<Object, Object> data = new HashMap<>();
+            data.put("jwt", jwt);
+            data.put("profile", profile);
+            response.setData(data);
+            return ResponseEntity.ok().headers(authorization).body(response);
         }
     }
 
-    @GetMapping("/remove/{id}")
-    /**
-     * Remove the user with the id provided in the path parameter 
-     * 
-     * @param id is an email or username
-     * @return ResponseEntity
-     */
-    public @ResponseBody ResponseEntity removeUser(@PathVariable(value = "id", required = true) String id) {
-        try {
-            AppUser user;
-            if (Utils.isAnEmail(id)) {
-                user = userService.getUserByEmail(id);
-            } else {
-                user = userService.getUserByUsername(id);
+    @PostMapping("/signup")
+    public ResponseEntity<Status> signup(@RequestBody SignUpDto addUserDto) {
+        // info add new user
+        if (addUserDto.getConfirmPassword().equals(addUserDto.getPassword())) {
+            try {
+                AppUser user = new AppUser.Builder()
+                        .username(addUserDto.getUsername())
+                        .password(addUserDto.getPassword())
+                        .email(addUserDto.getEmail())
+                        .role(roleRepo.getRole("user"))
+                        .build();
+
+                if (userService.getUserByEmail(addUserDto.getEmail()) == null && userService.getUserByUsername(addUserDto.getUsername()) == null) {
+                    userService.addUser(user);
+                    Status response = new Status(true, "Signup Successful");
+                    return ResponseEntity.ok(response);
+                } else {
+                    Status response = new Status(false, "User already exists");
+                    return ResponseEntity.ok(response);
+                }
+            } catch (Exception e) {
+                Status response = new Status(false, e.getMessage());
+                return ResponseEntity.ok(response);
             }
-            userService.deleteUser(user);
-            return ResponseEntity.ok(new Status(true, "User removed"));
-        } catch (Exception e) {
-            return ResponseEntity.ok(new Status(false, e.getMessage()));
+        } else {
+            Status response = new Status(false, "Confirm Password does not match");
+            return ResponseEntity.ok(response);
         }
     }
+
+    @GetMapping("/user")
+    public ResponseEntity userExists(
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String email) {
+        Status status = new Status(false, "error");
+
+        if (username != null && email != null) {
+            if (userService.getUserByUsername(username) != null && userService.getUserByEmail(email) != null) {
+                status.setOk(true);
+                status.setMessage("Username and email already registered as a user");
+                return ResponseEntity.ok(status);
+            }
+        } else if (username != null) {
+            if (userService.getUserByUsername(username) != null) {
+                status.setOk(true);
+                status.setMessage("Username is already registered as a user");
+                return ResponseEntity.ok(status);
+            }
+        } else if (email != null) {
+            if (userService.getUserByEmail(email) != null) {
+                status.setOk(true);
+                status.setMessage("Email is already registered as a user");
+                return ResponseEntity.ok(status);
+            }
+        }
+
+        status.setOk(false);
+        status.setMessage("Username and email are not registered as a user");
+        return ResponseEntity.ok(status);
+    }
+
+    @GetMapping("/myaccount")
+    public ResponseEntity getMyAccount(HttpServletRequest request) {
+        String jwt = request.getHeader("Authorization");
+        AppUser user = userService.getUser(JWToken.getUserId(jwt));
+        MyAccount myAccount = new MyAccount.Builder().from(user).build();
+
+        Status status = new Status(true, "User found");
+        Map<Object, Object> data = new HashMap<>();
+        data.put("myAccount", myAccount);
+        status.setData(data);
+        return ResponseEntity.ok().body(status);
+    }
+
+    @PostMapping("/myaccount")
+    public ResponseEntity updateMyAccount(@RequestBody MyAccount myAccount) {
+        AppUser user = userService.getUser(myAccount.getId());
+
+        if (user != null){
+            user.setEmail(myAccount.getEmail());
+            user.setDescription(myAccount.getDescription());
+            user.setUsername(myAccount.getUsername());
+            user.setFirstname(myAccount.getFirstname());
+            user.setLastname(myAccount.getLastname());
+
+            userService.updateUser(user);
+        }
+
+        return ResponseEntity.ok().body(new Status(true, "User updated"));
+    }
+
 }

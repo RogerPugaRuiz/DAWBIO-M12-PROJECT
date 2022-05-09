@@ -1,36 +1,99 @@
-ul{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    padding: 0;
-}
-
-.nav-element{
-    padding: 1rem;
-    list-style: none;
-    font-family: 'Fredoka One', cursive;
-    font-size: 1.5rem;
-    color: rgb(255, 153, 0);
-    cursor: pointer;
-    border-radius: 0.5rem;
-    margin: 0;
-    margin: 1rem;
-}
-.nav-element:hover{
+.dark-mode{
     color: white;
-    background-color: rgb(255, 153, 0);
+    background-color: #333;
 }
 
-@media (max-width: 900px) {
-    ul{
-        display: flex;
-        flex-direction: column;
-    }
-    .nav-element {
-        text-align: center;
-    }
+.light-mode{
+    color: black;
+    background-color: #fff;
 }
 
-.disabled{
-    display: none;
+nav {
+    display: block;
+    margin: 0;
+    padding: 2rem;
+}
+
+.icon img {
+    width: 50px;
+    height: 50px;
+    margin-top: 25px;
+    margin-left: 25px;
+}
+
+.menu {
+    position: relative;
+    margin-top: 40px;
+    display: flex;
+    float: right;
+    margin-right: 5rem;
+}
+
+.menu li {
+
+    list-style: none;
+}
+
+.dark-mode .menu-element {
+    color: rgb(255, 106, 0);
+
+}
+
+.light-mode .menu-element {
+    color: rgb(211, 88, 0);
+}
+
+.menu-element {
+    text-decoration: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.light-mode .activate-menu {
+    color: rgb(0, 0, 0);
+}
+
+.dark-mode .activate-menu {
+    color: rgb(166, 166, 166);
+}
+
+/* .activate-menu i{
+    background-color: rgb(210, 210, 210) !important;
+} */
+.menu-element:hover {
+    /* color:rgb(210, 210, 210); */
+}
+
+.menu-element:hover>.expand {
+    display: block;
+}
+
+.material-icons {
+    position: relative;
+    bottom: 15px;
+    font-size: 50px;
+}
+
+.expand {
+    position: absolute;
+    width: 500px;
+    top: 35px;
+    right: 10px;
+    padding: 1rem;
+    background-color: #e6e6e6;
+    box-shadow: 2px 2px 5px #646464;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
+.expand-element {
+    padding: 1rem;
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.expand-element:hover {
+    color: rgb(255, 106, 0);
 }

@@ -4,34 +4,48 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
+import { FooterComponent } from './footer/footer.component';
 import { HomeComponent } from './home/home.component';
-import { SignInComponent } from './sign-in/sign-in.component';
+import { MapsComponent } from './maps/maps.component';
+import { ComunityComponent } from './comunity/comunity.component';
+import { AboutComponent } from './about/about.component';
+import { ContactComponent } from './contact/contact.component';
+import { MyAccountComponent } from './my-account/my-account.component';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ErrorComponent } from './error/error.component';
+import { JwtInterceptor } from './authenticate/jwt.interceptor';
+import { RegisterComponent } from './register/register.component';
 import { ClickOutsideModule } from 'ng-click-outside';
-import { SignUpComponent } from './sign-up/sign-up.component';
-import { HttpClientModule } from '@angular/common/http';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NewsComponent } from './news/news.component';
-import { NewsBoardComponent } from './news-board/news-board.component';
+import { SettingsComponent } from './settings/settings.component';
+import { SettingsService } from './services/settings.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavMenuComponent,
+    FooterComponent,
     HomeComponent,
-    SignInComponent,
-    SignUpComponent,
-    NewsComponent,
-    NewsBoardComponent,
+    MapsComponent,
+    ComunityComponent,
+    AboutComponent,
+    ContactComponent,
+    MyAccountComponent,
+    ErrorComponent,
+    RegisterComponent,
+    SettingsComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ClickOutsideModule,
     HttpClientModule,
-    FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ClickOutsideModule
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    SettingsService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

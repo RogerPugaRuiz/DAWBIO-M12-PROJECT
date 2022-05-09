@@ -1,13 +1,33 @@
 package com.m12.wwca.infrastructure.shared;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.regex.Pattern;
 
-import com.m12.wwca.domain.AppUser;
-import com.m12.wwca.infrastructure.dto.UserDto;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
+
+import com.google.common.hash.Hashing;
+import com.m12.wwca.domain.entity.AppUser;
+import com.m12.wwca.infrastructure.dto.UserManageDto;
 
 public class Utils {
+    private static final String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
     /**
      * Check if id is an email
      * 
@@ -29,19 +49,19 @@ public class Utils {
      * @return List<UserDto>
      * @throws InvalidMapperException
      */
-    public static List<UserDto> usersToDto(List<AppUser> users) {
-        List<UserDto> usersDto = new ArrayList<>();
+    public static List<UserManageDto> usersToDto(List<AppUser> users) {
+        List<UserManageDto> usersDto = new ArrayList<>();
         for (AppUser user : users) {
             // UserDto userDto = (UserDto)
             // MapperFactory.getMapper(UserMapper.class).map(UserDto.class, user);
-            UserDto userDto = appUserToUserDto(user);
+            UserManageDto userDto = appUserToUserDto(user);
             usersDto.add(userDto);
         }
         return usersDto;
     }
 
-    public static UserDto appUserToUserDto(AppUser user) {
-        UserDto userDto = new UserDto.Builder()
+    public static UserManageDto appUserToUserDto(AppUser user) {
+        UserManageDto userDto = new UserManageDto.Builder()
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .password(user.getPassword())
@@ -49,6 +69,66 @@ public class Utils {
                 .subscribed(user.getSubscribed())
                 .build();
         return userDto;
+    }
+
+    public static String readFile(File file) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        StringBuilder stringBuilder = new StringBuilder();
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            stringBuilder.append(line + "\n");
+        }
+        reader.close();
+        return stringBuilder.toString();
+    }
+
+    /**
+     * Generate AES key
+     * 
+     * @param password
+     * @param salt
+     * @return
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeySpecException
+     */
+    public static SecretKey getKeyFromPassword(String password, String salt)
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
+
+        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+        KeySpec spec = new PBEKeySpec(password.toCharArray(), salt.getBytes(), 65536, 256);
+        SecretKey secret = new SecretKeySpec(factory.generateSecret(spec)
+                .getEncoded(), "AES");
+        return secret;
+    }
+
+    /**
+     * Random string generator
+     * 
+     */
+    public static String generateRandomPassword(int len) {
+        String chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijk"
+                + "lmnopqrstuvwxyz!@#$%&";
+        Random rnd = new Random();
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++)
+            sb.append(chars.charAt(rnd.nextInt(chars.length())));
+        return sb.toString();
+    }
+
+    /**
+     * get the current date
+     * 
+     */
+    public static Date getCurrentDate() {
+        return new Date(System.currentTimeMillis());
+    }
+
+    /**
+     * get the expiration date
+     */
+
+    public static Date getExpirationDate() {
+        return new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 7));
     }
 
 }

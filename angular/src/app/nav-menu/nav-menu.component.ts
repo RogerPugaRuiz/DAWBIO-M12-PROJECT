@@ -1,41 +1,48 @@
-import { AfterViewChecked, AfterViewInit, Component, HostListener, OnInit, ViewChild } from '@angular/core';
-import { SignInService } from '../services/sign-in.service';
-import { SignUpService } from '../services/sign-up.service';
-import { SignInComponent } from '../sign-in/sign-in.component';
+import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { SettingsService } from '../services/settings.service';
 
 @Component({
   selector: 'app-nav-menu',
   templateUrl: './nav-menu.component.html',
   styleUrls: ['./nav-menu.component.css']
 })
-export class NavMenuComponent implements OnInit{
-  signIn : boolean = false;
-  signUp : boolean = false;
+export class NavMenuComponent implements OnInit {
+  menu: number = 1;
+  darkmode?: boolean;
 
-  navItems : Array<string> = [
-    "Home",
-    "Air pollution map",
-    "Water pollution map",
-    "News",
-    "Login"
-  ];
+
   constructor(
-    private signInService: SignInService,
-    private signUpService: SignUpService
-  ) { }
+    private router: Router,
+    private settingsService: SettingsService) { }
 
   ngOnInit(): void {
-    this.signInService.getSignIn().subscribe(signIn => { this.signIn = signIn; });
-    this.signUpService.getSignUp().subscribe(signUp => { this.signUp = signUp; });
+    this.darkmode = this.settingsService.darkmode;
+    this.settingsService.getDarkMode().subscribe(
+      darkmode => {
+        this.darkmode = darkmode;
+      }
+    );
   }
 
-  public navFunction(item : string) : void {
-    // if item is sign in
-    if(item == "Login") {
-      this.signIn = true;
-      this.signUp = false;
-      this.signInService.setSignIn(this.signIn);
+  setMenu(menu: number): void {
+    if (this.menu == menu) {
+      this.menu = 0;
+    } else {
+      this.menu = menu;
     }
   }
 
+  isRegistered(): boolean {
+    return localStorage.getItem('auth_token') != null;
+  }
+
+  logout(): void {
+    localStorage.removeItem('auth_token');
+    this.router.navigate(['register']);
+  }
+
+  onClickedOutside(e: Event){
+    this.menu = 0;
+  }
 }

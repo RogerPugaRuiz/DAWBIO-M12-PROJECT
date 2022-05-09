@@ -3,7 +3,7 @@ package com.m12.wwca.infrastructure.persistence;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import com.m12.wwca.domain.Role;
+import com.m12.wwca.domain.entity.Role;
 import com.m12.wwca.domain.repo.RoleRepo;
 
 import org.springframework.stereotype.Repository;
@@ -38,7 +38,7 @@ public class RoleRepoMysqlAdapter implements RoleRepo{
      * @return Role
      */
     public Role getRole(String name) {
-        Role auxRole = entityManager.createQuery("SELECT r FROM Role r WHERE r.name = :name", Role.class)
+        Role auxRole = entityManager.createQuery("SELECT r FROM roles r WHERE r.name = :name", Role.class)
                 .setParameter("name", name)
                 .getSingleResult();
         return auxRole;
@@ -72,7 +72,7 @@ public class RoleRepoMysqlAdapter implements RoleRepo{
      * @return List<Role>
      */
     public List<Role> getRoles() {
-        return entityManager.createQuery("SELECT r FROM Role r", Role.class).getResultList();
+        return entityManager.createQuery("SELECT r FROM roles r", Role.class).getResultList();
     }
 
     

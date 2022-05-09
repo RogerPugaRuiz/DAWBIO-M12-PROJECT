@@ -1,6 +1,6 @@
 package com.m12.wwca.infrastructure.mapper.dto;
 
-import com.m12.wwca.infrastructure.dto.AddUserDto;
+import com.m12.wwca.infrastructure.dto.SignUpDto;
 
 import org.junit.jupiter.api.Test;
 
@@ -11,10 +11,10 @@ public class AddUserDtoTest {
     private static final String PASSWORD = "password";
     private static final String CONFIRM_PASSWORD = "password";
 
-    private static AddUserDto addUserDto;
+    private static SignUpDto addUserDto;
 
     public AddUserDtoTest() {
-        addUserDto = new AddUserDto.Builder()
+        addUserDto = new SignUpDto.Builder()
                 .username(USERNAME)
                 .email(EMAIL)
                 .password(PASSWORD)

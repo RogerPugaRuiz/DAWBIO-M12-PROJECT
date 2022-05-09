@@ -1,19 +1,26 @@
-import { EventEmitter, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SignInService {
-  private signIn: EventEmitter<boolean> = new EventEmitter();
 
-  public getSignIn(){
-    return this.signIn;
+  constructor(
+    private http:HttpClient) { }
+
+  signIn(password:string, id:string){
+    return this.http
+      .post('http://localhost:8081/api/users/login', {password:password, id:id})
+      .forEach(data => {
+        console.log(data);
+      })
   }
 
-  public setSignIn(signIn: boolean){
-    this.signIn.emit(signIn);
-  }
-  
-  constructor() { }
+  // jwt(){
+  //   this.http.request.arguments.HttpHeaders.get('Authorization');
+  // }
+  // jwt(){
+  //   return this.header.get('Authorization');
+  // }
 }

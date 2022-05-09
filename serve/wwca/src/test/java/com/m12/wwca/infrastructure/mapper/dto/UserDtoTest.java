@@ -3,13 +3,13 @@ package com.m12.wwca.infrastructure.mapper.dto;
 import java.time.LocalDateTime;
 
 import com.m12.wwca.infrastructure.dto.RoleDto;
-import com.m12.wwca.infrastructure.dto.UserDto;
+import com.m12.wwca.infrastructure.dto.UserManageDto;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class UserDtoTest {
-    private static UserDto userDto;
+    private static UserManageDto userDto;
     private static final String username = "username";
     private static final String email = "example@gmail.com";
     private static final String password = "password";
@@ -17,7 +17,7 @@ public class UserDtoTest {
 
     
     public UserDtoTest(){
-        userDto = new UserDto.Builder()
+        userDto = new UserManageDto.Builder()
                 .username(username)
                 .email(email)
                 .password(password)
