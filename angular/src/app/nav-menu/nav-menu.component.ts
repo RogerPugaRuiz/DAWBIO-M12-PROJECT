@@ -11,6 +11,7 @@ export class NavMenuComponent implements OnInit {
   menu: number = 1;
   darkmode?: boolean;
 
+  
 
   constructor(
     private router: Router,

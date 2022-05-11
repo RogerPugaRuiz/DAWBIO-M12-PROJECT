@@ -21,7 +21,7 @@ export class RegisterComponent implements OnInit {
 
   id = new FormControl('', [
     Validators.required,
-    Validators.pattern('.{3,20}')]);
+    Validators.pattern('.{3,}')]);
 
   password = new FormControl('', [
     Validators.required,

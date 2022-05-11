@@ -77,9 +77,10 @@ nav {
 .expand {
     position: absolute;
     width: 500px;
+    max-height: 600px;
+    overflow-y: auto;
     top: 35px;
     right: 10px;
-    padding: 1rem;
     background-color: #e6e6e6;
     box-shadow: 2px 2px 5px #646464;
     border-radius: 5px;
@@ -96,4 +97,56 @@ nav {
 
 .expand-element:hover {
     color: rgb(255, 106, 0);
+}
+
+.fas, .fa{
+    position: relative;
+    bottom: 15px;
+    font-size: 40px;
+    cursor: pointer;
+}
+
+.chat-header{
+    display: block;
+    width: 100%;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.chat-header .fa, .chat-header .fas{
+    color: rgb(255, 106, 0);
+    font-size: 30px;
+    bottom: 0;
+    padding: 1rem;
+}
+
+.fa-expand-alt{
+    position: relative;
+    float: right;
+}
+.chat-body-users{
+    display: block;
+    overflow: auto;
+    height: 400px;
+}
+
+.chat-body-user{
+    display: block;
+    border: 2px solid black;
+    padding: 1rem;
+    margin: 0.2rem;
+    color: #333;
+}
+
+.chat-body-aside{
+    display: block;
+    display: flex;
+    color: rgb(255, 106, 0);
+    justify-content: center;
+}
+
+.chat-body-messages{
+    height: 100%;
 }

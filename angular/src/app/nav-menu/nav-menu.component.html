@@ -2,43 +2,118 @@
     <i class="icon"><img src="assets/img/WORLD WITH AIR CLEAN.png" alt="WORLD WITH AIR CLEAN"></i>
     <ul class="menu" (clickOutside)="this.onClickedOutside($event)">
 
-        <li><a class="menu-element" [routerLink]="['/']" (click)="this.setMenu(1)"
-                [ngClass]="this.menu == 1 ? 'activate-menu' : ''">Home
+        <li><a class="menu-element home" [routerLink]="['']" (click)="this.setMenu(1)"
+                [ngClass]="this.menu == 1 ? 'activate-menu' : ''"><i class="fas fa-home"></i>
             </a>
         </li>
-        <li><a class="menu-element" [routerLink]="['/maps']" (click)="this.setMenu(2)"
-                [ngClass]="this.menu == 2 ? 'activate-menu' : ''">Maps
+
+        <li><a class="menu-element comunity" [routerLink]="['/comunity']" (click)="this.setMenu(2)"
+                [ngClass]="this.menu == 2 ? 'activate-menu' : ''"><i class='fas fa-users'></i>
             </a>
         </li>
-        <li><a class="menu-element" [routerLink]="['/comunity']" (click)="this.setMenu(3)"
-                [ngClass]="this.menu == 3 ? 'activate-menu' : ''">Comunity
+        <li>
+            <a class="menu-element chat" (click)="this.setMenu(4)">
+                <i class='fas fa-comments' [ngClass]="this.menu == 4 ? 'activate-menu' : ''"></i>
             </a>
         </li>
-        <li><a class="menu-element" [routerLink]="['/about']" (click)="this.setMenu(4)"
-                [ngClass]="this.menu == 4 ? 'activate-menu' : ''">About
+        <li>
+            <a class="menu-element" (click)="this.setMenu(5)">
+                <i class='fas fa-map' [ngClass]="this.menu == 5 ? 'activate-menu' : ''"></i></a>
+        </li>
+        <li><a class="menu-element">
+                <i class="fa fa-user" (click)="this.setMenu(3)" [ngClass]="this.menu == 3 ? 'activate-menu' : ''"></i>
             </a>
         </li>
-        <li><a class="menu-element" [routerLink]="['/contact']" (click)="this.setMenu(5)"
-                [ngClass]="this.menu == 5 ? 'activate-menu' : ''">Contact
-            </a>
-        </li>
-        <li><a class="menu-element"><i class="material-icons" (click)="this.setMenu(6)"
-                    [ngClass]="this.menu == 6 ? 'activate-menu' : ''">account_circle</i>
-            </a>
-        </li>
-        <div class="expand" *ngIf="this.menu == 6 && this.isRegistered()">
+
+        <div class="expand" *ngIf="this.menu == 3 && this.isRegistered()">
             <a class="expand-element" [routerLink]="['myAccount']">My Account</a>
-            <a class="expand-element" [routerLink]="['messages']">Messages</a>
             <a class="expand-element" [routerLink]="['settings']">Settings</a>
             <a class="expand-element" (click)="this.logout()">Logout</a>
         </div>
 
-        <div class="expand" *ngIf="this.menu == 6 && !this.isRegistered()">
+        <div class="expand" *ngIf="this.menu == 3 && !this.isRegistered()">
             <a class="expand-element" [routerLink]="['/register']">Register</a>
             <a class="expand-element" [routerLink]="['settings']">Settings</a>
-            
         </div>
-
+        <div class="expand" *ngIf="this.menu == 4">
+            <div class="chat-header">
+                <i class="fa fa-user-plus"></i>
+                <i class='fas fa-expand-alt'></i>
+            </div>
+            <div class="chat-body">
+                <div class="chat-body-users">
+                    <div class="chat-body-user">
+                        <span class="chat-body-user-name">John Doe</span>
+                    </div>
+                    <div class="chat-body-user">
+                        <span class="chat-body-user-name">John Doe</span>
+                    </div>
+                    <div class="chat-body-user">
+                        <span class="chat-body-user-name">John Doe</span>
+                    </div>
+                    <div class="chat-body-user">
+                        <span class="chat-body-user-name">John Doe</span>
+                    </div>
+                    <div class="chat-body-user">
+                        <span class="chat-body-user-name">John Doe</span>
+                    </div>
+                    <div class="chat-body-user">
+                        <span class="chat-body-user-name">John Doe</span>
+                    </div>
+                    <div class="chat-body-user">
+                        <span class="chat-body-user-name">John Doe</span>
+                    </div>
+                    <div class="chat-body-user">
+                        <span class="chat-body-user-name">John Doe</span>
+                    </div>
+                    <div class="chat-body-user">
+                        <span class="chat-body-user-name">John Doe</span>
+                    </div>
+                    <div class="chat-body-user">
+                        <span class="chat-body-user-name">John Doe</span>
+                    </div>
+                    <div class="chat-body-user">
+                        <span class="chat-body-user-name">John Doe</span>
+                    </div>
+                    <div class="chat-body-user">
+                        <span class="chat-body-user-name">John Doe</span>
+                    </div>
+                    <div class="chat-body-user">
+                        <span class="chat-body-user-name">John Doe</span>
+                    </div>
+                    <div class="chat-body-user">
+                        <span class="chat-body-user-name">John Doe</span>
+                    </div>
+                    <div class="chat-body-user">
+                        <span class="chat-body-user-name">John Doe</span>
+                    </div>
+                    <div class="chat-body-user">
+                        <span class="chat-body-user-name">John Doe</span>
+                    </div>
+                    <div class="chat-body-user">
+                        <span class="chat-body-user-name">John Doe</span>
+                    </div>
+                    <div class="chat-body-user">
+                        <span class="chat-body-user-name">John Doe</span>
+                    </div>
+                    <div class="chat-body-user">
+                        <span class="chat-body-user-name">John Doe</span>
+                    </div>
+                    <div class="chat-body-user">
+                        <span class="chat-body-user-name">John Doe</span>
+                    </div>
+                </div>
+                <div class="chat-body-aside">
+                    <i class='fas fa-chevron-up'></i>
+                    <i class='fas fa-chevron-down'></i>
+                </div>
+                <div class="chat-body-messages">
+                    <div class="message-container">
+                    </div>
+                    <input type="text" placeholder="Type a message...">
+                </div>
+            </div>
+        </div>
     </ul>
 
 </nav>
