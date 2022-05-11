@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NameAndEmailExistsService } from '../services/name-and-email-exists.service';
 import { SettingsService } from '../services/settings.service';
 import { passwordMatchingValidatior } from '../validators/must-match.validator';
 
@@ -61,7 +62,8 @@ export class RegisterComponent implements OnInit {
   constructor(
     private router: Router,
     private http: HttpClient,
-    private settingsService: SettingsService) { }
+    private settingsService: SettingsService,
+    private nameAndEmail: NameAndEmailExistsService) { }
 
   ngOnInit(): void {
     this.darkmode = this.settingsService.darkmode;
@@ -137,29 +139,12 @@ export class RegisterComponent implements OnInit {
 
 
   userNameExists() {
-    this.http.get("http://localhost:8081/api/users/user", { params: { username: this.signUpForm.value.signUpUsername } }).subscribe(
-      {
-        next: (data:any) => {
-          data = data;
-          if (data.ok == true) {
-            this.usernameAlreadyExists = data.message;
-            this.signUpUsername.setErrors({ 'usernameAlreadyExists': true });
-          }
-        }
-      }
-    );
+    this.nameAndEmail.userNameExists(this.signUpUsername);
+    this.usernameAlreadyExists = 'username already exists';
   }
 
   emailExists() {
-    this.http.get("http://localhost:8081/api/users/user", { params: { email: this.signUpForm.value.signUpEmail } }).subscribe(
-      {
-        next: (data:any) => {
-          data = data;
-          if (data.ok == true) {
-            this.emailAlreadyExists = data.message;
-            this.signUpEmail.setErrors({ 'emailAlreadyExists': true });
-          }
-        }
-      });
+    this.nameAndEmail.emailExists(this.signUpEmail);
+    this.emailAlreadyExists = 'email already exists';
   }
 }

@@ -7,6 +7,7 @@ import { SignInService } from '../services/sign-in.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { SettingsComponent } from '../settings/settings.component';
 import { SettingsService } from '../services/settings.service';
+import { NameAndEmailExistsService } from '../services/name-and-email-exists.service';
 
 @Component({
   selector: 'app-my-account',
@@ -45,9 +46,13 @@ export class MyAccountComponent implements OnInit {
   green: string = '';
   red: string = '';
 
+  nameAlreadyExistsMessage: string = "";
+  emailAlreadyExistsMessage: string = "";
+
   constructor(
     private http: HttpClient,
-    private settingsService: SettingsService) { }
+    private settingsService: SettingsService,
+    private nameAndEmail: NameAndEmailExistsService) { }
 
   ngOnInit(): void {
     this.http.get("http://localhost:8081/api/users/myaccount").subscribe(
@@ -104,6 +109,8 @@ export class MyAccountComponent implements OnInit {
   }
 
   setUpdateMessage() {
+    this.nameExists();
+    this.emailExists();
     if (this.formChange()) {
       this.updateMessage = "Your account needs to be updated";
       this.needUpdate = true;
@@ -119,5 +126,28 @@ export class MyAccountComponent implements OnInit {
       this.myAccount.firstname != this.firstnameControl.value ||
       this.myAccount.lastname != this.lastnameControl.value ||
       this.myAccount.description != this.descriptionControl.value;
+  }
+
+  nameExists() {
+    const oldUsername = this.myAccount.username;
+    if (this.usernameControl.value != oldUsername) {
+      this.nameAndEmail.userNameExists(this.usernameControl);
+    }
+  }
+
+  emailExists() {
+    const oldEmail = this.myAccount.email;
+    if (this.emailControl.value != oldEmail) {
+      this.nameAndEmail.emailExists(this.emailControl);
+    }
+  }
+
+  cancelUpdate() {
+    this.usernameControl.setValue(this.myAccount.username);
+    this.emailControl.setValue(this.myAccount.email);
+    this.firstnameControl.setValue(this.myAccount.firstname);
+    this.lastnameControl.setValue(this.myAccount.lastname);
+    this.descriptionControl.setValue(this.myAccount.description);
+    this.setUpdateMessage();
   }
 }

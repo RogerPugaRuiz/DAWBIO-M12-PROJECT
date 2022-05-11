@@ -126,4 +126,41 @@
     color: rgb(255, 77, 77);
 }
 
+.options{
+    display: flex;
+}
+
+.options *{
+    margin-right: 1rem;
+}
+
+.btn-cancel{
+    display: block;
+    padding: 1rem;
+    border-radius: 5px;
+    width: 100px;
+    margin-top: 2rem;
+    text-align: center;
+    cursor: pointer;
+}
+
+.dark-mode .btn-cancel{
+    background-color: #892900;
+    color: white;
+}
+
+.light-mode .btn-cancel{
+    background-color: #c9302c;
+    color: white;
+}
+
+.dark-mode .btn-cancel:hover{
+    background-color: #6d1200;
+    color: white;
+}
+
+.light-mode .btn-cancel:hover{
+    background-color: #ad2823;
+    color: white;
+}
 
