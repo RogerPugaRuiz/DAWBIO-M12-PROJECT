@@ -1,3 +1,4 @@
+import { style } from '@angular/animations';
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SettingsService } from '../services/settings.service';
@@ -10,8 +11,7 @@ import { SettingsService } from '../services/settings.service';
 export class NavMenuComponent implements OnInit {
   menu: number = 1;
   darkmode?: boolean;
-
-  
+  isChatOpen: boolean = false;
 
   constructor(
     private router: Router,
@@ -43,7 +43,12 @@ export class NavMenuComponent implements OnInit {
     this.router.navigate(['register']);
   }
 
-  onClickedOutside(e: Event){
+  onClickedOutside(e: Event) {
     this.menu = 0;
+  }
+
+  toggleChat(e: Event): void {
+    this.isChatOpen = !this.isChatOpen;
+    e.stopPropagation();
   }
 }

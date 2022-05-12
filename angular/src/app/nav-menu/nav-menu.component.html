@@ -40,8 +40,8 @@
                 <i class="fa fa-user-plus"></i>
                 <i class='fas fa-expand-alt'></i>
             </div>
-            <div class="chat-body">
-                <div class="chat-body-users">
+            <div class="chat-body ">
+                <div class="chat-body-users" [ngClass]="this.isChatOpen ? 'down-animation' : 'up-animation'">
                     <div class="chat-body-user">
                         <span class="chat-body-user-name">John Doe</span>
                     </div>
@@ -103,15 +103,16 @@
                         <span class="chat-body-user-name">John Doe</span>
                     </div>
                 </div>
-                <div class="chat-body-aside">
-                    <i class='fas fa-chevron-up'></i>
-                    <i class='fas fa-chevron-down'></i>
+                <div class="toggle">
+                    <i class='fas fa-angle-up' *ngIf="!this.isChatOpen" (click)="toggleChat($event)"></i>
+                    <i class='fas fa-angle-down' *ngIf="this.isChatOpen" (click)="toggleChat($event)"></i>
                 </div>
                 <div class="chat-body-messages">
-                    <div class="message-container">
+                    <div class="message-container" [ngClass]="!this.isChatOpen ? 'down-animation' : 'up-animation'">
                     </div>
-                    <input type="text" placeholder="Type a message...">
+                    <input class="input-text" type="text" placeholder="Type a message...">
                 </div>
+
             </div>
         </div>
     </ul>

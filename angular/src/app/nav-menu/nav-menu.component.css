@@ -113,6 +113,8 @@ nav {
     padding-bottom: 1rem;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
+    background-color: #e6e6e6;
+    z-index: 9999;
 }
 
 .chat-header .fa, .chat-header .fas{
@@ -129,7 +131,8 @@ nav {
 .chat-body-users{
     display: block;
     overflow: auto;
-    height: 400px;
+    height: 500px;
+    transition: height 1s;
 }
 
 .chat-body-user{
@@ -148,5 +151,50 @@ nav {
 }
 
 .chat-body-messages{
+    position: relative;
     height: 100%;
 }
+.message-container{
+    display: block;
+    height: 20%;
+    height: 400px;
+    overflow: auto;
+    background-color: white;
+    margin: auto;
+    transition: height 1s;
+}
+
+.down-animation{
+    height: 0px;
+}
+
+.up-animation {
+    height: 400px;
+}
+
+.toggle{
+    display: block;
+    text-align: center;
+}
+
+.input-text{
+    display: block;
+    width: 100%;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+.fa-angle-up, .fa-angle-down{
+    margin: auto;
+    color: rgb(255, 106, 0);
+
+}
+
+
+/* @keyframes up-animation{
+    0%{
+        transform: translateY(0);
+    }
+    100%{
+        transform: trans
+    }
+} */

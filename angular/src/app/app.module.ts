@@ -19,6 +19,7 @@ import { RegisterComponent } from './register/register.component';
 import { ClickOutsideModule } from 'ng-click-outside';
 import { SettingsComponent } from './settings/settings.component';
 import { SettingsService } from './services/settings.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { SettingsService } from './services/settings.service';
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
-    ClickOutsideModule
+    ClickOutsideModule,
+    BrowserAnimationsModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
