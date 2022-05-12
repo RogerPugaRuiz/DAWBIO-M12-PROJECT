@@ -42,7 +42,7 @@
             </div>
             <div class="chat-body ">
                 <div class="chat-body-users" [ngClass]="this.isChatOpen ? 'down-animation' : 'up-animation'">
-                    <div class="chat-body-user">
+                    <div class="chat-body-user selected" (click)="toggleChat($event)">
                         <span class="chat-body-user-name">John Doe</span>
                     </div>
                     <div class="chat-body-user">
@@ -104,13 +104,13 @@
                     </div>
                 </div>
                 <div class="toggle">
-                    <i class='fas fa-angle-up' *ngIf="!this.isChatOpen" (click)="toggleChat($event)"></i>
+                    <!-- <i class='fas fa-angle-up' *ngIf="!this.isChatOpen" (click)="toggleChat($event)"></i> -->
                     <i class='fas fa-angle-down' *ngIf="this.isChatOpen" (click)="toggleChat($event)"></i>
                 </div>
                 <div class="chat-body-messages">
                     <div class="message-container" [ngClass]="!this.isChatOpen ? 'down-animation' : 'up-animation'">
                     </div>
-                    <input class="input-text" type="text" placeholder="Type a message...">
+                    <input class="input-text" type="text" placeholder="Type a message..." *ngIf="this.isChatOpen">
                 </div>
 
             </div>
