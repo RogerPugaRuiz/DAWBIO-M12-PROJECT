@@ -19,7 +19,7 @@ public class UserRepoMysqlAdapterTest {
 
     @Test
     void testGetUserByEmail() {
-        AppUser user = userRepoMysqlAdapter.getUserByEmail("roger@gmail.com");
+        AppUser user = userRepoMysqlAdapter.getUserByEmail("rogerpuga@gmail.com");
         logger.info("user: " + user.getUsername());
     }
 

@@ -1,6 +1,7 @@
 package com.m12.wwca.application;
 
 import com.m12.wwca.domain.entity.AppUser;
+import com.m12.wwca.domain.entity.ChatContact;
 import com.m12.wwca.domain.entity.Message;
 import com.m12.wwca.domain.entity.Role;
 import com.m12.wwca.infrastructure.persistence.MessageRepoMysqlAdapter;
@@ -57,6 +58,48 @@ public class UserServiceTest {
             assert true;
         } else {
             System.out.println("User not added");
+            assert false;
+        }
+    }
+
+    @Test
+    void testAddChatContact() {
+        AppUser userExpected = this.userService.getUserByUsername("roger22");
+        AppUser contactExpected = this.userService.getUserByUsername("andrés");
+        try {
+            this.userService.saveChatContact(new ChatContact(
+                    userExpected,
+                    contactExpected));
+            ChatContact chatContact = this.userService.getUserFromChatContact(userExpected);
+            logger.info("chatContact: " + chatContact.getUser().getUsername());
+
+            assert chatContact.getUser().equals(userExpected);
+
+        } catch (Exception e) {
+            logger.info("Chat contact not added");
+            assert false;
+        }
+    }
+
+    @Test
+    void testDeleteChatContact() {
+        AppUser userExpected = this.userService.getUserByUsername("roger22");
+        AppUser contactExpected = this.userService.getUserByUsername("andrés");
+        try {
+            this.userService.saveChatContact(new ChatContact(
+                    userExpected,
+                    contactExpected));
+            ChatContact chatContact = this.userService.getUserFromChatContact(userExpected);
+            logger.info("chatContact: " + chatContact.getUser().getUsername());
+
+            this.userService.deleteChatContact(chatContact);
+            ChatContact chatContact2 = this.userService.getUserFromChatContact(userExpected);
+            logger.info("chatContact2: " + chatContact2.getUser().getUsername());
+
+            assert chatContact2 == null;
+
+        } catch (Exception e) {
+            logger.info("Chat contact not added");
             assert false;
         }
     }

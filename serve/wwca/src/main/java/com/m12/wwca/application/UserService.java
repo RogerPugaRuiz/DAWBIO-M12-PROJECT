@@ -6,8 +6,10 @@ import java.util.UUID;
 import javax.transaction.Transactional;
 
 import com.m12.wwca.domain.entity.AppUser;
+import com.m12.wwca.domain.entity.ChatContact;
 import com.m12.wwca.domain.entity.Message;
 import com.m12.wwca.domain.entity.Role;
+import com.m12.wwca.domain.repo.ChatContactRepo;
 import com.m12.wwca.domain.repo.MessageRepo;
 import com.m12.wwca.domain.repo.RoleRepo;
 import com.m12.wwca.domain.repo.UserRepo;
@@ -34,12 +36,14 @@ public class UserService {
     private RoleRepo roleRepo; // RoleRepoMysqlAdapter
     private UserRepo userRepo; // UserRepoMysqlAdapter
     private MessageRepo messageRepo; // MessageRepoMysqlAdapter
+    private ChatContactRepo chatContactRepo; // ChatContactRepoMysqlAdapter
 
     @Autowired
-    public UserService(RoleRepo roleRepo, UserRepo userRepo, MessageRepo messageRepo) {
+    public UserService(RoleRepo roleRepo, UserRepo userRepo, MessageRepo messageRepo, ChatContactRepo chatContactRepo) {
         this.roleRepo = roleRepo;
         this.userRepo = userRepo;
         this.messageRepo = messageRepo;
+        this.chatContactRepo = chatContactRepo;
     }
 
     // Logger debug
@@ -205,6 +209,70 @@ public class UserService {
         logger.info("update user: " + user.getUsername());
         userRepo.updateUser(user);
     }
+
+
+    @Transactional
+    /**
+     * Method to get all chat contacts
+     * @return List<ChatContact>
+     *
+     */
+    public List<ChatContact> getChatContacts() {
+        // info get all chat contacts
+        logger.info("get all chat contacts");
+        return chatContactRepo.findAll();
+    }
+
+    @Transactional
+    /**
+     * Method to save chat contact
+     * @param chatContact
+     */
+    public void saveChatContact(ChatContact chatContact) {
+        // info save chat contact
+        logger.info("save chat contact on " + chatContact.getUser().getUsername());
+        chatContactRepo.save(chatContact);
+    }
+
+    @Transactional
+    /**
+     * Method to get chat contact by id
+     * @param user
+     * @return ChatContact
+     *
+     */
+    public ChatContact getContactFromChatContact(AppUser user) {
+        // info get chat contact by id
+        logger.info("get chat contact by id: " + user.getId());
+        return chatContactRepo.findByContact(user);
+    }
+
+    @Transactional
+    /**
+     * Method to get user by id
+     * @param user
+     * @return ChatContact
+     *
+     */
+    public ChatContact getUserFromChatContact(AppUser user) {
+        // info get user by id
+        logger.info("get user by id: " + user.getId());
+        return chatContactRepo.findByUser(user);
+    }
+
+    @Transactional
+    /**
+     * Method to delete chat contact
+     * @param chatContact
+     * @return void
+     *
+     */
+    public void deleteChatContact(ChatContact chatContact) {
+        // info delete chat contact
+        logger.info("delete chat contact: " + chatContact.getId());
+        chatContactRepo.delete(chatContact);
+    }
+
 
     /**
      * Method find message by id
