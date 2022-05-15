@@ -26,7 +26,7 @@ public class ChatContactRepoMysqlAdapter implements ChatContactRepo{
 
     @Override
     public void delete(ChatContact chatContacts) {
-        entityManager.remove(chatContacts);
+        entityManager.remove(entityManager.contains(chatContacts) ? chatContacts : entityManager.merge(chatContacts));
     }
 
 

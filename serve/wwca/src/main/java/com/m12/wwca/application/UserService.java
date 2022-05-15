@@ -241,7 +241,7 @@ public class UserService {
      * @return ChatContact
      *
      */
-    public ChatContact getContactFromChatContact(AppUser user) {
+    public ChatContact getContactContactChat(AppUser user) {
         // info get chat contact by id
         logger.info("get chat contact by id: " + user.getId());
         return chatContactRepo.findByContact(user);
@@ -254,7 +254,7 @@ public class UserService {
      * @return ChatContact
      *
      */
-    public ChatContact getUserFromChatContact(AppUser user) {
+    public ChatContact getUserContactChat(AppUser user) {
         // info get user by id
         logger.info("get user by id: " + user.getId());
         return chatContactRepo.findByUser(user);
@@ -267,10 +267,10 @@ public class UserService {
      * @return void
      *
      */
-    public void deleteChatContact(ChatContact chatContact) {
+    public void deleteContactChat(ChatContact chatContact) {
         // info delete chat contact
-        logger.info("delete chat contact: " + chatContact.getId());
         chatContactRepo.delete(chatContact);
+        logger.info("delete chat contact: " + chatContact.getId());
     }
 
 

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 // import project classes
 import com.m12.wwca.application.UserService;
 import com.m12.wwca.domain.entity.AppUser;
+import com.m12.wwca.domain.entity.Message;
 import com.m12.wwca.domain.repo.RoleRepo;
 import com.m12.wwca.infrastructure.dto.SignUpDto;
 import com.m12.wwca.infrastructure.dto.LoginUserDto;
@@ -27,6 +28,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -187,4 +190,10 @@ public class UserApi {
         }
     }
 
+    @MessageMapping("/send/message")
+    @SendTo("/topic/messages")
+    public ResponseEntity sendMessage(@RequestBody Message message) {
+        logger.info("Message received: " + message.getMessage());
+        return ResponseEntity.ok().body(new Status(true, "Message received"));
+    }
 }

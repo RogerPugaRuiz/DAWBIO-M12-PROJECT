@@ -22,10 +22,6 @@ public class ChatContactRepoMysqlAdapterTest {
     private ChatContactRepoMysqlAdapter chatContactRepoMysqlAdapter;
 
     Logger logger = LoggerFactory.getLogger(ChatContactRepoMysqlAdapterTest.class);
-    @Test
-    void testDelete() {
-
-    }
 
     @Test
     void testFindAll() {
@@ -37,11 +33,16 @@ public class ChatContactRepoMysqlAdapterTest {
 
     @Test
     void testFindByContact() {
-
+        AppUser user = userRepoMysqlAdapter.getUserByUsername("andrés");
+        ChatContact chatContacts =  chatContactRepoMysqlAdapter.findByContact(user);
+        logger.info("contact user: " + chatContacts.getUser().getUsername());
     }
 
     @Test
     void testFindByUser() {
+        AppUser user = userRepoMysqlAdapter.getUserByUsername("roger22");
+        ChatContact chatContacts =  chatContactRepoMysqlAdapter.findByUser(user);
+        logger.info("contact user: " + chatContacts.getContact().getUsername());
 
     }
 }
