@@ -1,7 +1,13 @@
 import { style } from '@angular/animations';
+import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import * as SockJS from 'sockjs-client';
+import * as Stomp from 'stompjs';
+import { User } from '../model/user.model';
+import { AddContactService } from '../services/add-contact.service';
 import { SettingsService } from '../services/settings.service';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-nav-menu',
@@ -13,12 +19,26 @@ export class NavMenuComponent implements OnInit {
   darkmode?: boolean;
   isChatOpen: boolean = false;
   textHeight: number = 0;
+  username: string = "";
+  isAddNewContact: boolean = false;
+  idUser?: string = "";
+  idSendUser?: string = "";
+  user: User = new User();
+  confirmAddContactList: string[] = [];
+  stompClient: any;
+
 
   constructor(
     private router: Router,
-    private settingsService: SettingsService) { }
+    private settingsService: SettingsService,
+    private userService: UserService,
+    private http: HttpClient,
+    private addContactService: AddContactService
+  ) { }
 
   ngOnInit(): void {
+    // this.websocket.listen();
+    this.addContactService.connection();
 
     this.darkmode = this.settingsService.darkmode;
     this.settingsService.getDarkMode().subscribe(
@@ -26,10 +46,22 @@ export class NavMenuComponent implements OnInit {
         this.darkmode = darkmode;
       }
     );
+
+    this.user = this.userService.getUser();
+
+
+
+    this.addContactService.getText().subscribe((text:any) => {
+      this.confirmAddContactList.push(text);
+      this.ngOnInit();
+      // alert(text);
+      console.log(text.message);
+    });
   }
 
   setMenu(menu: number): void {
     this.isChatOpen = false;
+    this.isAddNewContact = false;
     if (menu == 4) {
       let message = document.getElementsByClassName('message');
 
@@ -74,6 +106,9 @@ export class NavMenuComponent implements OnInit {
 
   toggleChat(e: Event): void {
     this.isChatOpen = !this.isChatOpen;
+    if (this.isChatOpen) {
+      this.isAddNewContact = false;
+    }
     e.stopPropagation();
     let messages = document.getElementsByClassName('message');
 
@@ -103,13 +138,13 @@ export class NavMenuComponent implements OnInit {
           }
         } else if (text.clientHeight > 120 && text.clientHeight < 200) {
           if (message.classList.contains('received')) {
-          bg.setAttribute("src", "assets/img/greenballonX4.svg");
+            bg.setAttribute("src", "assets/img/greenballonX4.svg");
           } else {
             bg.setAttribute("src", "assets/img/blueballonX4.svg");
           }
         } else {
           if (message.classList.contains('received')) {
-          bg.setAttribute("src", "assets/img/greenballonX5.svg");
+            bg.setAttribute("src", "assets/img/greenballonX5.svg");
           } else {
             bg.setAttribute("src", "assets/img/blueballonX5.svg");
           }
@@ -117,5 +152,14 @@ export class NavMenuComponent implements OnInit {
       }
     }
 
+  }
+
+  addNewContact(e: Event): void {
+
+    // user.username = "roger"
+    // let user = {"username":"roger"}
+    console.log(this.user.username)
+
+    this.addContactService.getStompClient().send("/topic/adduser/" + this.username, {}, JSON.stringify({ 'message': this.user.username + " wants to add you to his contact list" }));
   }
 }

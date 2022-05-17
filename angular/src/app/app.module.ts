@@ -12,7 +12,7 @@ import { AboutComponent } from './about/about.component';
 import { ContactComponent } from './contact/contact.component';
 import { MyAccountComponent } from './my-account/my-account.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ErrorComponent } from './error/error.component';
 import { JwtInterceptor } from './authenticate/jwt.interceptor';
 import { RegisterComponent } from './register/register.component';
@@ -20,6 +20,9 @@ import { ClickOutsideModule } from 'ng-click-outside';
 import { SettingsComponent } from './settings/settings.component';
 import { SettingsService } from './services/settings.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ConfirmContactComponent } from './confirm-contact/confirm-contact.component';
+
+
 
 @NgModule({
   declarations: [
@@ -35,6 +38,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     ErrorComponent,
     RegisterComponent,
     SettingsComponent,
+    ConfirmContactComponent,
   ],
   imports: [
     BrowserModule,
@@ -43,7 +47,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     ReactiveFormsModule,
     ClickOutsideModule,
     BrowserAnimationsModule,
-    
+    FormsModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

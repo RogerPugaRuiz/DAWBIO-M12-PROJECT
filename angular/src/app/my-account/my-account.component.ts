@@ -8,6 +8,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { SettingsComponent } from '../settings/settings.component';
 import { SettingsService } from '../services/settings.service';
 import { NameAndEmailExistsService } from '../services/name-and-email-exists.service';
+import { User } from '../model/user.model';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-my-account',
@@ -49,10 +51,13 @@ export class MyAccountComponent implements OnInit {
   nameAlreadyExistsMessage: string = "";
   emailAlreadyExistsMessage: string = "";
 
+  user: User = new User();
+
   constructor(
     private http: HttpClient,
     private settingsService: SettingsService,
-    private nameAndEmail: NameAndEmailExistsService) { }
+    private nameAndEmail: NameAndEmailExistsService,
+    private userService: UserService) { }
 
   ngOnInit(): void {
     this.http.get("http://localhost:8081/api/users/myaccount").subscribe(
@@ -64,7 +69,6 @@ export class MyAccountComponent implements OnInit {
           this.firstnameControl.setValue(this.myAccount.firstname);
           this.lastnameControl.setValue(this.myAccount.lastname);
           this.descriptionControl.setValue(this.myAccount.description);
-
         }
       }
     );

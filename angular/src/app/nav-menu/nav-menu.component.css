@@ -250,6 +250,31 @@ nav {
 }
 
 
+.add-user input{
+    border: none;
+    margin-bottom: 20px;
+}
+.add-user input[type=text]{
+    border: 2px solid #333;
+    padding: 1rem;
+    width: 65%;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-radius: 5px;
+    outline: none;
+}
+.add-user input[type=button]{
+    display: inline-block;
+    width: 20%;
+    background-color: rgb(255, 106, 0);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 1rem;
+}
+
+
 /* @keyframes up-animation{
     0%{
         transform: translateY(0);

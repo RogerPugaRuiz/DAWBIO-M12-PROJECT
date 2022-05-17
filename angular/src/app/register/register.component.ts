@@ -2,6 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import * as SockJS from 'sockjs-client';
+import * as Stomp from 'stompjs';
+import { AddContactService } from '../services/add-contact.service';
 import { NameAndEmailExistsService } from '../services/name-and-email-exists.service';
 import { SettingsService } from '../services/settings.service';
 import { passwordMatchingValidatior } from '../validators/must-match.validator';
@@ -16,6 +19,7 @@ export class RegisterComponent implements OnInit {
   invalidForm: String = '';
   usernameAlreadyExists: string = '';
   emailAlreadyExists: string = '';
+  stompClient?: any;
 
   accents = "àèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸçÇßØøÅåÆæœ";
 
@@ -63,7 +67,8 @@ export class RegisterComponent implements OnInit {
     private router: Router,
     private http: HttpClient,
     private settingsService: SettingsService,
-    private nameAndEmail: NameAndEmailExistsService) { }
+    private nameAndEmail: NameAndEmailExistsService,
+    private addContactService: AddContactService) { }
 
   ngOnInit(): void {
     this.darkmode = this.settingsService.darkmode;
@@ -83,7 +88,11 @@ export class RegisterComponent implements OnInit {
               let jwt: string = data.data.jwt;
 
               localStorage.setItem('auth_token', jwt);
-
+              let socket = new SockJS('http://localhost:8081/ws');
+              this.stompClient = Stomp.over(socket);
+          
+              this.addContactService.connection();
+              
               this.router.navigate(['/myAccount']);
             }
             if (data.ok == false) {
