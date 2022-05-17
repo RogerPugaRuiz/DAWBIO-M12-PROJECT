@@ -70,7 +70,7 @@ public class UserServiceTest {
             this.userService.saveChatContact(new ChatContact(
                     userExpected,
                     contactExpected));
-            ChatContact chatContact = this.userService.getUserContactChat(userExpected);
+            ChatContact chatContact = this.userService.getChatContact(userExpected, contactExpected);
             logger.info("chatContact: " + chatContact.getUser().getUsername());
 
             assert chatContact.getUser().equals(userExpected);
@@ -87,7 +87,7 @@ public class UserServiceTest {
         AppUser contactExpected = this.userService.getUserByUsername("andrés");
         try {
             this.userService.deleteContactChat(
-                    this.userService.getUserContactChat(userExpected));
+                    this.userService.getChatContact(userExpected, contactExpected));
 
             // assert chatContact == null;
 

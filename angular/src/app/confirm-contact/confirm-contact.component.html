@@ -1,5 +1,5 @@
-<div>
-    <span>{{this.text}}</span>
-    <input type="button" value="Confirm">
-    <input type="button" value="Deny">
+<div class="container">
+    <div class="text">{{this.text}}</div>
+    <input type="button" value="Confirm" class="confirm" (click)="this.confirmAddContact($event)">
+    <input type="button" value="Deny" class="deny" (click)="this.denyAddContact($event)">
 </div>

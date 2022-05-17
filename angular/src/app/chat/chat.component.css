@@ -1,0 +1,188 @@
+
+.fas, .fa{
+    position: relative;
+    bottom: 15px;
+    font-size: 35px;
+    cursor: pointer;
+}
+
+.chat-header{
+    display: block;
+    width: 100%;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    background-color: #ffffff;
+    z-index: 9999;
+}
+
+.chat-header .fa, .chat-header .fas{
+    color: rgb(255, 106, 0);
+    font-size: 30px;
+    bottom: 0;
+    padding: 1rem;
+}
+
+.fa-expand-alt{
+    position: relative;
+    float: right;
+}
+
+.chat-body-users{
+    display: block;
+    overflow: auto;
+    height: 0%;
+    transition: height 0.2s;
+}
+
+.message{
+    display: block;
+    width: 60%;
+    margin-top: 0.4rem;
+    margin-bottom: 0.4rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    padding-left: 1rem;
+    border-radius: 10px;
+    color: #333;
+}
+
+.bg-message{
+    position: relative;
+    width: 100%;
+    z-index: 99;
+}
+
+.text{
+    position: absolute;
+    width: 87%;
+    top: 30px;
+    left: 35px;
+    z-index: 999;
+    max-height: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.message.received{
+    position: relative;
+    display: block;
+    width: 350px;
+    word-wrap: break-word;
+    left: 100px;
+}
+
+.message.send{
+    position: relative;
+    display: block;
+    width: 350px;
+    word-wrap: break-word;
+}
+
+.chat-body-user{
+    display: block;
+    padding: 1rem;
+    margin: 0.2rem;
+    cursor: pointer;
+    background-color: rgb(52, 52, 52);
+    color: white;
+}
+
+/* .light-mode .chat-body-user{
+    background-color: rgb(114, 182, 255);
+    color: rgb(255, 255, 255);
+}
+.dark-mode .chat-body-user{
+
+} */
+.chat-body-user:hover{
+    background-color: rgb(75, 75, 75);
+}
+
+.chat-body-aside{
+    display: block;
+    display: flex;
+    color: rgb(255, 106, 0);
+    justify-content: center;
+}
+
+.chat-body-messages{
+
+    position: relative;
+    height: 100%;
+}
+
+.message-container{
+    display: flex;
+    flex-direction: column;
+    height: 0%;
+    width: 100%;
+    overflow: auto;
+    background-color: rgb(255, 255, 255);
+    margin: auto;
+    transition: height 0.2s;
+}
+
+.down-animation{
+    height: 0px;
+}
+
+.up-animation {
+    height: 600px;
+}
+
+.toggle{
+    display: block;
+    text-align: center;
+}
+
+.input-text{
+    display: block;
+    width: 80%;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    padding-left: 0;
+    padding-right: 0;
+    margin: auto;
+    border-radius: 20px;
+    text-indent: 20px;
+    outline: none;
+    border: 2px solid #333;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+.fa-angle-up, .fa-angle-down{
+    margin: auto;
+    color: rgb(255, 106, 0);
+
+}
+
+
+.add-user input{
+    border: none;
+    margin-bottom: 20px;
+}
+.add-user input[type=text]{
+    border: 2px solid #333;
+    padding: 1rem;
+    width: 65%;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-radius: 5px;
+    outline: none;
+}
+.add-user input[type=button]{
+    display: inline-block;
+    width: 20%;
+    background-color: rgb(255, 106, 0);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 1rem;
+}
+
+.deactivate{
+    display: none;
+}

@@ -13,7 +13,7 @@ import com.m12.wwca.domain.entity.AppUser;
 import com.m12.wwca.infrastructure.dto.UserManageDto;
 import com.m12.wwca.infrastructure.shared.Status;
 import com.m12.wwca.infrastructure.shared.Utils;
-import com.m12.wwca.infrastructure.shared.jwt.JWToken;
+import com.m12.wwca.infrastructure.shared.jwt.UserJWT;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +50,7 @@ public class AdminApi {
         HttpHeaders headers = new HttpHeaders();
         headers.set("WWW-Authenticate", "Bearer");
         try {
-            if (JWToken.validateAuthority(jwt, "admin")) {
+            if (UserJWT.validateAuthority(jwt, "admin")) {
                 List<AppUser> users = userService.getUsers();
                 for (AppUser user : users) {
                     if (user.getRole() != null){

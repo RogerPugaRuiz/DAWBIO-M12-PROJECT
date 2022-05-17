@@ -18,7 +18,7 @@ public class JWTokenTest {
 
     @Test
     void testGetJWT() {
-        JWToken jwt = new JWToken();
+        UserJWT jwt = new UserJWT();
         String jws = jwt.getJWT(userService.getUserByUsername("awrenlf"));
         logger.info("jwt: " + jws);
         assert jws.length() > 0;

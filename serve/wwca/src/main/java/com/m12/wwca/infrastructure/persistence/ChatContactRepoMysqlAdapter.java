@@ -1,6 +1,7 @@
 package com.m12.wwca.infrastructure.persistence;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -31,27 +32,37 @@ public class ChatContactRepoMysqlAdapter implements ChatContactRepo{
 
 
     @Override
-    public ChatContact findByUser(AppUser user) {
-        ChatContact auxChatContact = entityManager.createQuery("SELECT c FROM chat_contacts c WHERE c.user = :user", ChatContact.class)
+    public List<ChatContact> findByUser(AppUser user) {
+        List<ChatContact> auxChatContacts = entityManager.createQuery("SELECT c FROM chat_contacts c WHERE c.user = :user", ChatContact.class)
                 .setParameter("user", user)
-                .getSingleResult();
-        return auxChatContact;
+                .getResultList();
+        return auxChatContacts;
     }
 
 
     @Override
-    public ChatContact findByContact(AppUser contact) {
-        ChatContact auxChatContact = entityManager.createQuery("SELECT c FROM chat_contacts c WHERE c.contact = :contact", ChatContact.class)
+    public List<ChatContact> findByContact(AppUser contact) {
+        List<ChatContact> auxChatContacts = entityManager.createQuery("SELECT c FROM chat_contacts c WHERE c.contact = :contact", ChatContact.class)
+                .setParameter("contact", contact)
+                .getResultList();
+        return auxChatContacts;
+    }
+
+
+    @Override
+    public List<ChatContact> findAll() {
+        List<ChatContact> chatContacts = (ArrayList<ChatContact>) entityManager.createQuery("SELECT c FROM chat_contacts c", ChatContact.class).getResultList();
+        return chatContacts;
+    }
+
+
+    @Override
+    public ChatContact findByUserAndContact(AppUser user, AppUser contact) {
+        ChatContact auxChatContact = entityManager.createQuery("SELECT c FROM chat_contacts c WHERE c.user = :user and c.contact = :contact", ChatContact.class)
+                .setParameter("user", user)
                 .setParameter("contact", contact)
                 .getSingleResult();
         return auxChatContact;
-    }
-
-
-    @Override
-    public ArrayList<ChatContact> findAll() {
-        ArrayList<ChatContact> chatContacts = (ArrayList<ChatContact>) entityManager.createQuery("SELECT c FROM chat_contacts c", ChatContact.class).getResultList();
-        return chatContacts;
     }
     
 }

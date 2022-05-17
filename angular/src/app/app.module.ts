@@ -21,6 +21,7 @@ import { SettingsComponent } from './settings/settings.component';
 import { SettingsService } from './services/settings.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ConfirmContactComponent } from './confirm-contact/confirm-contact.component';
+import { ChatComponent } from './chat/chat.component';
 
 
 
@@ -39,6 +40,7 @@ import { ConfirmContactComponent } from './confirm-contact/confirm-contact.compo
     RegisterComponent,
     SettingsComponent,
     ConfirmContactComponent,
+    ChatComponent,
   ],
   imports: [
     BrowserModule,

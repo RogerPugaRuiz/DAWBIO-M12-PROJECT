@@ -12,8 +12,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.crypto.DefaultJwtSignatureValidator;
 import io.jsonwebtoken.io.Decoder;
 
-public class JWToken {
-    private static String key = "Everything But The Kitchen Sink";
+public class UserJWT {
+    private static String key = "PX3Lv/U,K^:15<EViZ!QS4ErvheroISZIs!DIp![K4rvsOyr`CNke?pw<wjFWN$";
 
     public static String getJWT(AppUser user) {
 

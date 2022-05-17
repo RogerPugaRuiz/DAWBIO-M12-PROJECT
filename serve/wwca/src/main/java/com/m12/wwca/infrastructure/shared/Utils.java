@@ -23,6 +23,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 import com.google.common.hash.Hashing;
 import com.m12.wwca.domain.entity.AppUser;
+import com.m12.wwca.domain.entity.ChatContact;
+import com.m12.wwca.infrastructure.dto.ContactInfo;
 import com.m12.wwca.infrastructure.dto.UserManageDto;
 
 public class Utils {
@@ -129,6 +131,19 @@ public class Utils {
 
     public static Date getExpirationDate(int days, int hours, int minutes) {
         return new Date(System.currentTimeMillis() + (days * 24 * 60 * 60 * 1000) + (hours * 60 * 60 * 1000) + (minutes * 60 * 1000));
+    }
+
+    /**
+     * Transform list of chat contacts to a chat info
+     * @param contacts
+     */
+    public static List<ContactInfo> chatContactsToContactInfo(ArrayList<ChatContact> contacts) {
+        List<ContactInfo> contactInfo = new ArrayList<>();
+        for (ChatContact chatContact : contacts) {
+            ContactInfo contact = new ContactInfo(chatContact.getContact().getUsername());
+            contactInfo.add(contact);
+        }
+        return contactInfo;
     }
 
 }

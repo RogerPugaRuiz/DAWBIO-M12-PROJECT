@@ -1,5 +1,6 @@
 package com.m12.wwca.application;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,7 +19,7 @@ import com.m12.wwca.infrastructure.dto.UserManageDto;
 import com.m12.wwca.infrastructure.persistence.MessageRepoMysqlAdapter;
 import com.m12.wwca.infrastructure.shared.Cryptography;
 import com.m12.wwca.infrastructure.shared.Utils;
-import com.m12.wwca.infrastructure.shared.jwt.JWToken;
+import com.m12.wwca.infrastructure.shared.jwt.UserJWT;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,10 +135,10 @@ public class UserService {
         if (userRepo.login(id, password)) {
             if (Utils.isAnEmail(id)) {
                 AppUser user = userRepo.getUserByEmail(id);
-                return JWToken.getJWT(user);
+                return UserJWT.getJWT(user);
             } else {
                 AppUser user = userRepo.getUserByUsername(id);
-                return JWToken.getJWT(user);
+                return UserJWT.getJWT(user);
             }
             
         } else {
@@ -241,10 +242,10 @@ public class UserService {
      * @return ChatContact
      *
      */
-    public ChatContact getContactContactChat(AppUser user) {
+    public ArrayList<ChatContact> getContactContactChat(AppUser user) {
         // info get chat contact by id
         logger.info("get chat contact by id: " + user.getId());
-        return chatContactRepo.findByContact(user);
+        return (ArrayList<ChatContact>) chatContactRepo.findByContact(user);
     }
 
     @Transactional
@@ -254,10 +255,10 @@ public class UserService {
      * @return ChatContact
      *
      */
-    public ChatContact getUserContactChat(AppUser user) {
+    public ArrayList<ChatContact> getUserContactChat(AppUser user) {
         // info get user by id
         logger.info("get user by id: " + user.getId());
-        return chatContactRepo.findByUser(user);
+        return (ArrayList<ChatContact>) chatContactRepo.findByUser(user);
     }
 
     @Transactional
@@ -271,6 +272,18 @@ public class UserService {
         // info delete chat contact
         chatContactRepo.delete(chatContact);
         logger.info("delete chat contact: " + chatContact.getId());
+    }
+
+    @Transactional
+    /**
+     * Method to get chat contact by user and contact
+     * @param id
+     * @return ChatContact
+     */
+    public ChatContact getChatContact(AppUser user, AppUser contact) {
+        // info get chat contact by user and contact
+        logger.info("get chat contact by user and contact: " + user.getUsername() + ", " + contact.getUsername());
+        return chatContactRepo.findByUserAndContact(user, contact);
     }
 
 

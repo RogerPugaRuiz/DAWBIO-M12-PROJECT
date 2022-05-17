@@ -9,14 +9,18 @@ import javax.servlet.http.HttpServletRequest;
 // import project classes
 import com.m12.wwca.application.UserService;
 import com.m12.wwca.domain.entity.AppUser;
+import com.m12.wwca.domain.entity.ChatContact;
 import com.m12.wwca.domain.entity.Message;
 import com.m12.wwca.domain.repo.RoleRepo;
 import com.m12.wwca.infrastructure.dto.SignUpDto;
+import com.m12.wwca.infrastructure.dto.ContactConfirm;
 import com.m12.wwca.infrastructure.dto.LoginUserDto;
 import com.m12.wwca.infrastructure.dto.MyAccount;
 import com.m12.wwca.infrastructure.dto.ProfileDto;
 import com.m12.wwca.infrastructure.shared.Status;
-import com.m12.wwca.infrastructure.shared.jwt.JWToken;
+import com.m12.wwca.infrastructure.shared.Utils;
+import com.m12.wwca.infrastructure.shared.jwt.ContactJWT;
+import com.m12.wwca.infrastructure.shared.jwt.UserJWT;
 
 import org.apache.catalina.connector.Response;
 import org.slf4j.Logger;
@@ -37,6 +41,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.HtmlUtils;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -69,7 +74,7 @@ public class UserApi {
             return ResponseEntity.ok().body(response);
 
         } else {
-            AppUser user = userService.getUser(JWToken.getUserId(jwt));
+            AppUser user = userService.getUser(UserJWT.getUserId(jwt));
             ProfileDto profile = new ProfileDto(user);
 
             Status response = new Status(true, "User found");
@@ -93,7 +98,8 @@ public class UserApi {
                         .role(roleRepo.getRole("user"))
                         .build();
 
-                if (userService.getUserByEmail(addUserDto.getEmail()) == null && userService.getUserByUsername(addUserDto.getUsername()) == null) {
+                if (userService.getUserByEmail(addUserDto.getEmail()) == null
+                        && userService.getUserByUsername(addUserDto.getUsername()) == null) {
                     userService.addUser(user);
                     Status response = new Status(true, "Signup Successful");
                     return ResponseEntity.ok(response);
@@ -147,10 +153,10 @@ public class UserApi {
         String jwt = request.getHeader("Authorization");
 
         // verify if jwt is valid
-        if (JWToken.validate(jwt)) {
-            AppUser user = userService.getUser(JWToken.getUserId(jwt));
+        if (UserJWT.validate(jwt)) {
+            AppUser user = userService.getUser(UserJWT.getUserId(jwt));
             MyAccount myAccount = new MyAccount.Builder().from(user).build();
-    
+
             Status status = new Status(true, "User found");
             Map<Object, Object> data = new HashMap<>();
             data.put("myAccount", myAccount);
@@ -163,37 +169,112 @@ public class UserApi {
     }
 
     @PostMapping("/myaccount")
-    public ResponseEntity updateMyAccount(@RequestBody MyAccount myAccount) {
-        AppUser user = userService.getUser(myAccount.getId());
+    public ResponseEntity updateMyAccount(@RequestBody MyAccount myAccount, HttpServletRequest request) {
+        String jwt = request.getHeader("Authorization");
 
-        if (user != null){
-            user.setEmail(myAccount.getEmail());
-            user.setDescription(myAccount.getDescription());
-            user.setUsername(myAccount.getUsername());
-            user.setFirstname(myAccount.getFirstname());
-            user.setLastname(myAccount.getLastname());
+        if (UserJWT.validate(jwt)) {
+            AppUser user = userService.getUser(myAccount.getId());
 
-            userService.updateUser(user);
+            if (user != null) {
+                user.setEmail(myAccount.getEmail());
+                user.setDescription(myAccount.getDescription());
+                user.setUsername(myAccount.getUsername());
+                user.setFirstname(myAccount.getFirstname());
+                user.setLastname(myAccount.getLastname());
+
+                userService.updateUser(user);
+            }
+
+            return ResponseEntity.ok().body(new Status(true, "User updated"));
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Status(false, "Invalid token"));
         }
 
-        return ResponseEntity.ok().body(new Status(true, "User updated"));
     }
 
     @GetMapping("/jwt/verify")
     public ResponseEntity verifyJwt(HttpServletRequest request) {
         String jwt = request.getHeader("Authorization");
-        try{
-            JWToken.validate(jwt);
+        try {
+            UserJWT.validate(jwt);
             return ResponseEntity.ok().body(new Status(true, "Token valid"));
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Status(false, e.getMessage()));
         }
     }
 
-    @MessageMapping("/send/message")
-    @SendTo("/topic/messages")
-    public ResponseEntity sendMessage(@RequestBody Message message) {
-        logger.info("Message received: " + message.getMessage());
-        return ResponseEntity.ok().body(new Status(true, "Message received"));
+    @PostMapping("/confirm-contact")
+    public ResponseEntity confirmContact(@RequestBody ContactConfirm contactConfirm, HttpServletRequest request) {
+ 
+        String jwt = request.getHeader("Authorization");
+        try {
+            if (UserJWT.validate(jwt)) {
+                logger.info("jwt " + UserJWT.getUserId(jwt));
+                logger.info("contactJwt " + ContactJWT.getContactId(contactConfirm.getContactJwt()));
+                if (ContactJWT.validateContactId(contactConfirm.getContactJwt(), UserJWT.getUserId(jwt))) {
+                    if (contactConfirm.getConfirm()) {
+                        AppUser user = userService.getUser(ContactJWT.getUserId(contactConfirm.getContactJwt()));
+                        AppUser contact = userService.getUser(ContactJWT.getContactId(contactConfirm.getContactJwt()));
+                        userService.saveChatContact(new ChatContact(user, contact));
+                        userService.saveChatContact(new ChatContact(contact, user));
+                        return ResponseEntity.ok().body(new Status(true, "Contact confirmed"));
+                    } else {
+                        return ResponseEntity.ok().body(new Status(true, "Contact rejected"));
+                    }
+                }
+                else {
+                    return ResponseEntity.ok().body(new Status(false, "Invalid token"));
+                }
+
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Status(false, "Invalid token"));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Status(false, e.getMessage()));
+        }
+    }
+
+    @GetMapping("/send-contact-request")
+    public ResponseEntity sendContactRequest(@RequestParam String user, @RequestParam String contact,
+            HttpServletRequest request) {
+        String jwt = request.getHeader("Authorization");
+        try {
+            if (UserJWT.validate(jwt)) {
+                AppUser userObj = userService.getUserByUsername(user);
+
+                AppUser contactObj = userService.getUserByUsername(contact);
+                if (UserJWT.validateSubject(jwt, user)) {
+                    String contactJwt = ContactJWT.getJWT(userObj.getId(), contactObj.getId());
+                    Map<Object, Object> data = new HashMap<>();
+                    data.put("contactJwt", contactJwt);
+                    Status status = new Status(true, "Contact request sent");
+                    status.setData(data);
+                    return ResponseEntity.ok().body(data);
+                }
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Status(false, "Invalid token"));
+            }
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Status(false, "Invalid token"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Status(false, e.getMessage()));
+        }
+    }
+
+    @GetMapping("/get-contacts")
+    public ResponseEntity getContacts(HttpServletRequest request) {
+        String jwt = request.getHeader("Authorization");
+        try {
+            if (UserJWT.validate(jwt)) {
+                AppUser user = userService.getUser(UserJWT.getUserId(jwt));
+                ArrayList<ChatContact> contacts = (ArrayList<ChatContact>) userService.getUserContactChat(user);
+                Map<Object, Object> data = new HashMap<>();
+                data.put("contacts", Utils.chatContactsToContactInfo(contacts));
+                Status status = new Status(true, "Contacts found");
+                return ResponseEntity.ok().body(data);
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Status(false, "Invalid token"));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Status(false, e.getMessage()));
+        }
     }
 }

@@ -14,6 +14,7 @@
         <li>
             <a class="menu-element chat" (click)="this.setMenu(4)" *ngIf="this.isRegistered()">
                 <i class='fas fa-comments' [ngClass]="this.menu == 4 ? 'activate-menu' : ''"></i>
+                <span class="notification" *ngIf="this.num != 0">{{this.num}}</span>
             </a>
         </li>
         <li>
@@ -36,117 +37,7 @@
             <a class="expand-element" [routerLink]="['settings']">Settings</a>
         </div>
         <div class="expand" *ngIf="this.menu == 4">
-            <div class="chat-header">
-                <i class="fa fa-user-plus" (click)="this.isAddNewContact = !this.isAddNewContact"></i>
-                <i class='fas fa-expand-alt'></i>
-            </div>
-            <div class="add-user" *ngIf="this.isAddNewContact">
-                <input type="text" placeholder="Username" [(ngModel)]="this.username">
-                <input type="button" value="Add" (click)="this.addNewContact($event)">
-            </div>
-            <div class="confirm-contacts">
-                confirm-contacts {{this.confirmAddContactList}}
-                <app-confirm-contact [text]=""></app-confirm-contact>
-            </div>
-            <div class="chat-body">
-                <div class="chat-body-users" [ngClass]="this.isChatOpen ? 'down-animation' : 'up-animation'">
-                    <div class="chat-body-user" (click)="toggleChat($event)">
-                        <span class="chat-body-user-name">John Doe</span>
-                    </div>
-                    <div class="chat-body-user">
-                        <span class="chat-body-user-name">John Doe</span>
-                    </div>
-                    <div class="chat-body-user">
-                        <span class="chat-body-user-name">John Doe</span>
-                    </div>
-                    <div class="chat-body-user">
-                        <span class="chat-body-user-name">John Doe</span>
-                    </div>
-                    <div class="chat-body-user">
-                        <span class="chat-body-user-name">John Doe</span>
-                    </div>
-                    <div class="chat-body-user">
-                        <span class="chat-body-user-name">John Doe</span>
-                    </div>
-                    <div class="chat-body-user">
-                        <span class="chat-body-user-name">John Doe</span>
-                    </div>
-                    <div class="chat-body-user">
-                        <span class="chat-body-user-name">John Doe</span>
-                    </div>
-                    <div class="chat-body-user">
-                        <span class="chat-body-user-name">John Doe</span>
-                    </div>
-                    <div class="chat-body-user">
-                        <span class="chat-body-user-name">John Doe</span>
-                    </div>
-                    <div class="chat-body-user">
-                        <span class="chat-body-user-name">John Doe</span>
-                    </div>
-                    <div class="chat-body-user">
-                        <span class="chat-body-user-name">John Doe</span>
-                    </div>
-                    <div class="chat-body-user">
-                        <span class="chat-body-user-name">John Doe</span>
-                    </div>
-                    <div class="chat-body-user">
-                        <span class="chat-body-user-name">John Doe</span>
-                    </div>
-                    <div class="chat-body-user">
-                        <span class="chat-body-user-name">John Doe</span>
-                    </div>
-                    <div class="chat-body-user">
-                        <span class="chat-body-user-name">John Doe</span>
-                    </div>
-                    <div class="chat-body-user">
-                        <span class="chat-body-user-name">John Doe</span>
-                    </div>
-                    <div class="chat-body-user">
-                        <span class="chat-body-user-name">John Doe</span>
-                    </div>
-                    <div class="chat-body-user">
-                        <span class="chat-body-user-name">John Doe</span>
-                    </div>
-                    <div class="chat-body-user">
-                        <span class="chat-body-user-name">John Doe</span>
-                    </div>
-                </div>
-                <div class="toggle">
-                    <!-- <i class='fas fa-angle-up' *ngIf="!this.isChatOpen" (click)="toggleChat($event)"></i> -->
-                    <i class='fas fa-angle-down' *ngIf="this.isChatOpen" (click)="toggleChat($event)"></i>
-                </div>
-                <div class="chat-body-messages">
-                    <div class="message-container" [ngClass]="!this.isChatOpen ? 'down-animation' : 'up-animation'">
-                        <div class="message received">
-                            <img src="" class="bg-message">
-                            <span class="text">hola mundo aldkjflakdjflakjdflakdjf lkadjfladjkf alkjdf adflk adflk fadflk Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis, non omnis quo blanditiis neque in tenetur. Magni ullam nesciunt eos laudantium nemo aliquid vero! Provident nulla numquam ab nostrum earum? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Molestiae assumenda odio expedita officiis quos, culpa delectus perspiciatis asperiores maxime eligendi eveniet ab recusandae, totam enim nihil saepe minima, fuga eos.</span>
-                        </div>
-                        <div class="message received">
-                            <img src=""class="bg-message">
-                            <span class="text">hola mundo aldkjflakdjflakjdflakdjf lkadjfladjkf alkjdf adflk adflk fadflk Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis, non omnis quo blanditiis neque in tenetur. Magni ullam nesciunt eos laudantium nemo aliquid vero! Provident nulla numquam ab nostrum earum?</span>
-                        </div>
-                        <div class="message received">
-                            <img src="" class="bg-message">
-                            <span class="text">hola mundo</span>
-                        </div>
-                        <div class="message received">
-                            <img src="" class="bg-message">
-                            <span class="text">hola mundo <br> hola mundo <br> hola mudno <br> hola mundolajfd<br>holadjflkldajf<br>flakdjflakjd<br>aldkfjlaldkjfk</span>
-                        </div>
-                        <div class="message received">
-                            <img src="" class="bg-message">
-                            <span class="text">hola mundo <br> hola mundo <br> hola mudno<br>la dflkadjflk</span>
-                        </div>
-                        <div class="message send">
-                            <img src="" class="bg-message">
-                            <span class="text">hola mundo <br> hola mundo <br> hola mudno<br>la dflkadjflk</span>
-                        </div>
-
-                    </div>
-                    <input class="input-text" type="text" placeholder="Type a message..." *ngIf="this.isChatOpen">
-                </div>
-
-            </div>
+            <app-chat [isCompOpen]="this.menu == 4" [confirmAddContactList]="this.confirmAddContactList" [contactList]="this.getContactList()"></app-chat>
         </div>
     </ul>
 
