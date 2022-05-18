@@ -87,7 +87,7 @@ export class RegisterComponent implements OnInit {
             if (data.ok == true) {
               let jwt: string = data.data.jwt;
 
-              localStorage.setItem('auth_token', jwt);
+              sessionStorage.setItem('auth_token', jwt);
               let socket = new SockJS('http://localhost:8081/ws');
               this.stompClient = Stomp.over(socket);
           

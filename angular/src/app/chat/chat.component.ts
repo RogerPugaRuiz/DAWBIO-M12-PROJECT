@@ -71,8 +71,8 @@ export class ChatComponent implements OnInit {
           }
         }
       );
-      this.addContactService.getStompClient().unsubscribe("/topic/adduser/" + this.user.username);
-      this.addContactService.responseAddContact();
+      // this.addContactService.getStompClient().unsubscribe("/topic/adduser/" + this.user.username);
+      // this.addContactService.responseAddContact();
 
   }
 

@@ -10,7 +10,7 @@ export class RegisterGuard implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    if (localStorage.getItem('auth_token')) {
+    if (sessionStorage.getItem('auth_token')) {
       this.router.navigate(['/']);
     }
     return true;

@@ -70,11 +70,11 @@ export class NavMenuComponent implements OnInit {
   }
 
   isRegistered(): boolean {
-    return localStorage.getItem('auth_token') != null;
+    return sessionStorage.getItem('auth_token') != null;
   }
 
   logout(): void {
-    localStorage.removeItem('auth_token');
+    sessionStorage.removeItem('auth_token');
     this.router.navigate(['register']);
   }
 

@@ -21,7 +21,7 @@ export class JWTverifyService {
         error: (err) => {
           console.log(err);
           this.router.navigate(['/error'], { queryParams: {status: err.status}});
-          localStorage.removeItem('auth_token');
+          sessionStorage.removeItem('auth_token');
         }
       }
     );

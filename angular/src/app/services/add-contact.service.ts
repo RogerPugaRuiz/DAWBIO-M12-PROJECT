@@ -43,15 +43,15 @@ export class AddContactService {
     );
   }
 
-  responseAddContact(){
-    let socket = new SockJS('http://localhost:8081/ws');
-    this.stompClient = Stomp.over(socket);
-    this.stompClient.connect({}, (frame: any) => {
-      this.stompClient.subscribe('/topic/adduser/response',  (message: any) => {
-        this.contactInfo.httpConnect();
-      });
-    });
-  }
+  // responseAddContact(){
+  //   let socket = new SockJS('http://localhost:8081/ws');
+  //   this.stompClient = Stomp.over(socket);
+  //   this.stompClient.connect({}, (frame: any) => {
+  //     this.stompClient.subscribe('/topic/adduser/response',  (message: any) => {
+  //       this.contactInfo.httpConnect();
+  //     });
+  //   });
+  // }
 
   getStompClient() : Stomp.Client{
     return this.stompClient;
