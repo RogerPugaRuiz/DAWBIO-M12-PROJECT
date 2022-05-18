@@ -245,7 +245,7 @@ public class UserApi {
             HttpServletRequest request) {
         String jwt = request.getHeader("Authorization");
         try {
-            if (UserJWT.validate(jwt)) {
+            if (UserJWT.validate(jwt) && !contact.equals(UserJWT.getSubject(jwt))) {
                 AppUser userObj = userService.getUserByUsername(user);
 
                 AppUser contactObj = userService.getUserByUsername(contact);
@@ -261,7 +261,7 @@ public class UserApi {
             }
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Status(false, "Invalid token"));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Status(false, e.getMessage()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Status(false, e.getMessage()));
         }
     }
 
@@ -281,7 +281,7 @@ public class UserApi {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Status(false, "Invalid token"));
             }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Status(false, e.getMessage()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Status(false, e.getMessage()));
         }
     }
 
@@ -300,6 +300,12 @@ public class UserApi {
                             .sendTo(receiver)
                             .build();
                     userService.saveMessage(msg);
+                    Message msgReverse = new Message.Builder()
+                            .message(message.getMessage())
+                            .sendBy(receiver)
+                            .sendTo(sender)
+                            .build();
+                    userService.saveMessage(msgReverse);
                     return ResponseEntity.ok().body(new Status(true, "Message sent"));
                 } else {
                     return ResponseEntity.ok().body(new Status(false, "Contact not found"));

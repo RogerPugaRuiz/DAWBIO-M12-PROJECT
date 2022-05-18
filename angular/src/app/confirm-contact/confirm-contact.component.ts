@@ -43,7 +43,6 @@ export class ConfirmContactComponent implements OnInit {
         }
       }
     );
-
     e.stopPropagation();
   }
   denyAddContact(e: Event): void {

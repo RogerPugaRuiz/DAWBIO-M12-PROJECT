@@ -139,11 +139,11 @@
 
 .input-text{
     display: block;
-    width: 80%;
+    width: 70%;
     padding-top: 1rem;
     padding-bottom: 1rem;
     padding-left: 0;
-    padding-right: 0;
+    padding-right: 40px;
     margin: auto;
     border-radius: 20px;
     text-indent: 20px;
@@ -204,4 +204,26 @@
     border-radius: 5px;
     background-color: rgb(52, 52, 52);
     cursor: pointer;
+}
+
+.btn-send{
+    color: #333;
+    position: absolute;
+    bottom: 15px;
+    right: 65px;
+    cursor: pointer;
+}
+.btn-send:hover{
+    color: rgb(106, 106, 106);
+}
+
+.error{
+    background-color: tomato;
+    color: white;
+    width: 100%;
+    padding: 1rem;
+}
+
+app-chat-message{
+    margin: 1rem;
 }

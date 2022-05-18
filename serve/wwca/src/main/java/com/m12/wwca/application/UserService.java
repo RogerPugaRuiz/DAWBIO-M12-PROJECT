@@ -303,7 +303,7 @@ public class UserService {
      * Method find message by sender
      * @param sender
      */
-    public List<Message> findMessageBySender(String sender) {
+    public List<Message> findMessageBySender(AppUser sender) {
         // info find message by sender
         logger.info("find message by sender: " + sender);
         return messageRepo.findBySender(sender);

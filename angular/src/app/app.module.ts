@@ -22,6 +22,7 @@ import { SettingsService } from './services/settings.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ConfirmContactComponent } from './confirm-contact/confirm-contact.component';
 import { ChatComponent } from './chat/chat.component';
+import { ChatMessageComponent } from './chat-message/chat-message.component';
 
 
 
@@ -41,6 +42,7 @@ import { ChatComponent } from './chat/chat.component';
     SettingsComponent,
     ConfirmContactComponent,
     ChatComponent,
+    ChatMessageComponent,
   ],
   imports: [
     BrowserModule,

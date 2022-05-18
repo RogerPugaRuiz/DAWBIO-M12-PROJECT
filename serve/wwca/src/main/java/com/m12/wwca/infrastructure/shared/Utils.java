@@ -24,7 +24,9 @@ import javax.crypto.spec.SecretKeySpec;
 import com.google.common.hash.Hashing;
 import com.m12.wwca.domain.entity.AppUser;
 import com.m12.wwca.domain.entity.ChatContact;
+import com.m12.wwca.domain.entity.Message;
 import com.m12.wwca.infrastructure.dto.ContactInfo;
+import com.m12.wwca.infrastructure.dto.MessageDto;
 import com.m12.wwca.infrastructure.dto.UserManageDto;
 
 public class Utils {
@@ -136,6 +138,8 @@ public class Utils {
     /**
      * Transform list of chat contacts to a chat info
      * @param contacts
+     * @return List<ContactInfo>
+     *
      */
     public static List<ContactInfo> chatContactsToContactInfo(ArrayList<ChatContact> contacts) {
         List<ContactInfo> contactInfo = new ArrayList<>();
@@ -144,6 +148,24 @@ public class Utils {
             contactInfo.add(contact);
         }
         return contactInfo;
+    }
+
+    /**
+     * Transform list of messages to a chat info
+     * @param messages
+     * @return List<MessageInfo>
+     *
+     */
+    public static List<MessageDto> messagesToMessageInfo(ArrayList<Message> messages) {
+        ArrayList<MessageDto> messageInfo = new ArrayList<>();
+        for (Message message : messages) {
+            MessageDto messageDto = new MessageDto();
+            messageDto.setMessage(message.getMessage());
+            messageDto.setSendBy(message.getSendBy().getUsername());
+            messageDto.setSendTo(message.getSendTo().getUsername());
+            messageInfo.add(messageDto);
+        }
+        return messageInfo;
     }
 
 }

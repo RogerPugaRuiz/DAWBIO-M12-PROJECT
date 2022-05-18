@@ -4,21 +4,22 @@
         <i class='fas fa-expand-alt'></i>
     </div>
     <div class="add-user" *ngIf="this.isAddNewContact">
-        <input type="text" placeholder="Username" [(ngModel)]="this.sendUser">
+        <input type="text" placeholder="Username" [(ngModel)]="this.sendUser" (keyup.enter)="this.addNewContact($event)">
         <input type="button" value="Add" (click)="this.addNewContact($event)">
+        <div class="error" *ngIf="!this.isValidContact">{{this.invalidContactName}}</div>
     </div>
 
     <div class="chat-body">
         <div class="chat-body-users" [ngClass]="this.isChatOpen ? 'down-animation' : 'up-animation'">
-            <div class="confirm-contacts" *ngFor="let obj of this.confirmAddContactList">
-                <app-confirm-contact [text]="obj.text" [item]="obj"></app-confirm-contact>
+            <div class="confirm-contacts">
+                <app-confirm-contact  *ngFor="let obj of this.confirmAddContactList" [text]="obj.text" [item]="obj"></app-confirm-contact>
             </div>
             <div class="responseList" *ngFor="let obj of this.responseList">
                 <div>{{obj.text}}</div>
                 <input type="button" value="Ok" (click)="this.deleteItem($event, obj)">
             </div>
             <div class="contacts" *ngFor="let obj of this.contactList">
-                <div class="chat-body-user" (click)="toggleChat($event)">
+                <div class="chat-body-user" (click)="openChat($event, obj)">
                     <span class="chat-body-user-name">{{obj.contact}}</span>
                 </div>
             </div>
@@ -28,43 +29,11 @@
             <i class='fas fa-angle-down' *ngIf="this.isChatOpen" (click)="toggleChat($event)"></i>
         </div>
         <div class="chat-body-messages" *ngIf="this.isCompOpen">
-            <div class="message-container" [ngClass]="!this.isChatOpen ? 'down-animation' : 'up-animation'">
-                <div class="message received">
-                    <img src="" class="bg-message">
-                    <span class="text">hola mundo aldkjflakdjflakjdflakdjf lkadjfladjkf alkjdf adflk adflk fadflk Lorem
-                        ipsum dolor sit amet consectetur adipisicing elit. Nobis, non omnis quo blanditiis neque in
-                        tenetur. Magni ullam nesciunt eos laudantium nemo aliquid vero! Provident nulla numquam ab
-                        nostrum earum? Lorem ipsum dolor sit amet, consectetur adipisicing elit. Molestiae assumenda
-                        odio expedita officiis quos, culpa delectus perspiciatis asperiores maxime eligendi eveniet ab
-                        recusandae, totam enim nihil saepe minima, fuga eos.</span>
-                </div>
-                <div class="message received">
-                    <img src="" class="bg-message">
-                    <span class="text">hola mundo aldkjflakdjflakjdflakdjf lkadjfladjkf alkjdf adflk adflk fadflk Lorem
-                        ipsum dolor sit amet consectetur adipisicing elit. Nobis, non omnis quo blanditiis neque in
-                        tenetur. Magni ullam nesciunt eos laudantium nemo aliquid vero! Provident nulla numquam ab
-                        nostrum earum?</span>
-                </div>
-                <div class="message received">
-                    <img src="" class="bg-message">
-                    <span class="text">hola mundo</span>
-                </div>
-                <div class="message received">
-                    <img src="" class="bg-message">
-                    <span class="text">hola mundo <br> hola mundo <br> hola mudno <br> hola
-                        mundolajfd<br>holadjflkldajf<br>flakdjflakjd<br>aldkfjlaldkjfk</span>
-                </div>
-                <div class="message received">
-                    <img src="" class="bg-message">
-                    <span class="text">hola mundo <br> hola mundo <br> hola mudno<br>la dflkadjflk</span>
-                </div>
-                <div class="message send">
-                    <img src="" class="bg-message">
-                    <span class="text">hola mundo <br> hola mundo <br> hola mudno<br>la dflkadjflk</span>
-                </div>
-
+            <div class="message-container" [ngClass]="!this.isChatOpen ? 'down-animation' : 'up-animation'" >
+               <app-chat-message *ngFor="let obj of this.chats" [message]="this.obj.message" [type]="this.checkTypeOfMessage(obj.user)" ></app-chat-message>
             </div>
-            <input class="input-text" type="text" placeholder="Type a message..." *ngIf="this.isChatOpen">
+            <input class="input-text" type="text" placeholder="Type a message..." *ngIf="this.isChatOpen" [(ngModel)]="this.message" (keyup.enter)="this.sendMessage($event)">
+            <i class="material-icons btn-send" *ngIf="this.isChatOpen" (click)="this.sendMessage($event)">send</i>
         </div>
 
     </div>

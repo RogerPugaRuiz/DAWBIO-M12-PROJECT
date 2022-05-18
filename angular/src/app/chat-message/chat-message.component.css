@@ -1,0 +1,22 @@
+.message {
+    position: relative;
+    width: 100%;
+}
+
+.text {
+    position: relative;
+    display: block;
+    z-index: 99;
+    width: 60%;
+    padding-left: 2rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.bg-message {
+    position: absolute;
+    z-index: 9;
+    margin-left: 10px;
+    width: 70%;
+    top: -10px;
+}
