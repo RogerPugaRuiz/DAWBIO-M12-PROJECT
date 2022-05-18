@@ -15,7 +15,6 @@ export class ContactInfoService {
       {
         next: (data: any) => {
           this.ContactList = data.contacts;
-          console.log(this.ContactList);
         }
       }
     );

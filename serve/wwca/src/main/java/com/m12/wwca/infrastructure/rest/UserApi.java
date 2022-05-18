@@ -217,7 +217,12 @@ public class UserApi {
                         AppUser contact = userService.getUser(ContactJWT.getContactId(contactConfirm.getContactJwt()));
                         userService.saveChatContact(new ChatContact(user, contact));
                         userService.saveChatContact(new ChatContact(contact, user));
-                        return ResponseEntity.ok().body(new Status(true, "Contact confirmed"));
+                        Status status = new Status(true, "Contact confirmed");
+                        Map<Object, Object> data = new HashMap<>();
+                        data.put("user", user.getUsername());
+                        data.put("contact", contact.getUsername());
+                        status.setData(data);
+                        return ResponseEntity.ok().body(status);
                     } else {
                         return ResponseEntity.ok().body(new Status(true, "Contact rejected"));
                     }

@@ -186,3 +186,22 @@
 .deactivate{
     display: none;
 }
+
+.responseList{
+    background-color: rgb(255, 200, 72);
+    color: rgb(52, 52, 52);
+    padding: 1rem;
+    margin: 0.2rem;
+}
+
+.responseList input{
+    margin: 1rem;
+    color: white;
+    padding: 1rem;
+    margin: 0.2rem;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    background-color: rgb(52, 52, 52);
+    cursor: pointer;
+}

@@ -1,7 +1,8 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { User } from '../model/user.model';
 import { AddContactService } from '../services/add-contact.service';
+import { ResponseWsService } from '../services/response-ws.service';
 import { SettingsService } from '../services/settings.service';
 import { UserService } from '../services/user.service';
 
@@ -19,14 +20,18 @@ export class ChatComponent implements OnInit {
   stompClient: any;
   isChatOpen?: boolean = false;
   darkmode?: boolean;
+  @Input() responseList: any[] = [];
 
   @Input() isCompOpen?: boolean;
+
+  @Output() sendResponseList: any = new EventEmitter<any>();
 
   constructor(
     private userService: UserService,
     private http: HttpClient,
     private addContactService: AddContactService,
-    private settingsService: SettingsService) { }
+    private settingsService: SettingsService,
+    private responseWs: ResponseWsService) { }
 
   ngOnInit(): void {
 
@@ -118,5 +123,12 @@ export class ChatComponent implements OnInit {
         }
       }
     }
+  }
+
+  deleteItem(e: Event, contact: any) {
+    // console.log(this.responseList);
+    this.ngOnInit();
+    this.sendResponseList.emit(contact);
+    e.stopPropagation();
   }
 }

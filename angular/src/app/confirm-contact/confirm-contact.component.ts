@@ -3,6 +3,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AddContactService } from '../services/add-contact.service';
 import { ChatNumberOfNotificationsService } from '../services/chat-number-of-notifications.service';
 import { ContactInfoService } from '../services/contact-info.service';
+import { ResponseWsService } from '../services/response-ws.service';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-confirm-contact',
@@ -17,7 +19,9 @@ export class ConfirmContactComponent implements OnInit {
     private addContact: AddContactService,
     private chatNumberOfNotification: ChatNumberOfNotificationsService,
     private contactInfo: ContactInfoService,
-    private http: HttpClient) { }
+    private http: HttpClient,
+    private responseWs: ResponseWsService,
+    private user: UserService) { }
 
   ngOnInit(): void {
   }
@@ -25,14 +29,14 @@ export class ConfirmContactComponent implements OnInit {
   confirmAddContact(e: Event): void {
     this.addContact.removeConfirmAddContact(this.item.contactJwt);
     this.chatNumberOfNotification.removeChatNumberOfNotifications();
+    let user = this.user.getUser();
 
     this.http.post("http://localhost:8081/api/users/confirm-contact", {"contactJwt":this.item.contactJwt, "confirm":true}).subscribe(
       {
-        next: (data) => {
+        next: (data:any) => {
           console.log(data);
           this.contactInfo.httpConnect();
-          this.addContact.getStompClient().send("/topic/adduser/response", {}, JSON.stringify({"contactJwt":this.item.contactJwt, "confirm":true}));
-          
+          this.responseWs.sendMessage({"text": user.username + " has accepted your contact request", "contactJwt": this.item.contactJwt},data.data.user);
         },
         error: (err) => {
           console.log(err);

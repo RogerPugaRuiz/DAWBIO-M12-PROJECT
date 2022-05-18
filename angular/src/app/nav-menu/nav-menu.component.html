@@ -37,7 +37,9 @@
             <a class="expand-element" [routerLink]="['settings']">Settings</a>
         </div>
         <div class="expand" *ngIf="this.menu == 4">
-            <app-chat [isCompOpen]="this.menu == 4" [confirmAddContactList]="this.confirmAddContactList" [contactList]="this.getContactList()"></app-chat>
+            <app-chat [isCompOpen]="this.menu == 4" [confirmAddContactList]="this.confirmAddContactList"
+                [contactList]="this.getContactList()" [responseList]="this.responseList"
+                (sendResponseList)="this.sendResponseList($event)"></app-chat>
         </div>
     </ul>
 
