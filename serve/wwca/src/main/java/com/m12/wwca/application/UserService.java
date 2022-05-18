@@ -308,4 +308,15 @@ public class UserService {
         logger.info("find message by sender: " + sender);
         return messageRepo.findBySender(sender);
     }
+
+    /**
+     * Method find message by sender and receiver
+     * @param sender
+     * @param receiver
+     */
+    public List<Message> findMessageBySenderAndReceiver(AppUser sender, AppUser receiver) {
+        // info find message by sender and receiver
+        logger.info("find message by sender and receiver: " + sender + ", " + receiver);
+        return messageRepo.findBySenderAndReceiver(sender, receiver);
+    }
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import com.m12.wwca.domain.entity.AppUser;
 import com.m12.wwca.domain.entity.Message;
 import com.m12.wwca.domain.repo.MessageRepo;
 
@@ -25,7 +26,7 @@ public class MessageRepoMysqlAdapter implements MessageRepo {
 
     @Override
     public Message findById(Long id) {
-        Message auxMessage = entityManager.createQuery("SELECT m FROM Message m WHERE m.id = :id", Message.class)
+        Message auxMessage = entityManager.createQuery("SELECT m FROM messages m WHERE m.id = :id", Message.class)
                 .setParameter("id", id)
                 .getSingleResult();
         return auxMessage;
@@ -33,14 +34,23 @@ public class MessageRepoMysqlAdapter implements MessageRepo {
 
     @Override
     public List<Message> findAll() {
-        List<Message> messages = entityManager.createQuery("SELECT m FROM Message m", Message.class).getResultList();
+        List<Message> messages = entityManager.createQuery("SELECT m FROM messages m", Message.class).getResultList();
         return messages;
     }
 
     @Override
-    public List<Message> findBySender(String sender) {
-        List<Message> messages = entityManager.createQuery("SELECT m FROM Message m WHERE m.send_by_id = :sender", Message.class)
+    public List<Message> findBySender(AppUser sender) {
+        List<Message> messages = entityManager.createQuery("SELECT m FROM messages m WHERE m.sendBy = :sender", Message.class)
                 .setParameter("sender", sender)
+                .getResultList();
+        return messages;
+    }
+
+    @Override
+    public List<Message> findBySenderAndReceiver(AppUser sender, AppUser receiver) {
+        List<Message> messages = entityManager.createQuery("SELECT m FROM messages m WHERE m.sendBy = :sender AND m.sendTo = :receiver", Message.class)
+                .setParameter("sender", sender)
+                .setParameter("receiver", receiver)
                 .getResultList();
         return messages;
     }

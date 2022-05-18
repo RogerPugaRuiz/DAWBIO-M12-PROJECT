@@ -15,6 +15,7 @@ import com.m12.wwca.domain.repo.RoleRepo;
 import com.m12.wwca.infrastructure.dto.SignUpDto;
 import com.m12.wwca.infrastructure.dto.ContactConfirm;
 import com.m12.wwca.infrastructure.dto.LoginUserDto;
+import com.m12.wwca.infrastructure.dto.MessageDto;
 import com.m12.wwca.infrastructure.dto.MyAccount;
 import com.m12.wwca.infrastructure.dto.ProfileDto;
 import com.m12.wwca.infrastructure.shared.Status;
@@ -274,7 +275,8 @@ public class UserApi {
                 Map<Object, Object> data = new HashMap<>();
                 data.put("contacts", Utils.chatContactsToContactInfo(contacts));
                 Status status = new Status(true, "Contacts found");
-                return ResponseEntity.ok().body(data);
+                status.setData(data);
+                return ResponseEntity.ok().body(status);
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Status(false, "Invalid token"));
             }
@@ -282,4 +284,63 @@ public class UserApi {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Status(false, e.getMessage()));
         }
     }
+
+    @PostMapping("/send-message")
+    public ResponseEntity sendMessage(@RequestBody MessageDto message, HttpServletRequest request) {
+        String jwt = request.getHeader("Authorization");
+        try {
+            AppUser sender = userService.getUserByUsername(message.getSendBy());
+            AppUser receiver = userService.getUserByUsername(message.getSendTo());
+            if (UserJWT.validateSubject(jwt, sender.getUsername())) {
+                ChatContact chatContact = userService.getChatContact(sender, receiver);
+                if (chatContact != null) {
+                    Message msg = new Message.Builder()
+                            .message(message.getMessage())
+                            .sendBy(sender)
+                            .sendTo(receiver)
+                            .build();
+                    userService.saveMessage(msg);
+                    return ResponseEntity.ok().body(new Status(true, "Message sent"));
+                } else {
+                    return ResponseEntity.ok().body(new Status(false, "Contact not found"));
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Status(false, "Invalid token"));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Status(false, e.getMessage()));
+        }
+    }
+
+    @GetMapping("/get-messages")
+    public ResponseEntity getMessages(@RequestParam String user, @RequestParam String contact,
+            HttpServletRequest request) {
+        String jwt = request.getHeader("Authorization");
+        try {
+            if (UserJWT.validate(jwt)) {
+                AppUser sender = userService.getUserByUsername(user);
+                AppUser receiver = userService.getUserByUsername(contact);
+                if (UserJWT.validateSubject(jwt, sender.getUsername())) {
+                    ChatContact chatContact = userService.getChatContact(sender, receiver);
+                    if (chatContact != null) {
+                        ArrayList<Message> messages = (ArrayList<Message>) userService.findMessageBySenderAndReceiver(sender, receiver);
+                        Map<Object, Object> data = new HashMap<>();
+                        data.put("messages", messages);
+                        Status status = new Status(true, "Messages found");
+                        status.setData(data);
+                        return ResponseEntity.ok().body(status);
+                    } else {
+                        return ResponseEntity.ok().body(new Status(false, "Contact not found"));
+                    }
+                } else {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Status(false, "Invalid token"));
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Status(false, "Invalid token"));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Status(false, e.getMessage()));
+        }
+    }
+
 }

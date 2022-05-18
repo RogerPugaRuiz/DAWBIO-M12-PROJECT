@@ -13,8 +13,8 @@ export class ContactInfoService {
   httpConnect(){
     this.http.get("http://localhost:8081/api/users/get-contacts").subscribe(
       {
-        next: (data: any) => {
-          this.ContactList = data.contacts;
+        next: (obj: any) => {
+          this.ContactList = obj.data.contacts;
         }
       }
     );
