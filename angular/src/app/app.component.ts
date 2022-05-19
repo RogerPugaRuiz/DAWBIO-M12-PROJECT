@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AddContactService } from './services/add-contact.service';
+import { ChatService } from './services/chat.service';
 import { ContactInfoService } from './services/contact-info.service';
 import { ResponseWsService } from './services/response-ws.service';
 import { SettingsService } from './services/settings.service';
@@ -16,7 +17,8 @@ export class AppComponent {
       private settingsService: SettingsService,
       private addContactService: AddContactService,
       private contactInfo: ContactInfoService,
-      private responseWs: ResponseWsService) { 
+      private responseWs: ResponseWsService,
+      private chatService: ChatService) { 
 
     this.darkmode = this.settingsService.darkmode;
     this.settingsService.getDarkMode().subscribe(
@@ -28,7 +30,5 @@ export class AppComponent {
     this.contactInfo.httpConnect();
 
     this.addContactService.connection();
-
-    this.responseWs.connection();
   }
 }

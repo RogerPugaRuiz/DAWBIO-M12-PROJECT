@@ -22,6 +22,7 @@ import com.m12.wwca.infrastructure.shared.Status;
 import com.m12.wwca.infrastructure.shared.Utils;
 import com.m12.wwca.infrastructure.shared.jwt.ContactJWT;
 import com.m12.wwca.infrastructure.shared.jwt.UserJWT;
+import com.m12.wwca.infrastructure.shared.sortedArray.SortedArray;
 
 import org.apache.catalina.connector.Response;
 import org.slf4j.Logger;
@@ -300,12 +301,6 @@ public class UserApi {
                             .sendTo(receiver)
                             .build();
                     userService.saveMessage(msg);
-                    Message msgReverse = new Message.Builder()
-                            .message(message.getMessage())
-                            .sendBy(receiver)
-                            .sendTo(sender)
-                            .build();
-                    userService.saveMessage(msgReverse);
                     return ResponseEntity.ok().body(new Status(true, "Message sent"));
                 } else {
                     return ResponseEntity.ok().body(new Status(false, "Contact not found"));
@@ -330,8 +325,11 @@ public class UserApi {
                     ChatContact chatContact = userService.getChatContact(sender, receiver);
                     if (chatContact != null) {
                         ArrayList<Message> messages = (ArrayList<Message>) userService.findMessageBySenderAndReceiver(sender, receiver);
+                        messages.addAll((ArrayList<Message>) userService.findMessageBySenderAndReceiver(receiver, sender));
                         Map<Object, Object> data = new HashMap<>();
-                        data.put("messages", messages);
+                        ArrayList<MessageDto> messageInfo = (ArrayList<MessageDto>) Utils.messagesToMessageInfo(messages);
+                        SortedArray messageSorted =  Utils.sortMessagesByDate(messageInfo);
+                        data.put("messages", messageSorted);
                         Status status = new Status(true, "Messages found");
                         status.setData(data);
                         return ResponseEntity.ok().body(status);

@@ -21,6 +21,7 @@ public class Message {
     private AppUser sendBy;
     @OneToOne
     private AppUser sendTo;
+    private Long timestamp = System.currentTimeMillis();
 
 
     public Long getId() {
@@ -55,6 +56,10 @@ public class Message {
         this.sendTo = sendTo;
     }
 
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
     public Message() {
     }
 
@@ -72,6 +77,7 @@ public class Message {
         private String message;
         private AppUser sendBy;
         private AppUser sendTo;
+        private Long timestamp;
 
         public Builder message(String message) {
             this.message = message;

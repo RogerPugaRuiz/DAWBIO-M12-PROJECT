@@ -28,6 +28,8 @@ import com.m12.wwca.domain.entity.Message;
 import com.m12.wwca.infrastructure.dto.ContactInfo;
 import com.m12.wwca.infrastructure.dto.MessageDto;
 import com.m12.wwca.infrastructure.dto.UserManageDto;
+import com.m12.wwca.infrastructure.shared.sortedArray.SortedArray;
+import com.m12.wwca.infrastructure.shared.sortedArray.binaryTree.BinaryTree;
 
 public class Utils {
     private static final String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -132,11 +134,13 @@ public class Utils {
      */
 
     public static Date getExpirationDate(int days, int hours, int minutes) {
-        return new Date(System.currentTimeMillis() + (days * 24 * 60 * 60 * 1000) + (hours * 60 * 60 * 1000) + (minutes * 60 * 1000));
+        return new Date(System.currentTimeMillis() + (days * 24 * 60 * 60 * 1000) + (hours * 60 * 60 * 1000)
+                + (minutes * 60 * 1000));
     }
 
     /**
      * Transform list of chat contacts to a chat info
+     * 
      * @param contacts
      * @return List<ContactInfo>
      *
@@ -152,6 +156,7 @@ public class Utils {
 
     /**
      * Transform list of messages to a chat info
+     * 
      * @param messages
      * @return List<MessageInfo>
      *
@@ -163,9 +168,24 @@ public class Utils {
             messageDto.setMessage(message.getMessage());
             messageDto.setSendBy(message.getSendBy().getUsername());
             messageDto.setSendTo(message.getSendTo().getUsername());
+            messageDto.setTimestamp(message.getTimestamp());
             messageInfo.add(messageDto);
         }
         return messageInfo;
+    }
+
+    /**
+     * Method to sort messages by date
+     * 
+     * @param List<MessageDto>
+     * @return SortedArray<MessageDto>
+     *
+     */
+    public static SortedArray sortMessagesByDate(List<MessageDto> messages){
+        SortedArray sortedArray = new SortedArray();
+        sortedArray.addAll(messages);
+        BinaryTree binaryTree = new BinaryTree(sortedArray);
+        return binaryTree.inorder();
     }
 
 }

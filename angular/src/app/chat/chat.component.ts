@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { User } from '../model/user.model';
 import { AddContactService } from '../services/add-contact.service';
 import { ChatNumberOfNotificationsService } from '../services/chat-number-of-notifications.service';
@@ -13,7 +13,7 @@ import { UserService } from '../services/user.service';
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
-export class ChatComponent implements OnInit{
+export class ChatComponent implements OnInit, AfterViewInit {
   isAddNewContact: boolean = false;
   sendUser: string = "";
   user: User = new User();
@@ -28,13 +28,15 @@ export class ChatComponent implements OnInit{
 
   @Output() sendResponseList: any = new EventEmitter<any>();
 
-  message:string = "";
+  message: string = "";
   chats: any[] = [];
 
   invalidContactName: string = "";
   isValidContact: boolean = true;
 
   actualChatContact: string = "";
+
+  scrollSize: number = 0;
 
   obj: any;
 
@@ -46,6 +48,9 @@ export class ChatComponent implements OnInit{
     private responseWs: ResponseWsService,
     private chatNumberOfNotification: ChatNumberOfNotificationsService,
     private chatService: ChatService) { }
+  ngAfterViewInit(): void {
+    this.scrollToBottom();
+  }
 
 
   ngOnInit(): void {
@@ -57,24 +62,23 @@ export class ChatComponent implements OnInit{
         this.darkmode = darkmode;
       }
     );
+
+    this.chatService.connection((obj: any) => {
+      this.updateChat(obj.sendTo, obj.sendBy);
+    });
+    this.ngAfterViewInit();
   }
 
-  openChat(e: Event, obj: any){
-    console.log(obj);
-    console.log(obj.contact);
+  openChat(e: Event, obj: any) {
     this.actualChatContact = obj.contact;
-    let user:any = this.user.username;
-    this.chatService.getChat(user, obj.contact, (chats:any) => {
-      this.chats = chats;
-      console.log(chats);
-      console.log(this.chats);
-    });
+    let user: any = this.user.username;
+    this.updateChat(user, obj.contact);
     this.toggleChat(e);
+    console.log("click")
   }
   toggleChat(e: Event): void {
 
     this.isChatOpen = !this.isChatOpen;
-    console.log(this.chats);
     if (this.isChatOpen) {
       this.isAddNewContact = false;
 
@@ -85,8 +89,6 @@ export class ChatComponent implements OnInit{
   addNewContact(e: Event): void {
     // user.username = "roger"
     // let user = {"username":"roger"}
-    console.log(this.user.username);
-    console.log(this.sendUser);
     let contactJwt = this.http.get("http://localhost:8081/api/users/send-contact-request?user=" +
       this.user.username + "&contact=" +
       this.sendUser).subscribe(
@@ -105,12 +107,12 @@ export class ChatComponent implements OnInit{
           }
         }
       );
-      // this.addContactService.getStompClient().unsubscribe("/topic/adduser/" + this.user.username);
-      // this.addContactService.responseAddContact();
+    // this.addContactService.getStompClient().unsubscribe("/topic/adduser/" + this.user.username);
+    // this.addContactService.responseAddContact();
 
   }
 
- 
+
 
   deleteItem(e: Event, contact: any) {
     // console.log(this.responseList);
@@ -121,17 +123,43 @@ export class ChatComponent implements OnInit{
   }
 
   sendMessage(e: Event) {
-    let user:any = this.user.username;
-    this.chatService.sendMessage(this.message, user, this.actualChatContact);
+    let user: any = this.user.username;
+    this.chatService.sendMessage(this.message, user, this.actualChatContact,()=>{
+      this.updateChat(user, this.actualChatContact);
+      this.scrollToBottom();
+      this.message = "";
+    });
   }
 
-  checkTypeOfMessage(type: string){
-    let user:any = this.user.username;
-    if (type == user){
+  checkTypeOfMessage(type: string) {
+    let user: any = this.user.username;
+    if (type == user) {
       return "send";
     } else {
       return "received";
     }
 
+  }
+
+
+  updateChat(sendBy: string, sendTo: string) {
+    this.chatService.getChat(sendBy, sendTo, (chats: any) => {
+      this.chats = chats;
+      // this.ngAfterViewInit();
+      this.scrollToBottom();
+      this.scrollSize = document.getElementsByClassName("message-container")[0].scrollHeight;
+      console.log(this.scrollSize);
+    });
+  }
+
+  scrollToBottom(): void {
+    try {
+      let chat = document.getElementsByClassName("message-container")[0];
+      if (chat != null) {
+        chat.scrollTop = chat.scrollHeight;
+      }
+    } catch (e) {
+      console.log(e);
+    }
   }
 }

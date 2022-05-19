@@ -4,7 +4,8 @@
         <i class='fas fa-expand-alt'></i>
     </div>
     <div class="add-user" *ngIf="this.isAddNewContact">
-        <input type="text" placeholder="Username" [(ngModel)]="this.sendUser" (keyup.enter)="this.addNewContact($event)">
+        <input type="text" placeholder="Username" [(ngModel)]="this.sendUser"
+            (keyup.enter)="this.addNewContact($event)">
         <input type="button" value="Add" (click)="this.addNewContact($event)">
         <div class="error" *ngIf="!this.isValidContact">{{this.invalidContactName}}</div>
     </div>
@@ -12,7 +13,8 @@
     <div class="chat-body">
         <div class="chat-body-users" [ngClass]="this.isChatOpen ? 'down-animation' : 'up-animation'">
             <div class="confirm-contacts">
-                <app-confirm-contact  *ngFor="let obj of this.confirmAddContactList" [text]="obj.text" [item]="obj"></app-confirm-contact>
+                <app-confirm-contact *ngFor="let obj of this.confirmAddContactList" [text]="obj.text" [item]="obj">
+                </app-confirm-contact>
             </div>
             <div class="responseList" *ngFor="let obj of this.responseList">
                 <div>{{obj.text}}</div>
@@ -29,10 +31,14 @@
             <i class='fas fa-angle-down' *ngIf="this.isChatOpen" (click)="toggleChat($event)"></i>
         </div>
         <div class="chat-body-messages" *ngIf="this.isCompOpen">
-            <div class="message-container" [ngClass]="!this.isChatOpen ? 'down-animation' : 'up-animation'" >
-               <app-chat-message *ngFor="let obj of this.chats" [message]="this.obj.message" [type]="this.checkTypeOfMessage(obj.user)" ></app-chat-message>
+            <div class="message-container" [ngClass]="!this.isChatOpen ? 'down-animation' : 'up-animation'"
+                (click)="this.scrollToBottom()" (reset)="this.scrollToBottom()">
+                <div *ngIf="this.chats.length == 0" class="no-message">No messages</div>
+                <app-chat-message *ngFor="let obj of this.chats" [message]="this.obj.message"
+                    [type]="this.checkTypeOfMessage(obj.sendBy)"></app-chat-message>
             </div>
-            <input class="input-text" type="text" placeholder="Type a message..." *ngIf="this.isChatOpen" [(ngModel)]="this.message" (keyup.enter)="this.sendMessage($event)">
+            <input class="input-text" type="text" placeholder="Type a message..." *ngIf="this.isChatOpen"
+                [(ngModel)]="this.message" (keyup.enter)="this.sendMessage($event)">
             <i class="material-icons btn-send" *ngIf="this.isChatOpen" (click)="this.sendMessage($event)">send</i>
         </div>
 

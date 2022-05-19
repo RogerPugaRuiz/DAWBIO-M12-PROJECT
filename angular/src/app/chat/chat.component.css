@@ -33,7 +33,7 @@
     display: block;
     overflow: auto;
     height: 0%;
-    transition: height 0.2s;
+    transition: height 0.5s;
 }
 
 .message{
@@ -121,7 +121,7 @@
     overflow: auto;
     background-color: rgb(255, 255, 255);
     margin: auto;
-    transition: height 0.2s;
+    transition: height 0.5s;
 }
 
 .down-animation{
@@ -129,7 +129,7 @@
 }
 
 .up-animation {
-    height: 600px;
+    height: 500px;
 }
 
 .toggle{
@@ -226,4 +226,11 @@
 
 app-chat-message{
     margin: 1rem;
+}
+
+.no-message{
+    background-color: orange;
+    color: white;
+    width: auto;
+    padding: 1rem;
 }
