@@ -1,0 +1,14 @@
+DATABASE: 
+Enter mySQL:
+	-mysql -u root -p
+CREATE USER:
+	-CREATE USER 'provenusr'@'localhost' IDENTIFIED BY 'provenpass';
+	-GRANT ALL PRIVILEGES ON *.* TO `provenusr`@`localhost` WITH GRANT OPTION;
+SHOW ALL USERS:
+	-SELECT user FROM mysql.user;
+SHOW ALL DATABASES:
+	-SHOW DATABASES;
+CREATE DATABASE: 
+	CREATE DATABASE storedb
+	  DEFAULT CHARACTER SET utf8
+	  DEFAULT COLLATE utf8_general_ci;
