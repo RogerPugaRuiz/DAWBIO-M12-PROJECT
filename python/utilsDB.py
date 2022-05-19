@@ -1,11 +1,17 @@
 import mysql.connector as sql
+from Models.pollutionInfo import pollutionInfo
+import SQLQueries
+
+# host: str = "spainairpollution.cnlzyfbmuh0e.us-east-1.rds.amazonaws.com"
+# user: str = "admin"
+# password: str = "admin1234"
 
 host: str = "localhost"
 user: str = "provenusr"
 password: str = "provenpass"
 
 #Preventing SQL Injection Attacks With Python
-
+#Query
 
 #string, tuple, numbers no mutable
 def connection(db_name: str = ''):
@@ -14,59 +20,99 @@ def connection(db_name: str = ''):
             host=host,
             user=user,
             password=password,
-            database= db_name
+            database=db_name
         )
         return db
     except Exception as e:
         print("An exception occurred - " + format(e))
         return None
         
-def create_database(db_name: str = "spain_air_pollution"):
+def create_database(db_name: str = "spainAirPollution"):
     try:
         db = connection()
         cursor = db.cursor()
-        cursor.execute("""CREATE DATABASE %s 
-                            DEFAULT CHARACTER SET utf8
-                            DEFAULT COLLATE utf8_general_ci""" % (db_name,))
-        print(cursor.fetchall())
+        cursor.execute(SQLQueries.create_database_query % (db_name))
+        db.commit()
+        cursor.close()
+        db.close()
     except Exception as e:
         print("An exception occurred - " + format(e))
         
-def drop_database(db_name: str = "spain_air_pollution"):
+def drop_database(db_name: str = "spainAirPollution"):
     try:
         db = connection()
         cursor = db.cursor()
-        cursor.execute("""DROP DATABASE %s""" % (db_name,))
+        cursor.execute(SQLQueries.drop_database_query % (db_name))
+        db.commit()
+        cursor.close()
+        db.close()
     except Exception as e:
         print("An exception occurred - " + format(e))
         
-def create_tables():
+def create_table_air_pollution():
     try:
-        db = connection("spain_air_pollution")
+        db = connection("spainAirPollution")
         cursor = db.cursor()
-        cursor.execute("""CREATE TABLE info_air_pollution (
-                            id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                            air_quality_level INTEGER(4) NOT NULL,
-                            dominant_pollution VARCHAR(10) NOT NULL, 
-                            location_name VARCHAR(120) NOT NULL,
-                            date_day_info DATE NOT NULL,
-                            date_time_info TIME NOT NULL,
-                            latitude DECIMAL(7,4) NOT NULL, 
-                            longitude DECIMAL(7,4) NOT NULL,
-                            no2 DECIMAL(5,1) DEFAULT NULL,
-                            pm10 DECIMAL(5,1) DEFAULT NULL,
-                            pm25 DECIMAL(5,1) DEFAULT NULL,
-                            co DECIMAL(5,1) DEFAULT NULL,
-                            o3 DECIMAL(5,1) DEFAULT NULL, 
-                            so2 DECIMAL(5,1) DEFAULT NULL, 
-                            wg DECIMAL(5,1) DEFAULT NULL, 
-                            dew DECIMAL(5,1) DEFAULT NULL,
-                            t DECIMAL(4,1) DEFAULT NULL, 
-                            w DECIMAL(4,1) DEFAULT NULL, 
-                            r DECIMAL(4,1) DEFAULT NULL,
-                            p DECIMAL(5,1) DEFAULT NULL,
-                            h DECIMAL(4,1) DEFAULT NULL 
-                        ) ENGINE InnoDb;""")
+        cursor.execute(SQLQueries.create_table_air_pollution_query)
+        db.commit()
+        cursor.close()
+        db.close()
     except Exception as e:
         print("An exception occurred - " + format(e))
+        
+def create_forecast_table_air_pollution():
+    try:
+        db = connection("spainAirPollution")
+        cursor = db.cursor()
+        cursor.execute(SQLQueries.create_forecast_table_air_pollution_query)
+        db.commit()
+        cursor.close()
+        db.close()
+    except Exception as e:
+        print("An exception occurred - " + format(e))
+
+def insert_pollution_air_info(array_object: tuple):
+    try:
+        db = connection("spainAirPollution")
+        for pi in array_object:
+            cursor = db.cursor(prepared=True)
+            duplicated = check_duplicated(pi)
+            if(duplicated == False):
+                info_tuple = (pi.air_quality_level, pi.dominant_pollution, add_backslashes(pi.location_name), pi.date_day_info, pi.date_time_info, pi.latitude, pi.longitude
+                                        , pi.no2, pi.pm10, pi.pm25, pi.co, pi.o3, pi.so2, pi.wg, pi.dew, pi.t, pi.w, pi.r, pi.p, pi.h)
+                cursor.execute(SQLQueries.insert_query % info_tuple)   
+            cursor.close()
+        db.commit()    
+        db.close()
+    except Exception as e:
+        print("An exception occurred - " + format(e))
+
+def check_duplicated(pi: pollutionInfo) -> bool:
+    result = False
+    try: 
+        db = connection("spainAirPollution")
+        cursor = db.cursor(prepared=True)
+        info_tuple = (add_backslashes(pi.location_name), pi.date_day_info, pi.date_time_info)
+        cursor.execute(SQLQueries.check_if_duplicated_info_pollution_query % info_tuple)
+        if(len(cursor.fetchall()) != 0):   
+            result = True
+        print(cursor._executed)
+        print(result)
+        cursor.close()
+        db.commit()    
+        db.close()
+    except Exception as e:
+        print("An exception occurred - " + format(e))
+    return result
+        
+def add_backslashes(location_name: str) -> str:
+    result = location_name.replace("'", "''")
+    return result
+    
+
+        
+
+    
+
+
 
