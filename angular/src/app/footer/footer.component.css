@@ -10,6 +10,7 @@
 
 .footer{
     display: flex;
+    flex-wrap: wrap;
     margin-top: 0rem;
     justify-content: center;
     padding-top: 4rem;

@@ -1,3 +1,7 @@
+form{
+    display: flex;
+    flex-direction: column;
+}
 
 .dark-mode{
     color: white;
@@ -26,7 +30,7 @@
 }
 
 .content{
-    width: 50%;
+    width: 70%;
     margin: auto;
     padding-bottom: 2rem;
 }
@@ -115,8 +119,10 @@
 
 .group{
     display: flex;
+    flex-wrap: wrap;
     width: 100%;
 }
+
 
 /* invalid form */
 .ng-invalid.ng-dirty:not(form){
@@ -163,5 +169,11 @@
 .light-mode .btn-cancel:hover{
     background-color: #ad2823;
     color: white;
+}
+
+@media screen and (max-width: 600px){
+    .content{
+        width: 90%;
+    }
 }
 
