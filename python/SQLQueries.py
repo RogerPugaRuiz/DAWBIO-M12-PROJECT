@@ -1,3 +1,30 @@
+#INFO
+
+"""
+DATABASE: 
+Enter mySQL:
+	-mysql -u root -p
+CREATE USER:
+	-CREATE USER 'provenusr'@'localhost' IDENTIFIED BY 'provenpass';
+	-GRANT ALL PRIVILEGES ON *.* TO `provenusr`@`localhost` WITH GRANT OPTION;
+SHOW ALL USERS:
+	-SELECT user FROM mysql.user;
+SHOW ALL DATABASES:
+	-SHOW DATABASES;
+CREATE DATABASE: 
+	CREATE DATABASE storedb
+	  DEFAULT CHARACTER SET utf8
+	  DEFAULT COLLATE utf8_general_ci;
+	  
+DATABASE INFO: 
+	-usuario: admin
+	-contraseña: admin1234
+	-puerto: 3306
+	-host: spainairpollution.cnlzyfbmuh0e.us-east-1.rds.amazonaws.com
+"""
+
+# Queries SQL
+
 create_database_query: str = "CREATE DATABASE %s DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci"
 drop_database_query: str = "DROP DATABASE %s"
 create_table_air_pollution_query: str = """CREATE TABLE info_air_pollution (

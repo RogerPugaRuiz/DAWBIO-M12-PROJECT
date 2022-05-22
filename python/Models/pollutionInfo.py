@@ -1,4 +1,5 @@
-class pollutionInfo:     
+class pollutionInfo:
+    #Constructor     
     def __init__(self, air_quality_level: int = None, dominant_pollution: str = None,
                  location_name: str = None, date_day_info: str = None, date_time_info: str = None,
                  latitude: float = None, longitude: float = None, pollutants_dict: dict = None):
@@ -13,7 +14,7 @@ class pollutionInfo:
         for key in pollutants_dict: 
             setattr(self, key, pollutants_dict[key])
 
-        #Getter
+        #Getters
         def air_quality_level(self) -> int:
             return self.air_quality_level
         
