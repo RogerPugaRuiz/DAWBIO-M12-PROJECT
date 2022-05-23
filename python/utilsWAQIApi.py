@@ -4,6 +4,8 @@ from requests.models import Response
 import requests
 import json
 
+import pprint
+
 #AQICN Api Token 
 token: str = "8053d4771842a8790c2cd96798bc90f4292a983d"
 #Request Session
@@ -90,6 +92,7 @@ def get_spain_stations_data() -> tuple:
         if "spain" in station["station"]["name"].lower(): #Get only spain data (340 stations)
             dict = get_station_feed_by_coordinates(station["lat"], station["lon"])
             spain_stations_data.append(dict)
+            pprint.pprint(dict["data"]["city"]["name"])
             #Print progress counter
             progress_counter = progress_counter + 1
             print(str(progress_counter) + "/340")

@@ -2,6 +2,12 @@
 
 import mysql.connector as sql
 
+import pprint
+
+import decimal
+from datetime import date, timedelta
+from collections import OrderedDict
+
 from Models.pollutionInfo import pollutionInfo
 
 import SQLQueries
@@ -157,7 +163,7 @@ def insert_air_pollution_data(array_object: tuple):
                 #Save object info into array
                 info_tuple: tuple = (pi.air_quality_level, pi.dominant_pollution, utils.add_backslashes_in_special_characters(pi.location_name), pi.date_day_info, pi.date_time_info, pi.latitude, pi.longitude
                                         , pi.no2, pi.pm10, pi.pm25, pi.co, pi.o3, pi.so2, pi.wg, pi.dew, pi.t, pi.w, pi.r, pi.p, pi.h)
-                cursor.execute(SQLQueries.insert_query % info_tuple)   
+                cursor.execute(SQLQueries.insert_info_air_pollution_query % info_tuple)   
             cursor.close()
         db.commit()    
         db.close()
@@ -180,7 +186,7 @@ def check_duplicated_data_info_air_pollution(pi: pollutionInfo) -> bool:
         db: sql.MySQLConnection = connection("spainAirPollution")
         cursor = db.cursor(prepared=True)
         info_tuple: tuple = (utils.add_backslashes_in_special_characters(pi.location_name), pi.date_day_info, pi.date_time_info)
-        cursor.execute(SQLQueries.check_if_duplicated_info_pollution_query % info_tuple)
+        cursor.execute(SQLQueries.check_if_duplicated_info_air_pollution_query % info_tuple)
         if(len(cursor.fetchall()) != 0):   
             result = True
         cursor.close()
@@ -188,4 +194,74 @@ def check_duplicated_data_info_air_pollution(pi: pollutionInfo) -> bool:
         db.close()
     except Exception as e:
         print("An exception occurred - " + format(e))
-    return result      
+    return result
+
+def get_all_air_pollution_data():
+    """ 
+    Get all air pollution data - Get all rows in database table "table info_air_pollution" and converted to dicts
+
+    Returns:
+    result_array (tuple): Array with all data
+    
+    """
+    result_array = []
+    try: 
+        db: sql.MySQLConnection = connection("spainAirPollution")
+        cursor = db.cursor(prepared=True)
+        cursor.execute(SQLQueries.select_all_info_air_pollution_query)
+        rows = cursor.fetchall()
+        columnNames = [column[0] for column in cursor.description]
+        for row in rows:
+            dict_row = OrderedDict(zip(columnNames, row))
+            for key, value in dict_row.items():
+                if(type(value) == decimal.Decimal):
+                    dict_row[key]= float(value)
+                if(type(value) == date or type(value) == timedelta):
+                    dict_row[key] = str(value)
+            result_array.append(dict_row)
+        cursor.close()
+        db.commit()    
+        db.close()
+    except Exception as e:
+        print("An exception occurred - " + format(e))
+    return result_array
+
+def get_unique_locations():
+    """ 
+    Get unique locations - Get unique locations in database table "info_air_pollution"
+
+    Returns:
+    unique locations (tuple): Array with unique locations
+    
+    """
+    try: 
+        db: sql.MySQLConnection = connection("spainAirPollution")
+        cursor = db.cursor(prepared=True)
+        cursor.execute(SQLQueries.get_unique_locations)
+        unique_locations = cursor.fetchall()
+        cursor.close()
+        db.commit()    
+        db.close()
+        return unique_locations
+    except Exception as e:
+        print("An exception occurred - " + format(e))
+        
+def get_unique_location_info_data():
+    """ 
+    Get unique locations info data - Get unique locations data in database table "info_air_pollution"
+
+    Returns:
+    unique_locations_data (tuple): Array with unique locations
+    
+    """
+    try: 
+        db: sql.MySQLConnection = connection("spainAirPollution")
+        cursor = db.cursor(prepared=True)
+        cursor.execute(SQLQueries.get_unique_location_info_data)
+        unique_locations_info_data = cursor.fetchall()
+        cursor.close()
+        db.commit()    
+        db.close()
+        return unique_locations_info_data
+    except Exception as e:
+        print("An exception occurred - " + format(e))

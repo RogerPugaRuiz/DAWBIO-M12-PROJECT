@@ -42,5 +42,4 @@ if this_module == main_module:
    object = utils.stations_data_to_object(data)
    #Insert data
    utilsDB.insert_air_pollution_data(object)
-
 # ---------------------------------------------------------------------
