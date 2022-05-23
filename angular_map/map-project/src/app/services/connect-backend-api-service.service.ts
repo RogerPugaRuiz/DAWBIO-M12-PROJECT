@@ -16,6 +16,7 @@ export class ConnectBackendApiServiceService  {
   get_locations_data(): Observable<Array<any>> {
       return this.http.get<Array<any>>(this.baseURL + "getUniqueLocationsInfoData");
   };
+  
 
   
 

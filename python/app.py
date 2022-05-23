@@ -41,11 +41,6 @@ def getUniqueLocations():
 def getUniqueLocationsInfoData():
     return jsonify(utilsDB.get_unique_location_info_data())
 
-
-
-
-     
-
 # Main
 # ---------------------------------------------------------------------
 this_module: str = __name__
