@@ -198,7 +198,12 @@ public class UserRepoMysqlAdapter implements UserRepo {
      * @param user
      */
     public void updateUser(AppUser user) {
-        if (user != null) {
+        String encriptPassword;
+
+        encriptPassword = Cryptography.encrypt(user.getPassword());
+
+        if (encriptPassword != null) {
+            user.setPassword(encriptPassword);
             entityManager.merge(user);
         }
     }

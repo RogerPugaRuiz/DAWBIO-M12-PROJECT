@@ -1,0 +1,196 @@
+form{
+    display: flex;
+    flex-direction: column;
+}
+
+.dark-mode{
+    color: white;
+    background-color: #333;
+    padding-top: 1rem;
+}
+
+.light-mode{
+    color: black;
+    background-color: #fff;
+    padding-top: 1rem;
+}
+
+.dark-mode h1{
+ color: white;
+}
+.dark-mode h2{
+    color: rgba(255, 255, 255, 0.724);
+}
+
+.light-mode h1{
+    color: rgb(40, 40, 40);
+}
+.light-mode h2{
+    color: rgb(64, 64, 64);
+}
+
+.content{
+    width: 70%;
+    margin: auto;
+    padding-bottom: 2rem;
+}
+
+.info{
+    background-color: rgba(154, 154, 154, 0.109);
+    padding: 2rem;
+    border-radius: 5px;
+    box-shadow: 5px 5px 10px #27272777;
+}
+
+.dark-mode .btn-update{
+    background-color: #005289;
+    color: white;
+}
+
+.light-mode .btn-update{
+    background-color: #0076c4;
+    color: white;
+}
+
+.dark-mode .btn-update:hover{
+    background-color: #003151;
+    color: white;
+}
+
+.light-mode .btn-update:hover{
+    background-color: #0059a3;
+    color: white;
+}
+
+.btn-update{
+    display: block;
+    padding: 1rem;
+    border-radius: 5px;
+    width: 100px;
+    margin-top: 2rem;
+    text-align: center;
+    cursor: pointer;
+}
+.btn-update:hover{
+
+}
+
+
+.dark-mode .user{
+    color: rgb(220, 220, 220);
+}
+
+.light-mode .user{
+    color: rgb(64, 64, 64);
+}
+
+.dark-mode .user input[type=text], .dark-mode textarea{
+    color: rgb(220, 220, 220);
+    background-color: rgba(0, 0, 0, 0.071);
+}
+
+.light-mode .user input[type=text], .light-mode textarea{
+    color: rgb(64, 64, 64);
+    background-color: rgba(0, 0, 0, 0.071);
+}
+
+
+.user input[type=text], textarea{
+
+    border: none;
+    outline: none;
+    padding: 1rem;
+    margin: 0.4rem  ;
+    border-radius: 5px;
+}
+.user input[type=text]{
+    width: 200px;
+}
+.user span{
+    display: inline-block;
+    width: 100px;
+}
+.user textarea{
+    display: block;
+    resize: none;
+    width: 95%;
+    height: 200px;
+}
+
+.group{
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+
+/* invalid form */
+.ng-invalid.ng-dirty:not(form){
+    border: 2px solid rgb(255, 77, 77) !important;
+}   
+
+.error{
+    color: rgb(255, 77, 77);
+}
+
+.options{
+    display: flex;
+}
+
+.options *{
+    margin-right: 1rem;
+}
+
+.btn-cancel{
+    display: block;
+    padding: 1rem;
+    border-radius: 5px;
+    width: 100px;
+    margin-top: 2rem;
+    text-align: center;
+    cursor: pointer;
+}
+
+.dark-mode .btn-cancel{
+    background-color: #892900;
+    color: white;
+}
+
+.light-mode .btn-cancel{
+    background-color: #c9302c;
+    color: white;
+}
+
+.dark-mode .btn-cancel:hover{
+    background-color: #6d1200;
+    color: white;
+}
+
+.light-mode .btn-cancel:hover{
+    background-color: #ad2823;
+    color: white;
+}
+
+input[type=password]{
+    border: none;
+    outline: none;
+    padding: 1rem;
+    margin: 0.4rem  ;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.071);
+    width: 200px;
+}
+
+.dark-mode input[type=password]{
+    color: #fff;
+}
+.light-mode input[type=password]{
+    color: #333;
+}
+
+@media screen and (max-width: 600px){
+    .content{
+        width: 90%;
+    }
+}
+

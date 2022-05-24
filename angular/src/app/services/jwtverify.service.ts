@@ -26,4 +26,21 @@ export class JWTverifyService {
       }
     );
   }
+
+  adminAuth() {
+    this.http.get("http://localhost:8081/api/admin/jwt/verify-admin").subscribe(
+      {
+        next: (data) => {
+          console.log(data);
+          // this.router.navigate(['/register']);
+        },
+        error: (err) => {
+          console.log(err);
+          this.router.navigate(['/error'], { queryParams: {status: err.status}});
+          sessionStorage.removeItem('auth_token');
+        }
+      }
+    );
+  }
+
 }

@@ -109,4 +109,10 @@ export class NavMenuComponent implements OnInit, AfterViewInit{
     this.responseList = this.responseList.filter(response => response.text != e.text);
     this.ngAfterViewInit();
   }
+
+  close(e: boolean): void {
+
+    this.menu = 0;
+
+  }
 }

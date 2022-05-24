@@ -39,8 +39,9 @@
         <div class="expand" *ngIf="this.menu == 4">
             <app-chat [isCompOpen]="this.menu == 4" [confirmAddContactList]="this.confirmAddContactList"
                 [contactList]="this.getContactList()" [responseList]="this.responseList"
-                (sendResponseList)="this.sendResponseList($event)"></app-chat>
+                (sendResponseList)="this.sendResponseList($event)" (close)="close($event)"></app-chat>
         </div>
     </ul>
 
 </nav>
+

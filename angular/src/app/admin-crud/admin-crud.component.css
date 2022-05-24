@@ -1,0 +1,124 @@
+.table-header{
+
+    background-color: rgb(50, 65, 88);
+    color: gainsboro;
+}
+
+.row{
+    display: flex;
+    justify-content: space-around;
+    overflow: scroll;
+    border-bottom: 2px solid white;
+}
+
+.col{
+    width: 10%;
+    padding: 1rem;
+    min-width: 100px;
+}
+
+.hover-content{
+    display: none;
+    position: absolute;
+    background-color: rgb(0, 0, 0);
+    padding: 0.5rem;
+    color: white;
+    border-radius: 5px;
+    font-size: 20px;
+    cursor: pointer;
+    top: -20px;
+}
+/* .content.active{
+    width: 400px;
+    background-color: black;
+} */
+
+.hover-content.active{
+    display: block;
+}
+
+.content{
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
+}
+
+.container{
+    display: block;
+    position: relative;
+}
+
+@media only screen and (max-width: 600px) {
+    .col:not(.mb){
+        display: none !important;
+    }
+}
+
+#create{
+    color: white;
+    background-color: rgb(0, 104, 0);
+    border: none;
+    padding: 1rem;
+    margin: 1rem;
+    border-radius: 5px;
+}
+#create:hover{
+    background-color: rgb(0, 53, 0);
+}
+
+#remove-selected{
+    color: white;
+    background-color: rgb(132, 15, 0);
+    border: none;
+    padding: 1rem;
+    margin: 1rem;
+    border-radius: 5px;
+}
+#remove-selected:hover{
+    background-color: rgb(101, 12, 0);
+}
+
+input[type=button]{
+    cursor: pointer;
+}
+
+.options{
+    display: flex;
+    justify-content: center;
+}
+
+.edit{
+    color: white;
+    background-color: rgb(0, 61, 131);
+    border: none;
+    padding: 1rem;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+.edit:hover{
+    background-color: rgb(0, 38, 101);
+}
+
+.delete{
+    color: white;
+    background-color: rgb(132, 15, 0);
+    border: none;
+    padding: 1rem;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    cursor: pointer;
+}
+.delete:hover{
+    background-color: rgb(101, 12, 0);
+}
+
+.align-center{
+    display: flex;
+    justify-content: center;
+}
+app-delete-user{
+    position: fixed;
+    top: 30%;
+}
+

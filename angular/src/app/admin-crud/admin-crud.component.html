@@ -1,0 +1,96 @@
+<div [ngClass]="this.darkmode ? 'dark-mode' : 'light-mode'" class="windows">
+    <div class="options">
+        <input type="button" value="Create" id="create" />
+        <input type="button" value="Remove Selected" id="remove-selected" />
+    </div>
+    <div class="users-table">
+        <div class="table-header row">
+            <div class="col"></div>
+            <div class="col mb">USERNAME</div>
+            <div class="col">FIRSTNAME</div>
+            <div class="col">LASTNAME</div>
+            <div class="col">EMAIL</div>
+            <div class="col mb">ROLE</div>
+            <div class="col mb">LAST LOGIN</div>
+            <div class="col mb">CREATED AT</div>
+            <div class="col mb">ACTION</div>
+        </div>
+
+        <div class="table-body ">
+            <div class="row" *ngFor="let user of this.users" (click)="this.selectUser($event)">
+                <div class="col mb">
+                    <input type="checkbox" name="check-user" class="check-user">
+                </div>
+                <div class="col mb" (mouseenter)="activeHover($event)" (mouseleave)="deactiveHover($event)">
+                    <span class="content">{{user.username}}</span>
+                    <div class="container">
+                        <span class="hover-content">
+                            {{user.username == null ? 'None' : user.username}}
+                        </span>
+                    </div>
+                </div>
+                <div class="col" (mouseenter)="activeHover($event)" (mouseleave)="deactiveHover($event)">
+                    <span class="content">{{user.firstname == null ? 'None' : user.firstname}}</span>
+                    <div class="container">
+                        <span class="hover-content">
+                            {{user.firstname == null ? 'None' : user.firstname}}
+                        </span>
+                    </div>
+                </div>
+                <div class="col" (mouseenter)="activeHover($event)" (mouseleave)="deactiveHover($event)">
+                    <span class="content">{{user.lastname == null ? 'None' : user.lastname}}</span>
+
+                    <div class="container">
+                        <span class="hover-content">
+                            {{user.lastname == null ? 'None' : user.lastname}}
+                        </span>
+                    </div>
+                </div>
+                <div class="col" (mouseenter)="activeHover($event)" (mouseleave)="deactiveHover($event)">
+                    <span class="content">{{user.email == null ? 'None' : user.email}}</span>
+                    <div class="container">
+                        <span class="hover-content">
+                            {{user.email == null ? 'None' : user.email}}
+                        </span>
+                    </div>
+                </div>
+                <div class="col mb" (mouseenter)="activeHover($event)" (mouseleave)="deactiveHover($event)">
+                    <span class="content">{{user.role.name == null ? 'None' : user.role.name}}</span>
+                    <div class="container">
+                        <span class="hover-content">
+                            {{user.role.name == null ? 'None' : user.role.name}}
+                        </span>
+                    </div>
+                </div>
+                <div class="col mb" (mouseenter)="activeHover($event)" (mouseleave)="deactiveHover($event)">
+                    <span class="content">{{user.lastLogin}}</span>
+                    <div class="container">
+                        <span class="hover-content">
+                            {{user.lastLogin == null ? 'None' : user.lastLogin}}
+                        </span>
+                    </div>
+                </div>
+                <div class="col mb" (mouseenter)="activeHover($event)" (mouseleave)="deactiveHover($event)">
+                    <span class="content">{{user.subscribed}}</span>
+                    <div class="container">
+                        <span class="hover-content">
+                            {{user.subscribed == null ? 'None' : user.subscribed}}
+                        </span>
+                    </div>
+                </div>
+                <div class="action col mb">
+                    <a [routerLink]="['/admin/edit-user', user.id]" class="edit">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a (click)="deleteUser($event, user)" class="delete">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="align-center">
+    <app-delete-user *ngIf="this.isDelete" [user]="this.selectedUser" (isOpen)="this.closeDelete($event)"></app-delete-user>
+</div>
