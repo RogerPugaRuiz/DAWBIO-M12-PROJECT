@@ -28,21 +28,10 @@ public class UserJWT {
                 .signWith(SignatureAlgorithm.HS256, key.getBytes())
                 .setIssuedAt(Utils.getCurrentDate())
                 .setExpiration(Utils.getExpirationDate(0,24,0))
-                .claim("authorities", user.getRole().toString())
-                .claim("email", user.getEmail())
                 .claim("user_id", user.getId())
                 .compact();
     }
 
-    public static Boolean validateAuthority(String jwt, String authority) {
-
-        return Jwts.parser()
-                .setSigningKey(key.getBytes())
-                .parseClaimsJws(jwt.replace("Bearer ", ""))
-                .getBody()
-                .get("authorities", String.class)
-                .equals(authority) && validate(jwt);
-    }
 
     public static Boolean validateSubject(String jwt, String subject) {
 
@@ -117,17 +106,6 @@ public class UserJWT {
                 .getSubject();
     }
 
-    /**
-     * get JWT email
-     * @return email
-     */
-    public static String getEmail(String jwt) {
-        return Jwts.parser()
-                .setSigningKey(key.getBytes())
-                .parseClaimsJws(jwt.replace("Bearer ", ""))
-                .getBody()
-                .get("email", String.class);
-    }
 
     /**
      * get JWT user_id

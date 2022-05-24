@@ -30,5 +30,7 @@ export class AppComponent {
     this.contactInfo.httpConnect();
 
     this.addContactService.connection();
+
+    this.responseWs.connection();
   }
 }

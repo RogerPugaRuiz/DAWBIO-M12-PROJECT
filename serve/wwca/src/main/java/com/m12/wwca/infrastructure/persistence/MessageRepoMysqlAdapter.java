@@ -54,4 +54,19 @@ public class MessageRepoMysqlAdapter implements MessageRepo {
                 .getResultList();
         return messages;
     }
+
+    @Override
+    public void deleteMessages(List<Message> messages) {
+        for (Message message : messages) {
+            entityManager.remove(entityManager.contains(message) ? message : entityManager.merge(message));
+        }
+    }
+
+    @Override
+    public List<Message> findByReceiver(AppUser receiver) {
+        List<Message> messages = entityManager.createQuery("SELECT m FROM messages m WHERE m.sendTo = :receiver", Message.class)
+                .setParameter("receiver", receiver)
+                .getResultList();
+        return messages;
+    }
 }

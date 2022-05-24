@@ -45,14 +45,18 @@ public class UserServiceTest {
         AppUser appUser = new AppUser.Builder()
                 .username("roger22")
                 .email("roger@gmail.com")
-                .password("roger1234")
+                .password("Roger1234")
                 .role(roleService.getRole("admin"))
                 .build();
         AppUser user = userService.getUserByUsername(appUser.getUsername());
 
-        userService.deleteUser(user);
+        if (user == null) {
+            userService.addUser(appUser);
+        } else {
+            userService.updateUser(user);
+        }
 
-        userService.addUser(appUser);
+
         if (userService.getUserByUsername("roger22") != null) {
             System.out.println("User added");
             assert true;

@@ -16,6 +16,7 @@
     max-height: 180px;
     overflow:-moz-hidden-unscrollable;
     overflow: hidden;
+    color: black;
 }
 
 .message.send{

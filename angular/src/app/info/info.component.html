@@ -1,0 +1,11 @@
+<div class="blurred-black-screen">
+
+</div>
+
+<div [ngClass]="this.darkmode ? 'dark-mode' : 'light-mode'" >
+    <h1>Info</h1>
+    <p>
+        {{ text }}
+    </p>
+    <input type="button" value="confirm" (click)="this.closeInfo()">
+</div>

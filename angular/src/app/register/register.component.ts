@@ -103,7 +103,8 @@ export class RegisterComponent implements OnInit {
             
           },
           error: (data) => {
-            this.router.navigate(['error'], { queryParams: { status: data.status } });
+            this.invalidForm = 'Invalid username, email or password';
+            this.signInForm.setErrors({ 'invalidForm': true });
           },
           complete: () => {
             console.log('complete');

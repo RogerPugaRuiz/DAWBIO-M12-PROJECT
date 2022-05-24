@@ -129,3 +129,13 @@ nav {
         transform: trans
     }
 } */
+
+@media only screen and (max-width: 600px){
+    .icon{
+        display: none;
+    }
+    input{
+        width: 100% !important;
+    }
+}
+

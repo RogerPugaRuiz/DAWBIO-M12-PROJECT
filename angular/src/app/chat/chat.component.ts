@@ -27,6 +27,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
   @Input() isCompOpen?: boolean;
 
   @Output() sendResponseList: any = new EventEmitter<any>();
+  @Output() close: any = new EventEmitter<boolean>();
 
   message: string = "";
   chats: any[] = [];
@@ -162,4 +163,9 @@ export class ChatComponent implements OnInit, AfterViewInit {
       console.log(e);
     }
   }
+
+  closeChat() {
+    this.close.emit(true);
+  }
+
 }

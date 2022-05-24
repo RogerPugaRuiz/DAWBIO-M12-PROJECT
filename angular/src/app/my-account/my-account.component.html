@@ -5,49 +5,49 @@
         <div class="info">
             <h2>My Info
             </h2>
-            <form [formGroup]="this.myAccountFormGroup"></form>
-            <div class="group">
-                <div class="user"><span>First tname:</span> <input type="text" name="name" id="name"
-                        [formControl]="this.firstnameControl" (input)="this.setUpdateMessage()"></div>
-                <div class="user"><span>Last name: </span><input type="text" name="lastname" id="lastname"
-                        [formControl]="this.lastnameControl" (input)="this.setUpdateMessage()"></div>
-            </div>
-            <div class="group">
-                <div class="user"><span>User name: </span><input type="text" name="username" id="username"
-                        [formControl]="this.usernameControl" (input)="this.setUpdateMessage()"></div>
-                <div class="user"><span>Email: </span><input type="text" name="email" id="email"
-                        [formControl]="this.emailControl" (input)="this.setUpdateMessage()"></div>
-            </div>
-            <div class="user"><span>Description: </span><textarea name="description" id="description"
-                    [formControl]="this.descriptionControl" (input)="this.setUpdateMessage()"></textarea>
-            </div>
-            <div class="options">
-                <a class="btn-update" (click)="this.updateAccount()">Update</a>
-                <a class="btn-cancel" (click)="this.cancelUpdate()">Cancel</a>
-            </div>
-            <div class="error" *ngIf="this.myAccountFormGroup.invalid">
-                <div *ngIf="this.firstnameControl.invalid && this.firstnameControl.dirty">
-                    <span *ngIf="this.firstnameControl.errors?.['required']">* First name is required</span>
-                    <span *ngIf="this.firstnameControl.errors?.['pattern']">* Invalid firsts name</span>
+            <form [formGroup]="this.myAccountFormGroup">
+                <div class="group">
+                    <div class="user"><span>First tname:</span> <input type="text" name="name" id="name"
+                            [formControl]="this.firstnameControl" (input)="this.setUpdateMessage()"></div>
+                    <div class="user"><span>Last name: </span><input type="text" name="lastname" id="lastname"
+                            [formControl]="this.lastnameControl" (input)="this.setUpdateMessage()"></div>
                 </div>
-                <div *ngIf="this.lastnameControl.invalid && this.lastnameControl.dirty">
-                    <span *ngIf="this.lastnameControl.errors?.['required']">* Last name is required</span>
-                    <span *ngIf="this.lastnameControl.errors?.['pattern']">Invalid last name</span>
+                <div class="group">
+                    <div class="user"><span>User name: </span><input type="text" name="username" id="username"
+                            [formControl]="this.usernameControl" (input)="this.setUpdateMessage()"></div>
+                    <div class="user"><span>Email: </span><input type="text" name="email" id="email"
+                            [formControl]="this.emailControl" (input)="this.setUpdateMessage()"></div>
                 </div>
-                <div *ngIf="this.usernameControl.invalid && this.usernameControl.dirty">
-                    <span *ngIf="this.usernameControl.errors?.['required']">* User name is required</span>
-                    <span *ngIf="this.usernameControl.errors?.['pattern']">* Invalid user name</span>
-                    <span *ngIf="this.usernameControl.errors?.['usernameAlreadyExists']">* Username already
-                        exists</span>
+                <div class="user"><span>Description: </span><textarea name="description" id="description"
+                        [formControl]="this.descriptionControl" (input)="this.setUpdateMessage()"></textarea>
                 </div>
-                <div *ngIf="this.emailControl.invalid && this.emailControl.dirty">
-                    <span *ngIf="this.emailControl.errors?.['required']">* Email is required</span>
-                    <span *ngIf="this.emailControl.errors?.['pattern']">* Invalid email</span>
-                    <span *ngIf="this.emailControl.errors?.['emailAlreadyExists']">* Email already exists</span>
+                <div class="options">
+                    <a class="btn-update" (click)="this.updateAccount()">Update</a>
+                    <a class="btn-cancel" (click)="this.cancelUpdate()">Cancel</a>
                 </div>
-            </div>
-            <p [ngStyle]="{'color':this.needUpdate ? this.green : this.red}">{{this.updateMessage}}</p>
-
+                <div class="error" *ngIf="this.myAccountFormGroup.invalid">
+                    <div *ngIf="this.firstnameControl.invalid && this.firstnameControl.dirty">
+                        <span *ngIf="this.firstnameControl.errors?.['required']">* First name is required</span>
+                        <span *ngIf="this.firstnameControl.errors?.['pattern']">* Invalid firsts name</span>
+                    </div>
+                    <div *ngIf="this.lastnameControl.invalid && this.lastnameControl.dirty">
+                        <span *ngIf="this.lastnameControl.errors?.['required']">* Last name is required</span>
+                        <span *ngIf="this.lastnameControl.errors?.['pattern']">Invalid last name</span>
+                    </div>
+                    <div *ngIf="this.usernameControl.invalid && this.usernameControl.dirty">
+                        <span *ngIf="this.usernameControl.errors?.['required']">* User name is required</span>
+                        <span *ngIf="this.usernameControl.errors?.['pattern']">* Invalid user name</span>
+                        <span *ngIf="this.usernameControl.errors?.['usernameAlreadyExists']">* Username already
+                            exists</span>
+                    </div>
+                    <div *ngIf="this.emailControl.invalid && this.emailControl.dirty">
+                        <span *ngIf="this.emailControl.errors?.['required']">* Email is required</span>
+                        <span *ngIf="this.emailControl.errors?.['pattern']">* Invalid email</span>
+                        <span *ngIf="this.emailControl.errors?.['emailAlreadyExists']">* Email already exists</span>
+                    </div>
+                </div>
+                <p [ngStyle]="{'color':this.needUpdate ? this.green : this.red}">{{this.updateMessage}}</p>
+            </form>
         </div>
     </div>
 </div>

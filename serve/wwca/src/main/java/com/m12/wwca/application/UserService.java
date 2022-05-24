@@ -159,6 +159,17 @@ public class UserService {
         // info delete user
         if (user != null) {
             logger.info("delete user: " + user.getUsername());
+            List<ChatContact> chatContacts = chatContactRepo.findByUser(user);
+            chatContacts.addAll(chatContactRepo.findByContact(user));
+            for (ChatContact chatContact : chatContacts) {
+                chatContactRepo.delete(chatContact);
+                logger.info("delete chat contact: " + chatContact.getId());
+            }
+            List<Message> messages = messageRepo.findBySender(user);
+            messages.addAll(messageRepo.findByReceiver(user));
+            messageRepo.deleteMessages(messages);
+
+            logger.info("messages deleted" + messageRepo.findBySender(user));
             userRepo.deleteUser(user);
         }
     }
@@ -284,6 +295,18 @@ public class UserService {
         // info get chat contact by user and contact
         logger.info("get chat contact by user and contact: " + user.getUsername() + ", " + contact.getUsername());
         return chatContactRepo.findByUserAndContact(user, contact);
+    }
+
+    @Transactional
+    /**
+     * Method to delete users with ids
+     * @param ids
+     * @return void
+     */
+    public void deleteUsers(List<String> ids) {
+        // info delete users with ids
+        logger.info("delete users with ids: " + ids);
+        userRepo.deleteUsers(ids);
     }
 
 

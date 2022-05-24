@@ -1,0 +1,11 @@
+<div class="blurred-black-screen">
+
+</div>
+
+<div class="windows" [ngClass]="this.darkmode ? 'dark-mode' : 'light-mode'" >
+    <span>Are you sure you want to delete {{user.username}}?</span>
+    <div class="options">
+        <input type="button" value="Ok" (click)="this.delete(this.user)">
+        <input type="button" value="Cancel" (click)="this.cancel(false)">
+    </div>
+</div>

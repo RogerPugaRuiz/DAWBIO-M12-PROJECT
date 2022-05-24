@@ -11,5 +11,7 @@ public interface MessageRepo {
     public List<Message> findAll();
     public List<Message> findBySender(AppUser sender);
     public List<Message> findBySenderAndReceiver(AppUser sender, AppUser receiver);
+    public List<Message> findByReceiver(AppUser receiver);
+    public void deleteMessages(List<Message> messages);
     
 }

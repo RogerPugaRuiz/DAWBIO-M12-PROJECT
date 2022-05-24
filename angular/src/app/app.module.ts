@@ -23,6 +23,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ConfirmContactComponent } from './confirm-contact/confirm-contact.component';
 import { ChatComponent } from './chat/chat.component';
 import { ChatMessageComponent } from './chat-message/chat-message.component';
+import { AdminCrudComponent } from './admin-crud/admin-crud.component';
+import { AdminComponent } from './admin/admin.component';
+import { CreateUserComponent } from './create-user/create-user.component';
+import { EditUserComponent } from './edit-user/edit-user.component';
+import { DeleteUserComponent } from './delete-user/delete-user.component';
+import { InfoComponent } from './info/info.component';
 
 
 
@@ -43,6 +49,12 @@ import { ChatMessageComponent } from './chat-message/chat-message.component';
     ConfirmContactComponent,
     ChatComponent,
     ChatMessageComponent,
+    AdminCrudComponent,
+    AdminComponent,
+    CreateUserComponent,
+    EditUserComponent,
+    DeleteUserComponent,
+    InfoComponent,
   ],
   imports: [
     BrowserModule,

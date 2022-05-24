@@ -1,9 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AboutComponent } from './about/about.component';
+import { AdminCrudComponent } from './admin-crud/admin-crud.component';
+import { AdminComponent } from './admin/admin.component';
 import { ComunityComponent } from './comunity/comunity.component';
 import { ContactComponent } from './contact/contact.component';
+import { CreateUserComponent } from './create-user/create-user.component';
+import { EditUserComponent } from './edit-user/edit-user.component';
 import { ErrorComponent } from './error/error.component';
+import { AdminGuard } from './guards/admin.guard';
 import { RegisterGuard } from './guards/register.guard';
 import { UserGuard } from './guards/user.guard';
 import { HomeComponent } from './home/home.component';
@@ -22,6 +27,9 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent, canActivate: [RegisterGuard]},
   { path: 'settings', component: SettingsComponent},
   { path: 'error', component: ErrorComponent},
+  { path: "admin", component: AdminComponent, canActivate: [AdminGuard]},
+  { path: "admin/edit-user/:id", component: EditUserComponent, canActivate: [AdminGuard]},
+  { path: "admin/create-user", component: CreateUserComponent, canActivate: [AdminGuard]},
   { path: '**', component: ErrorComponent, data: { status: 404 }},
 ];
 
