@@ -153,7 +153,7 @@ export class MapComponentComponent implements OnInit {
             .attr("id", element[0])
             .attr("class", "circlesCan")
             // @ts-ignore
-            .attr("cx", function(d){return projectionCan(d)[0]})
+            .attr("cx", function(d){ return projectionCan(d)[0]})
             // @ts-ignore
             .attr("cy", function(d){ return projectionCan(d)[1] })
             .attr("r", 3)
