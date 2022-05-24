@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { MapComponentComponent } from './map-component/map-component.component';
-import { ConnectBackendApiServiceService } from './services/connect-backend-api-service.service';
+import { ConnectBackendApiService } from './services/connect-backend-api.service';
 
 
 @NgModule({
@@ -15,7 +15,7 @@ import { ConnectBackendApiServiceService } from './services/connect-backend-api-
     BrowserModule,
     HttpClientModule
   ],
-  providers: [ConnectBackendApiServiceService],
+  providers: [ConnectBackendApiService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

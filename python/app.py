@@ -1,13 +1,9 @@
-from audioop import cross
-from flask import Flask
-from flask import jsonify
+from flask import Flask, jsonify, request
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-
 from flask_cors import CORS, cross_origin
 
-from bson import json_util
-import json
+import datetime 
 
 import utilsDB
 
@@ -18,7 +14,7 @@ limiter = Limiter(app,key_func=get_remote_address)
 
 @app.route("/")
 @limiter.limit("10/second")
-def hello():
+def mainPage():
     return "API Main Page"
 
 @app.route("/getData/<location_name>")
@@ -30,6 +26,15 @@ def getLocationData(location_name):
 @limiter.limit("10/second")
 def getAllData():
     return jsonify(utilsDB.get_all_air_pollution_data())
+
+@app.route("/getData", methods=['POST'])
+@limiter.limit("10/second")
+def getData():
+    location_name = ""
+    if(request.method == 'POST'):
+        location_name = request.json['location_name']
+        current_date = datetime.datetime.now()
+    return jsonify(utilsDB.get_air_pollution_data(location_name, current_date.strftime("%y-%m-%d")))
 
 @app.route("/getUniqueLocations")
 @limiter.limit("10/second")

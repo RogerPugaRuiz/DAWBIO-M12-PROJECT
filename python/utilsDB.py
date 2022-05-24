@@ -265,3 +265,34 @@ def get_unique_location_info_data():
         return unique_locations_info_data
     except Exception as e:
         print("An exception occurred - " + format(e))
+        
+def get_air_pollution_data(location_name: str, date: str):
+    """ 
+    Get air pollution data - Get pollution data given the location_name and the date
+
+    Returns:
+    result_array (tuple): Array with all data
+    
+    """
+    result_array = []
+    try: 
+        db: sql.MySQLConnection = connection("spainAirPollution")
+        cursor = db.cursor(prepared=True)
+        info_tuple: tuple = (utils.add_backslashes_in_special_characters(location_name), date)
+        cursor.execute(SQLQueries.get_location_data_where_location_name_and_date % info_tuple)
+        rows = cursor.fetch
+        columnNames = [column[0] for column in cursor.description]
+        for row in rows:
+            dict_row = OrderedDict(zip(columnNames, row))
+            for key, value in dict_row.items():
+                if(type(value) == decimal.Decimal):
+                    dict_row[key]= float(value)
+                if(type(value) == date or type(value) == timedelta):
+                    dict_row[key] = str(value)
+            result_array.append(dict_row)
+        cursor.close()
+        db.commit()    
+        db.close()
+    except Exception as e:
+        print("An exception occurred - " + format(e))
+    return result_array

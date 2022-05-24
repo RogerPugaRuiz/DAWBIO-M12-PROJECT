@@ -95,5 +95,5 @@ def get_spain_stations_data() -> tuple:
             pprint.pprint(dict["data"]["city"]["name"])
             #Print progress counter
             progress_counter = progress_counter + 1
-            print(str(progress_counter) + "/340")
+            print(str(progress_counter + 1) + "/340")
     return spain_stations_data    

@@ -25,9 +25,6 @@ DATABASE INFO:
 
 # Queries SQL
 
-from select import select
-
-
 create_database_query: str = "CREATE DATABASE %s DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci"
 drop_database_query: str = "DROP DATABASE %s"
 create_table_air_pollution_query: str = """CREATE TABLE info_air_pollution (
@@ -67,3 +64,4 @@ check_if_duplicated_info_air_pollution_query: str = "SELECT * from info_air_poll
 select_all_info_air_pollution_query: str = """SELECT * from info_air_pollution"""
 get_unique_locations: str = "SELECT DISTINCT location_name from info_air_pollution"
 get_unique_location_info_data: str = "SELECT DISTINCT(location_name), CAST(latitude as float), CAST(longitude as float) from info_air_pollution"
+get_location_data_where_location_name_and_date: str = "SELECT * from info_air_pollution WHERE location_name = '%s' AND date_day_info = '%s' ORDER BY date_time_info DESC LIMIT 1"
