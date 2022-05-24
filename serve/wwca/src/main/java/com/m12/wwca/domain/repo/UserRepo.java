@@ -15,5 +15,6 @@ public interface UserRepo {
     public boolean login(String id, String password); // Check if user is logged in
     public void deleteUser(AppUser user); // Delete user
     public void updateUser(AppUser user); // Update user
+    public void deleteUsers(List<String> ids); // Delete users
 
 }

@@ -53,7 +53,8 @@ public class AdminApi {
         HttpHeaders headers = new HttpHeaders();
         headers.set("WWW-Authenticate", "Bearer");
         try {
-            if (UserJWT.validateAuthority(jwt, "admin")) {
+            if (UserJWT.validate(jwt)
+                    && userService.getUser(UserJWT.getUserId(jwt)).getRole().getName().equals("admin")) {
                 List<AppUser> users = userService.getUsers();
 
                 Status status = new Status(false, "get users success");
@@ -96,14 +97,13 @@ public class AdminApi {
 
     }
 
-
     @GetMapping("/jwt/verify-admin")
     public ResponseEntity verifyJwtAdmin(HttpServletRequest request) {
         String jwt = request.getHeader("Authorization");
         try {
-            UserJWT.validate(jwt);
+
             AppUser user = userService.getUser(UserJWT.getUserId(jwt));
-            if (user.getRole().getName().equals("admin")) {
+            if (UserJWT.validate(jwt) && user.getRole().getName().equals("admin")) {
                 return ResponseEntity.ok().body(new Status(true, "Token valid"));
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Status(false, "Invalid token"));
@@ -117,19 +117,18 @@ public class AdminApi {
     public ResponseEntity getUser(@RequestParam("id") String id, HttpServletRequest request) {
         String jwt = request.getHeader("Authorization");
         try {
-            if (UserJWT.validateAuthority(jwt, "admin")) {
-                AppUser user = userService.getUser(id);
-                if (user != null) {
-                    Status status = new Status(false, "get user success");
-                    Map<Object, Object> data = new HashMap<>();
-                    data.put("user", user);
-                    status.setData(data);
-                    return ResponseEntity.ok().body(status);
-                } else {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Status(false, "user not found"));
-                }
+            AppUser user = userService.getUser(id);
+
+            logger.info("user " + user);
+            if (UserJWT.validate(jwt)
+                    && userService.getUser(UserJWT.getUserId(jwt)).getRole().getName().equals("admin")) {
+                Status status = new Status(false, "get user success");
+                Map<Object, Object> data = new HashMap<>();
+                data.put("user", user);
+                status.setData(data);
+                return ResponseEntity.ok().body(status);
             } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Status(false, "unauthorized"));
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Status(false, "Invalid token"));
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Status(false, e.getMessage()));
@@ -140,7 +139,8 @@ public class AdminApi {
     public ResponseEntity updateUser(@RequestBody AppUser user, HttpServletRequest request) {
         String jwt = request.getHeader("Authorization");
         try {
-            if (UserJWT.validateAuthority(jwt, "admin")) {
+            if (UserJWT.validate(jwt)
+                    && userService.getUser(UserJWT.getUserId(jwt)).getRole().getName().equals("admin")) {
                 userService.updateUser(user);
                 return ResponseEntity.ok().body(new Status(true, "update user success"));
             } else {
@@ -155,9 +155,27 @@ public class AdminApi {
     public ResponseEntity deleteUser(@RequestBody AppUser user, HttpServletRequest request) {
         String jwt = request.getHeader("Authorization");
         try {
-            if (UserJWT.validateAuthority(jwt, "admin")) {
+            if (UserJWT.validate(jwt)
+                    && userService.getUser(UserJWT.getUserId(jwt)).getRole().getName().equals("admin")) {
                 userService.deleteUser(user);
                 return ResponseEntity.ok().body(new Status(true, "delete user success"));
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Status(false, "unauthorized"));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.OK).body(new Status(false, e.getMessage()));
+        }
+    }
+
+
+    @PostMapping("/delete-users")
+    public ResponseEntity deleteUsers(@RequestBody List<String> ids, HttpServletRequest request) {
+        String jwt = request.getHeader("Authorization");
+        try {
+            if (UserJWT.validate(jwt)
+                    && userService.getUser(UserJWT.getUserId(jwt)).getRole().getName().equals("admin")) {
+                userService.deleteUsers(ids);
+                return ResponseEntity.ok().body(new Status(true, "delete users success"));
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Status(false, "unauthorized"));
             }

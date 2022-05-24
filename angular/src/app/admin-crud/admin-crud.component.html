@@ -1,7 +1,7 @@
 <div [ngClass]="this.darkmode ? 'dark-mode' : 'light-mode'" class="windows">
     <div class="options">
-        <input type="button" value="Create" id="create" />
-        <input type="button" value="Remove Selected" id="remove-selected" />
+        <input type="button" value="Create" id="create" (click)="createUser()" />
+        <input type="button" value="Remove Selected" id="remove-selected" (click)="this.removeSelectedUser()"/>
     </div>
     <div class="users-table">
         <div class="table-header row">
@@ -19,7 +19,7 @@
         <div class="table-body ">
             <div class="row" *ngFor="let user of this.users" (click)="this.selectUser($event)">
                 <div class="col mb">
-                    <input type="checkbox" name="check-user" class="check-user">
+                    <input type="checkbox" name="check-user" class="check-user" id="{{user.id}}">
                 </div>
                 <div class="col mb" (mouseenter)="activeHover($event)" (mouseleave)="deactiveHover($event)">
                     <span class="content">{{user.username}}</span>
@@ -92,5 +92,6 @@
     </div>
 </div>
 <div class="align-center">
-    <app-delete-user *ngIf="this.isDelete" [user]="this.selectedUser" (isOpen)="this.closeDelete($event)"></app-delete-user>
+    <app-delete-user *ngIf="this.isDelete" [user]="this.selectedUser" (isOpen)="this.closeDelete($event)" (deleteConfirm)="this.deleteUserConfirm($event)"></app-delete-user>
+    <app-info *ngIf="this.isInfo" [text]="this.infoText" (close)="this.closeInfo()"></app-info>
 </div>

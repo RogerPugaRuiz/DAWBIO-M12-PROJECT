@@ -208,4 +208,17 @@ public class UserRepoMysqlAdapter implements UserRepo {
         }
     }
 
+    @Override
+    /**
+     * Delete users by id
+     * @param list of ids
+     */
+    public void deleteUsers(List<String> ids) {
+        for (String id : ids) {
+            entityManager.createQuery("DELETE FROM users r WHERE id = :id")
+                    .setParameter("id", id)
+                    .executeUpdate();
+        }
+    }
+
 }

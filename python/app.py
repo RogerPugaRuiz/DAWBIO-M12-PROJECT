@@ -8,7 +8,7 @@ import datetime
 import utilsDB
 
 app = Flask(__name__)
-cors = CORS(app, resources={r"/*":{"origins": "http://localhost:4200"}})
+cors = CORS(app, resources={r"/*":{"origins": "http://localhost:42951"}})
 app.config['JSON_SORT_KEYS'] = False
 limiter = Limiter(app,key_func=get_remote_address)
 

@@ -5,6 +5,7 @@ import { AdminCrudComponent } from './admin-crud/admin-crud.component';
 import { AdminComponent } from './admin/admin.component';
 import { ComunityComponent } from './comunity/comunity.component';
 import { ContactComponent } from './contact/contact.component';
+import { CreateUserComponent } from './create-user/create-user.component';
 import { EditUserComponent } from './edit-user/edit-user.component';
 import { ErrorComponent } from './error/error.component';
 import { AdminGuard } from './guards/admin.guard';
@@ -28,6 +29,7 @@ const routes: Routes = [
   { path: 'error', component: ErrorComponent},
   { path: "admin", component: AdminComponent, canActivate: [AdminGuard]},
   { path: "admin/edit-user/:id", component: EditUserComponent, canActivate: [AdminGuard]},
+  { path: "admin/create-user", component: CreateUserComponent, canActivate: [AdminGuard]},
   { path: '**', component: ErrorComponent, data: { status: 404 }},
 ];
 

@@ -24,10 +24,33 @@ export class AdminService {
   }
 
   getUserById(id: string | null, callback: any) {
+    this.jwt.adminAuth();
     this.http.get("http://localhost:8081/api/admin/user?id=" + id).subscribe(
       {
         next: (obj: any) => {
           callback(obj.data.user);
+        }
+      }
+    );
+  }
+
+  deleteUser(user:any , callback:any) {
+    this.jwt.adminAuth();
+    this.http.post("http://localhost:8081/api/admin/delete-user", user).subscribe(
+      {
+        next: (obj: any) => {
+          callback(user);
+        }
+      }
+    );
+  }
+
+  deleteUsers(users:any , callback:any) {
+    this.jwt.adminAuth();
+    this.http.post("http://localhost:8081/api/admin/delete-users", users).subscribe(
+      {
+        next: (obj: any) => {
+          callback(users);
         }
       }
     );

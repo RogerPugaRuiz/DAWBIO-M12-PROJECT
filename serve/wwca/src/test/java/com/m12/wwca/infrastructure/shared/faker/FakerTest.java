@@ -55,8 +55,7 @@ public class FakerTest {
                 if (userService.getUserByUsername(user.name) == null) {
                     userService.addUser(appUser);
                 } else {
-                    userService.deleteUser(userService.getUserByUsername(appUser.getUsername()));
-                    userService.addUser(appUser);
+                    userService.updateUser(appUser);
                 }
             }
             assert users.length > 0;

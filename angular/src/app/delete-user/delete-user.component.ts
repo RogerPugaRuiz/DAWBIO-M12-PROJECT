@@ -9,7 +9,9 @@ import { SettingsService } from '../services/settings.service';
 export class DeleteUserComponent implements OnInit {
   @Input() user: any;
   darkmode?: boolean;
+  
   @Output() isOpen = new EventEmitter<boolean>();
+  @Output() deleteConfirm = new EventEmitter<any>();
   constructor( private settings: SettingsService ) { }
 
   ngOnInit(): void {
@@ -18,6 +20,10 @@ export class DeleteUserComponent implements OnInit {
 
   cancel(isOpen: boolean){
     this.isOpen.emit(false);
+  }
+
+  delete(user: any){
+    this.deleteConfirm.emit(user);
   }
 
 }

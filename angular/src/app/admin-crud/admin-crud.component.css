@@ -121,4 +121,8 @@ app-delete-user{
     position: fixed;
     top: 30%;
 }
+app-info{
+    position: fixed;
+    top: 30%;
+}
 

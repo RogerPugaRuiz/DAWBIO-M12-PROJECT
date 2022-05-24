@@ -28,6 +28,7 @@ import { AdminComponent } from './admin/admin.component';
 import { CreateUserComponent } from './create-user/create-user.component';
 import { EditUserComponent } from './edit-user/edit-user.component';
 import { DeleteUserComponent } from './delete-user/delete-user.component';
+import { InfoComponent } from './info/info.component';
 
 
 
@@ -53,6 +54,7 @@ import { DeleteUserComponent } from './delete-user/delete-user.component';
     CreateUserComponent,
     EditUserComponent,
     DeleteUserComponent,
+    InfoComponent,
   ],
   imports: [
     BrowserModule,

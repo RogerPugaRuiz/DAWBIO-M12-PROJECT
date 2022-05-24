@@ -1,1 +1,47 @@
-<p>create-user works!</p>
+<div [ngClass]="this.darkmode ? 'dark-mode' : 'light-mode'">
+
+    <form class="sign-up" [formGroup]="this.signUpForm" (ngSubmit)="this.signUp()">
+        <div class="group">
+            <input type="text" name="username" id="username" placeholder="Username" formControlName="signUpUsername"
+                (input)="this.userNameExists()">
+
+            <input type="text" name="email" id="email" placeholder="Email" formControlName="signUpEmail"
+                (input)="this.emailExists()">
+        </div>
+        <div class="group">
+            <input type="password" name="password" id="password" placeholder="Password"
+                formControlName="signUpPassword">
+            <input type="password" name="confirm-password" id="confirm-password" placeholder="Confirm Password"
+                formControlName="signUpConfirmPassword">
+        </div>
+        <input type="submit" value="Sign Up" name="sign-up" id="sign-up">
+        <div class="error"
+            *ngIf="signUpForm.get('signUpUsername')?.invalid && (signUpForm.get('signUpUsername')?.dirty || signUpForm.get('signUpUsername')?.touched) ">
+            <span *ngIf="signUpForm.get('signUpUsername')?.errors?.['required']">
+                * Username is required</span>
+            <span *ngIf="signUpForm.get('signUpUsername')?.errors?.['pattern']">* the username must contain a minimum of
+                3 characters, letters and numbers</span>
+
+            <span *ngIf="this.signUpUsername.errors?.['usernameAlreadyExists']">* {{this.usernameAlreadyExists}}</span>
+        </div>
+        <div class="error"
+            *ngIf="signUpForm.get('signUpEmail')?.invalid && (signUpForm.get('signUpEmail')?.dirty || signUpForm.get('signUpEmail')?.touched) ">
+            <span *ngIf="signUpForm.get('signUpEmail')?.errors?.['required']">* Email is required</span>
+            <span *ngIf="signUpForm.get('signUpEmail')?.errors?.['pattern']">* Invalid email</span>
+            <span *ngIf="this.signUpEmail.errors?.['emailAlreadyExists']">* {{this.emailAlreadyExists}}</span>
+        </div>
+        <div class="error"
+            *ngIf="signUpForm.get('signUpPassword')?.invalid && (signUpForm.get('signUpPassword')?.dirty || signUpForm.get('signUpPassword')?.touched) ">
+            <span *ngIf="signUpForm.get('signUpPassword')?.errors?.['required']">* Password is required</span>
+            <span *ngIf="signUpForm.get('signUpPassword')?.errors?.['pattern']">*
+
+                The password must contain at least 8 characters: an uppercase, a lowercase and a number</span>
+        </div>
+        <div class="error"
+            *ngIf="signUpForm.get('signUpConfirmPassword')?.invalid && (signUpForm.get('signUpConfirmPassword')?.dirty || signUpForm.get('signUpConfirmPassword')?.touched) ">
+            <span *ngIf="signUpForm.get('signUpConfirmPassword')?.errors?.['notmatched']">* Confirm Password is not the
+                same as the password</span>
+            <!-- <span *ngIf="signUpForm.getError('notmatched') as error"></span> -->
+        </div>
+    </form>
+</div>
