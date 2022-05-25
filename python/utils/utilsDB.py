@@ -2,16 +2,15 @@
 
 import mysql.connector as sql
 
-import pprint
-
 import decimal
 from datetime import date, timedelta
 from collections import OrderedDict
 
 from Models.pollutionInfo import pollutionInfo
+from Models.forecastPollutionInfo import forecastPollutionInfo
 
-import SQLQueries
-import utils
+import SQL.SQLQueries as SQLQueries
+import utils.utils as utils
 
 # AWS DataBase connection parameters
 
@@ -158,14 +157,63 @@ def insert_air_pollution_data(array_object: tuple):
         db: sql.MySQLConnection = connection("spainAirPollution")
         for pi in array_object:
             cursor = db.cursor(prepared=True)
+            print("Inserting " + pi.location_name + " data")
+            print("\t -Checking if " + pi.location_name + " data is already in dataBase...")
             duplicated: bool = check_duplicated_data_info_air_pollution(pi) #Check if the data is already in the database "info_air_pollution"
             if(duplicated == False):
                 #Save object info into array
                 info_tuple: tuple = (pi.air_quality_level, pi.dominant_pollution, utils.add_backslashes_in_special_characters(pi.location_name), pi.date_day_info, pi.date_time_info, pi.latitude, pi.longitude
                                         , pi.no2, pi.pm10, pi.pm25, pi.co, pi.o3, pi.so2, pi.wg, pi.dew, pi.t, pi.w, pi.r, pi.p, pi.h)
                 cursor.execute(SQLQueries.insert_info_air_pollution_query % info_tuple)   
+                print("\t\t -Data inserted")
+            else:
+                print("\t\t -Data not inserted")
             cursor.close()
         db.commit()    
+        db.close()
+    except Exception as e:
+        print("An exception occurred - " + format(e))
+
+def insert_forecast_air_pollution_data(array_object: tuple):
+    """ 
+    Insert Forecast Air Pollution Data - Insert rows into table 'forecast_air_pollution'
+
+    Parameters:
+    array_object (tuple): Array of forecastPollutionInfo objects
+
+    """
+    try:
+        db: sql.MySQLConnection = connection("spainAirPollution")
+        for fpi in array_object:
+            cursor = db.cursor(prepared=True)
+            print("Inserting " + fpi.location_name + " forecast data")
+            #Save object info into array
+            info_tuple: tuple = (utils.add_backslashes_in_special_characters(fpi.location_name), fpi.date_day_info, fpi.pollutant, fpi.pollutant_avg, fpi.pollutant_max, fpi.pollutant_min)
+            cursor.execute(SQLQueries.insert_info_forecast_air_pollution_query % info_tuple) 
+            print("Data inserted")  
+            cursor.close()
+        db.commit()    
+        db.close()
+    except Exception as e:
+        print("An exception occurred - " + format(e))
+
+def delete_duplicated_forecast_data(unique_location_names: tuple):
+    """ 
+    Delete forecast data - Delete rows with given location name in table 'forecast_air_pollution'
+    
+    Parameters:
+    unique_location_names (tuple): Array with unique forecast location names
+    
+    """
+    try: 
+        db: sql.MySQLConnection = connection("spainAirPollution")
+        print("Deleting duplicate forecast data if exist...")
+        for ufln in unique_location_names:
+            print(ufln)
+            cursor = db.cursor(prepared=True)
+            cursor.execute(SQLQueries.delete_forecast_duplicated_data % ufln)
+            cursor.close()
+            db.commit()    
         db.close()
     except Exception as e:
         print("An exception occurred - " + format(e))
@@ -195,6 +243,21 @@ def check_duplicated_data_info_air_pollution(pi: pollutionInfo) -> bool:
     except Exception as e:
         print("An exception occurred - " + format(e))
     return result
+
+def delete_duplicated_data_pollution():
+    """ 
+    Delete duplicated data - Delete duplicated rows in the database "table info_air_pollution"
+    """
+    try: 
+        db: sql.MySQLConnection = connection("spainAirPollution")
+        cursor = db.cursor(prepared=True)
+        print("Deleting duplicate data if exist...")
+        cursor.execute(SQLQueries.delete_duplicated_rows)
+        cursor.close()
+        db.commit()    
+        db.close()
+    except Exception as e:
+        print("An exception occurred - " + format(e))
 
 def get_all_air_pollution_data():
     """ 
@@ -279,8 +342,9 @@ def get_air_pollution_data(location_name: str, date: str):
         db: sql.MySQLConnection = connection("spainAirPollution")
         cursor = db.cursor(prepared=True)
         info_tuple: tuple = (utils.add_backslashes_in_special_characters(location_name), date)
+        print(info_tuple)
         cursor.execute(SQLQueries.get_location_data_where_location_name_and_date % info_tuple)
-        rows = cursor.fetch
+        rows = cursor.fetchall()
         columnNames = [column[0] for column in cursor.description]
         for row in rows:
             dict_row = OrderedDict(zip(columnNames, row))

@@ -1,26 +1,42 @@
+#Imports
+
 from flask import Flask, jsonify, request
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_cors import CORS, cross_origin
 
 import datetime 
+import json
 
-import utilsDB
+import utils.utilsDB as utilsDB
+
+#Flask Settings
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/*":{"origins": "http://localhost:4200"}})
 app.config['JSON_SORT_KEYS'] = False
 limiter = Limiter(app,key_func=get_remote_address)
 
+#Flask routes
+
 @app.route("/")
 @limiter.limit("10/second")
 def mainPage():
     return "API Main Page"
 
-@app.route("/getData/<location_name>")
+@app.route("/GeoJson/provinces")
 @limiter.limit("10/second")
-def getLocationData(location_name):
-    return location_name
+def getGeoJSONProvinces():
+    json_file = open("data/provinces.json")
+    json_object = json.load(json_file)
+    return jsonify(json_object)
+
+@app.route("/GeoJson/autonomous_regions")
+@limiter.limit("10/second")
+def getGeoJSONAutonomousRegions():
+    json_file = open("data/autonomous_regions.json")
+    json_object = json.load(json_file)
+    return jsonify(json_object)
 
 @app.route("/getAllData")
 @limiter.limit("10/second")

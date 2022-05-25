@@ -1,0 +1,6 @@
+pip install mysql-connector-python
+pip install requests
+pip install Flask
+pip install Flask-Cors
+pip install Flask-Limiter
+pip install Flask-Jsonpify

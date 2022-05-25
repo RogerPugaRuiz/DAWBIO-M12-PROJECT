@@ -4,11 +4,12 @@ from requests.models import Response
 import requests
 import json
 
-import pprint
-
 #AQICN Api Token 
+
 token: str = "8053d4771842a8790c2cd96798bc90f4292a983d"
+
 #Request Session
+
 r = requests.Session()
 
 #Api Requests Functions 
@@ -79,7 +80,7 @@ def get_station_feed_by_coordinates(latitude: float, longitude: float) -> json:
 
 def get_spain_stations_data() -> tuple: 
     """ 
-    Get Spain Stations Data By Coordinates - Returns the data of the spain stations
+    Get Spain Stations Data By Coordinates - Returns the data of spain stations
 
     Returns:
     spain_stations_data (tuple): Tuple of Json/Dict with all spain data
@@ -92,8 +93,8 @@ def get_spain_stations_data() -> tuple:
         if "spain" in station["station"]["name"].lower(): #Get only spain data (340 stations)
             dict = get_station_feed_by_coordinates(station["lat"], station["lon"])
             spain_stations_data.append(dict)
-            pprint.pprint(dict["data"]["city"]["name"])
             #Print progress counter
             progress_counter = progress_counter + 1
-            print(str(progress_counter + 1) + "/340")
+            print(str(progress_counter) + "/340" + "-" + dict["data"]["city"]["name"])
+            print()
     return spain_stations_data    

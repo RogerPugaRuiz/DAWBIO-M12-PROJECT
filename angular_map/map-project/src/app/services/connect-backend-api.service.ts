@@ -1,27 +1,38 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient} from '@angular/common/http';
+import { Observable, catchError, throwError } from 'rxjs';
+
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConnectBackendApiService  {
 
-  baseURL: string = "http://localhost:8085/";
+  ROOT_URL: string = "http://localhost:8085/";
   
   locations_data: Array<any> = [];
   constructor(private http : HttpClient){
   } 
 
-  get_locations_data(): Observable<Array<any>> {
-      return this.http.get<Array<any>>(this.baseURL + "getUniqueLocationsInfoData");
-  };
+  get_autonomous_regions(): Observable<any> {
+    return this.http.get<any>(this.ROOT_URL + "GeoJson/autonomous_regions")
+  }
+
+  get_provinces(): Observable<any> {
+    return this.http.get<any>(this.ROOT_URL + "GeoJson/provinces")
+  }
+
+  get_locations_info(): Observable<any> {
+      return this.http.get<any>(this.ROOT_URL + "getUniqueLocationsInfoData");
+      
+  }
 
   get_location_data(location: string): Observable<any> {
-      return this.http.post<Array<any>>(this.baseURL + "getData", {location_name: location });
+      return this.http.post<any>(this.ROOT_URL + "getData", {location_name: location });
   }
   
-
+ 
   
 
 }  

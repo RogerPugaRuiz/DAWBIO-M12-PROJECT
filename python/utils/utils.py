@@ -1,8 +1,7 @@
 #Imports 
 
 from Models.pollutionInfo import pollutionInfo
-
-#Functions 
+from Models.forecastPollutionInfo import forecastPollutionInfo
 
 def stations_data_to_object(data: tuple) -> tuple:
     """ 
@@ -18,6 +17,7 @@ def stations_data_to_object(data: tuple) -> tuple:
     array_objects = []
     for station in data:
         #Get info from dict to create object
+        result = None
         aqi = station["data"]["aqi"]
         dominant_pollution = station["data"]["dominentpol"]
         location_name = station["data"]["city"]["name"]
@@ -33,12 +33,60 @@ def stations_data_to_object(data: tuple) -> tuple:
                 pollutants_dict[pollutant] = index_pollutant
         try:
             #Create object (pollutionInfo)
-            result = pollutionInfo(aqi, dominant_pollution, location_name, date_day_info, date_time_info, latitude, longitude, pollutants_dict)
+            result: pollutionInfo = pollutionInfo(aqi, dominant_pollution, location_name, date_day_info, date_time_info, latitude, longitude, pollutants_dict)
         except Exception as e:
             print("An exception occurred - " + format(e))
+        #Append to return array
         array_objects.append(result)
     return array_objects
-        
+
+def stations_forecast_data_to_object(data: tuple) -> tuple:
+    """ 
+    Stations forecast Data to object - Convert stations forecast data to objects
+
+    Parameters:
+    data (tuple): Array of dicts 
+
+    Returns:
+    array_objects (tuple): Array of objects
+    """
+    array_objects = []
+    for station in data:
+        #Get info from dict to create object
+        location_name = station["data"]["city"]["name"]
+        for pollutant in station["data"]["forecast"]["daily"]:
+            result = None
+            for data_forecast in station["data"]["forecast"]["daily"][pollutant]:
+                day: str = data_forecast["day"]
+                avg: int = data_forecast["avg"]
+                max: str = data_forecast["max"]
+                min: str = data_forecast["min"]
+                try:
+                    #Create object (forecastPollutionInfo)
+                    result: forecastPollutionInfo = forecastPollutionInfo(location_name, day, pollutant, avg, max, min)
+                except Exception as e:
+                    print("An exception occurred - " + format(e))
+                #Append to return array
+                array_objects.append(result)  
+    return array_objects
+
+def get_unique_forecast_data_locations(data: tuple):
+    """ 
+    Get unique forecast data locations - Get unique data locations of forecast object list
+
+    Parameters:
+    data (tuple): Array of dicts 
+
+    Returns:
+    array_locations (tuple): Array of unique locations
+    """
+    array_locations = []
+    for station in data:
+        location_name = station["data"]["city"]["name"]
+        if location_name not in array_locations:
+            array_locations.append(location_name)
+    return array_locations
+  
 def get_unique_pollutants() -> dict:
     """ 
     Get unique pollutants - Get a dict with null values for unique pollutants 
