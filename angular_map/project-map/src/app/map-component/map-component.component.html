@@ -11,20 +11,44 @@
         <div id="mapC"></div>
     </div>
     <div id="dataMaps">
-        <h1>Info Pollution</h1>
-        <p>no2 - Nitrogen (converted to AQI levels from µg/m3 (EPA Standard))</p>
-        <p>pm10 - (Respirable particulate matter) Suspended particles between 2.5 and 10 microns in diameter (converted to AQI levels from µg/m3 (EPA Standard))</p>
-        <p>pm25 - (Fine particulate matter) Suspended particles less than 2.5 microns in diameter (converted to AQI levels from µg/m3 (EPA Standard))</p>
-        <p>co - Carbon Monoxide (converted to AQI levels from µg/m3 (EPA Standard))</p>
-        <p>o3 - Ozone (converted to AQI levels from µg/m3 (EPA Standard))</p>
-        <p>so2 - Sulfur Dioxide (converted to AQI levels from µg/m3 (EPA Standard))</p>
-        <p>wg - Static pressure (Pressure necessary to support a column of water) (iaqi)</p>
-        <p>dew - Indirect indicator of contamination by particulate matter (iaqi)</p>
-        <p>t - Temperature (Celsius)</p>
-        <p>w - Wind (m/s)</p>
-        <p>r - Rain</p>
-        <p>p - Pressure (Hectopascals)</p>
-        <p>h - Humidity (%)</p>
+        <div id="pollutantInfo">
+            <h1>Info Pollution</h1>
+            <p>no2 - Nitrogen (converted to AQI levels from µg/m3 (EPA Standard))</p>
+            <p>pm10 - (Respirable particulate matter) Suspended particles between 2.5 and 10 microns in diameter (converted to AQI levels from µg/m3 (EPA Standard))</p>
+            <p>pm25 - (Fine particulate matter) Suspended particles less than 2.5 microns in diameter (converted to AQI levels from µg/m3 (EPA Standard))</p>
+            <p>co - Carbon Monoxide (converted to AQI levels from µg/m3 (EPA Standard))</p>
+            <p>o3 - Ozone (converted to AQI levels from µg/m3 (EPA Standard))</p>
+            <p>so2 - Sulfur Dioxide (converted to AQI levels from µg/m3 (EPA Standard))</p>
+            <p>wg - Static pressure (Pressure necessary to support a column of water) (iaqi)</p>
+            <p>dew - Indirect indicator of contamination by particulate matter (iaqi)</p>
+            <p>t - Temperature (Celsius)</p>
+            <p>w - Wind (m/s)</p>
+            <p>r - Rain</p>
+            <p>p - Pressure (Hectopascals)</p>
+            <p>h - Humidity (%)</p>
+        </div>
+        <div id="locationData">
+            <h1  *ngIf="dataPollution">{{dataPollution.location_name}}</h1>
+            <p *ngIf="dataPollution">Air Quality Level (AQI): {{dataPollution.air_quality_level}}</p>
+            <p *ngIf="dataPollution">Dominant Pollution: {{dataPollution.dominant_pollution}}</p>
+            <p *ngIf="dataPollution">Latitude: {{dataPollution.latitude}}</p>
+            <p *ngIf="dataPollution">Longitud: {{dataPollution.longitude}}</p>
+            <p *ngIf="dataPollution">Date Info: {{dataPollution.date_day_info}}</p>
+            <p *ngIf="dataPollution">Date Time: {{dataPollution.date_time_info}}</p>
+            <p *ngIf="dataPollution">NO2: {{dataPollution.no2}}</p>
+            <p *ngIf="dataPollution">PM10: {{dataPollution.pm10}}</p>
+            <p *ngIf="dataPollution">PM25: {{dataPollution.pm25}}</p>
+            <p *ngIf="dataPollution">CO: {{dataPollution.pm10}}</p>
+            <p *ngIf="dataPollution">O3: {{dataPollution.o3}}</p>
+            <p *ngIf="dataPollution">SO2: {{dataPollution.so2}}</p>
+            <p *ngIf="dataPollution">WG: {{dataPollution.wg}}</p>
+            <p *ngIf="dataPollution">DEW: {{dataPollution.dew}}</p>
+            <p *ngIf="dataPollution">T: {{dataPollution.t}}</p>
+            <p *ngIf="dataPollution">W: {{dataPollution.w}}</p>
+            <p *ngIf="dataPollution">R: {{dataPollution.r}}</p>
+            <p *ngIf="dataPollution">P: {{dataPollution.p}}</p>
+            <p *ngIf="dataPollution">H: {{dataPollution.h}}</p>
+        </div>
     </div>
     <div id="rankingMaps">
         <h1 id="titleRankings">Rankings</h1>
@@ -70,7 +94,6 @@
                         <td><span>{{ranking_data.location_name}}</span></td>
                         <td><span>{{ranking_data.date_day_info}}</span></td>
                         <td><span>{{ranking_data.value}}</span></td>
-
                     </tr>
                 </tbody>
             </table>

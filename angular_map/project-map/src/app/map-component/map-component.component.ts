@@ -15,6 +15,7 @@ export class MapComponentComponent implements OnInit {
 
   constructor(private service: ConnectBackendApiService, public datepipe: DatePipe) { } 
 
+  dataPollution: any = null;
   rankingArray: any = [];
   rankingPollutant: string = "";
   actualDate = this.datepipe.transform(new Date(), 'YYYY-MM-dd')?.toString();
@@ -109,7 +110,6 @@ export class MapComponentComponent implements OnInit {
       } else {
         let scale = d3.zoomTransform(map.node()).k;
         let scale_int = Math.round(scale)
-        let actual_r = d3.selectAll('circle').attr('r')
         d3.selectAll('.circlesPeninsula').attr("r" , this.scale[scale_int]).attr("stroke-width", this.scale[scale_int])
       }
     })).append("g");
@@ -205,6 +205,8 @@ export class MapComponentComponent implements OnInit {
               this.service.get_location_data(event.target.id).subscribe({
                   next: (response: any) => {
                     console.log(response)
+                    console.log(event.target.id)
+                    this.changeInfoData(response);
                   },
                   error: (err:any) => {
                     console.log("Error on Request")  
@@ -300,5 +302,12 @@ export class MapComponentComponent implements OnInit {
     complete: () => {}
 
   })
+  }
+
+  changeInfoData(data: any){
+   this.dataPollution = data[0];
+   d3.select("#pollutantInfo").style("display", "none")
+   d3.select("#locationData").style("display", "block")
+   this.dataPollution.date_day_info = this.datepipe.transform(this.dataPollution.date_day_info, 'YYYY-MM-dd')?.toString()
   }
 }

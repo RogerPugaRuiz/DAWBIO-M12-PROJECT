@@ -55,12 +55,27 @@
     margin: auto;
 }
 
-#dataMaps > p {
-    margin-left: 10px;
-    margin-bottom: 12px;
+#pollutantInfo{
+    top: 0px;
+    width: 1035px;
+    height: 500px;
 }
 
-#dataMaps > h1 {
+#pollutantInfo > p {
+    margin-left: 10px;
+    margin-bottom: 12px;
+
+}
+
+#pollutantInfo > h1 {
     margin-left: 10px;
 
+}
+
+#locationData{
+    display: none;
+    position: absolute;
+    top: 0px;
+    width: 1035px;
+    height: 500px;
 }

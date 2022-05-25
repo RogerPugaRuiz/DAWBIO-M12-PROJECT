@@ -23,7 +23,6 @@ export class ConnectBackendApiService  {
 
   get_locations_info(): Observable<any> {
       return this.http.get<any>(this.ROOT_URL + "getUniqueLocationsInfoData");
-      
   }
 
   get_location_data(location: string): Observable<any> {
