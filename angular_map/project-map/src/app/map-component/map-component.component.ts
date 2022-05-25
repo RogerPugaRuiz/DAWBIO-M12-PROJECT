@@ -2,20 +2,51 @@ import { ConnectBackendApiService } from '../services/connect-backend-api.servic
 import { Component, OnInit } from '@angular/core'; 
 import * as d3 from "d3";
 import * as topojson from "topojson-client";
+import { DatePipe } from '@angular/common';
 
 
 
 @Component({
   selector: 'app-map-component',
   templateUrl: './map-component.component.html',
-  styleUrls: ['./map-component.component.css']
+  styleUrls: ['./map-component.component.css'],
 })
 export class MapComponentComponent implements OnInit {
 
-  constructor(private service: ConnectBackendApiService) { } 
+  constructor(private service: ConnectBackendApiService, public datepipe: DatePipe) { } 
+
+  rankingArray: any = [];
+  rankingPollutant: string = "";
+  actualDate = this.datepipe.transform(new Date(), 'YYYY-MM-dd')?.toString();
+  minDateRanking: string = "";
+  maxDateRanking: string = "";
+  
 
   ngOnInit(): void {
     this.createMap();
+
+    this.service.get_date_range().subscribe({
+      next: (response: any) => {
+        this.minDateRanking = response[0][0]
+        this.maxDateRanking = response[0][1]
+      },
+      error: (err: any) => {
+        console.log("Error on Request")
+      },
+      complete: () => {}
+    })
+
+    this.service.get_ranking("air_quality_level", this.datepipe.transform(this.actualDate, 'YYYY-MM-dd')?.toString()).subscribe({
+      next: (response: any) => {
+        this.rankingPollutant = response[0].pollutant
+        this.rankingArray = response;
+      },
+      error: (err: any) => {
+        console.log("Error on Request")
+      },
+      complete: () => {}
+
+    })
   }
 
   //Peninsula Map size 
@@ -65,7 +96,7 @@ export class MapComponentComponent implements OnInit {
 
     let projectionCan: d3.GeoProjection = d3.geoMercator().translate([810, 1350]).scale(2500);
     let pathCan: d3.GeoPath<any, d3.GeoPermissibleObjects> = d3.geoPath().projection(projectionCan);
-    let mapCan: any = d3.select("#mapC").append("svg").attr("id", "isleMap").attr("width", this.wCan).attr("height", this.hCan).style("border", "1px solid black").style("background-color", "#7fcdff").style("position", "absolute").style("top", "388px").style("left", "526px");
+    let mapCan: any = d3.select("#mapC").append("svg").attr("id", "isleMap").attr("width", this.wCan).attr("height", this.hCan).style("border", "1px solid black").style("background-color", "#7fcdff");
 
     //Zoom Functions Peninsula Map
 
@@ -159,6 +190,7 @@ export class MapComponentComponent implements OnInit {
             .append("circle")
             .attr("id", element[0])
             .attr("aqilevel", element[3])
+            .attr("dominant_pollution", element[4])
             .attr("class", "circlesPeninsula")
             // @ts-ignore
             .attr("cx", function(d){ return projection(d)[0] })
@@ -182,10 +214,10 @@ export class MapComponentComponent implements OnInit {
             })
             .on('mouseover', function (event: any) {
               divToolTip.transition()
-                .duration(200)
+                .duration(350)
                 .style("opacity", .7)
                 .style("display", "block")
-              divToolTip.html(event.target.id + "<br>" + "Air Quality Level - " + event.target.attributes["aqilevel"]["nodeValue"])
+              divToolTip.html(event.target.id + "<br>" + "Air Quality Level - " + event.target.attributes["aqilevel"]["nodeValue"]  + "<br>" + "Dominant Pollution - " + event.target.attributes["dominant_pollution"]["nodeValue"])
                 .style("box-sizing", "border-box")
                 .style("padding", "5px")
                 .style("background-color" , "white")
@@ -194,12 +226,7 @@ export class MapComponentComponent implements OnInit {
                 .style("top", event.pageY - 28 + "px")
             })
             .on('mouseout', function () {
-              divToolTip.transition()
-                .duration(200)
-                .style("opacity", 0)
-              setTimeout(function(){
-                divToolTip.style("display", "none")
-              }, 200);
+              divToolTip.style("opacity", 0).style("display", "none");
             });
     
             //Insert Canary Island Stations Points
@@ -211,6 +238,7 @@ export class MapComponentComponent implements OnInit {
             .append("circle")
             .attr("id", element[0])
             .attr("aqilevel", element[3])
+            .attr("dominant_pollution", element[4])
             .attr("class", "circlesCan")
             // @ts-ignore
             .attr("cx", function(d){ return projectionCan(d)[0]})
@@ -234,10 +262,10 @@ export class MapComponentComponent implements OnInit {
             })
             .on('mouseover', function (event: any) {
               divToolTip.transition()
-                .duration(200)
+                .duration(350)
                 .style("opacity", .7)
                 .style("display", "block")
-              divToolTip.html(event.target.id + "<br>" + "Air Quality Level - " + event.target.attributes["aqilevel"]["nodeValue"])
+              divToolTip.html(event.target.id + "<br>" + "Air Quality Level - " + event.target.attributes["aqilevel"]["nodeValue"] + "<br>" + "Dominant Pollution - " + event.target.attributes["dominant_pollution"]["nodeValue"])
                 .style("box-sizing", "border-box")
                 .style("padding", "5px")
                 .style("background-color" , "white")
@@ -246,15 +274,8 @@ export class MapComponentComponent implements OnInit {
                 .style("top", event.pageY - 28 + "px")
             })
             .on('mouseout', function () {
-              divToolTip.transition()
-                .duration(200)
-                .style("opacity", 0)
-              setTimeout(function(){
-                divToolTip.style("display", "none")
-              }, 200);
+              divToolTip.style("opacity", 0).style("display", "none");
             });
-
-
           });
         },
         error: (err: any) => {
@@ -265,5 +286,19 @@ export class MapComponentComponent implements OnInit {
 
 
 
+  }
+
+  changeRankings(){
+   this.service.get_ranking(this.rankingPollutant, this.datepipe.transform(this.actualDate, 'YYYY-MM-dd')?.toString()).subscribe({
+    next: (response: any) => {
+      this.rankingPollutant = response[0].pollutant
+      this.rankingArray = response;
+    },
+    error: (err: any) => {
+      console.log("Error on Request")
+    },
+    complete: () => {}
+
+  })
   }
 }

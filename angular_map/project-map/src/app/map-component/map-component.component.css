@@ -1,0 +1,66 @@
+@import "~bootstrap/dist/css/bootstrap.css";
+@import "~font-awesome/css/font-awesome.css";
+
+#maps{
+    position: absolute;
+    width: 753px;
+    height: 503px;
+}
+#map{
+    position: absolute;
+    width: 753px;
+    height: 503px;
+}
+#mapC{
+    position: absolute;
+    top: 380px;
+    left: 510px;
+}
+
+#dataMaps{
+    border: 1px solid black;
+    position: absolute;
+    left: 800px;
+    width: 1035px;
+    height: 500px;
+    background-color: aliceblue;
+}
+
+#rankingMaps{
+    border: 1px solid black;
+    position: absolute;
+    top: 530px;
+    width: 1820px;
+    background-color: aliceblue;
+}
+
+#titleRankings{
+    text-align: center;
+}
+
+#selectDiv{
+    text-align:center;
+    margin-bottom: 10px;
+}
+
+#selectRankings{
+    margin: auto;
+}
+
+#datePicker{
+    text-align:center; 
+}
+
+#datePicker > *{
+    margin: auto;
+}
+
+#dataMaps > p {
+    margin-left: 10px;
+    margin-bottom: 12px;
+}
+
+#dataMaps > h1 {
+    margin-left: 10px;
+
+}

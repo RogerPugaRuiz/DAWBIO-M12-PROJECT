@@ -211,7 +211,7 @@ def delete_duplicated_forecast_data(unique_location_names: tuple):
         for ufln in unique_location_names:
             print(ufln)
             cursor = db.cursor(prepared=True)
-            cursor.execute(SQLQueries.delete_forecast_duplicated_data % ufln)
+            cursor.execute(SQLQueries.delete_forecast_duplicated_data % utils.add_backslashes_in_special_characters(ufln))
             cursor.close()
             db.commit()    
         db.close()
@@ -360,3 +360,53 @@ def get_air_pollution_data(location_name: str, date: str):
     except Exception as e:
         print("An exception occurred - " + format(e))
     return result_array
+
+def get_rankings_data(pollutant: str, date: str):
+    """ 
+    Get rankings data - Get ranking data given the pollutant and the day
+
+    Returns:
+    result_array (tuple): Array with rankings
+    
+    """
+    result_array = []
+    try: 
+        db: sql.MySQLConnection = connection("spainAirPollution")
+        cursor = db.cursor(prepared=True)
+        info_tuple: tuple = (pollutant, pollutant , date, pollutant)
+        cursor.execute(SQLQueries.get_rankings % info_tuple)
+        rows = cursor.fetchall()
+        columnNames = [column[0] for column in cursor.description]
+        for row in rows:
+            dict_row = OrderedDict(zip(columnNames, row))
+            for key, value in dict_row.items():
+                if(type(value) == decimal.Decimal):
+                    dict_row[key]= float(value)
+            result_array.append(dict_row)
+        cursor.close()
+        db.commit()    
+        db.close()
+    except Exception as e:
+        print("An exception occurred - " + format(e))
+    return result_array
+
+def get_date_range():
+    """ 
+    Get date range - Get the minimum and maximum date of the data in the database table 'info_air_pollution'
+
+    Returns:
+    unique_locations_data (tuple): Array with max and min date
+    
+    """
+    try: 
+        db: sql.MySQLConnection = connection("spainAirPollution")
+        cursor = db.cursor(prepared=True)
+        cursor.execute(SQLQueries.get_date_range)
+        date_range = cursor.fetchall()
+        print(date_range)
+        cursor.close()
+        db.commit()    
+        db.close()
+        return date_range
+    except Exception as e:
+        print("An exception occurred - " + format(e))

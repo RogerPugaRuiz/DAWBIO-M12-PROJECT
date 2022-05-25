@@ -47,10 +47,20 @@ def getAllData():
 @limiter.limit("10/second")
 def getData():
     location_name = ""
+    current_date = datetime.datetime.now()
     if(request.method == 'POST'):
         location_name = request.json['location_name']
-        current_date = datetime.datetime.now()
     return jsonify(utilsDB.get_air_pollution_data(location_name, current_date.strftime("%y-%m-%d")))
+
+@app.route("/getRankings", methods=['POST'])
+@limiter.limit("10/second")
+def getRankings():
+    pollutant = ""
+    if(request.method == 'POST'):
+        pollutant = request.json['pollutant']
+        date = request.json['date']
+        print(date)
+    return jsonify(utilsDB.get_rankings_data(pollutant, date))
 
 @app.route("/getUniqueLocations")
 @limiter.limit("10/second")
@@ -61,6 +71,13 @@ def getUniqueLocations():
 @limiter.limit("10/second")
 def getUniqueLocationsInfoData():
     return jsonify(utilsDB.get_unique_location_info_data())
+
+@app.route("/getDateRange")
+@limiter.limit("10/second")
+def getDateRange():
+    return jsonify(utilsDB.get_date_range())
+
+
 
 # Main
 # ---------------------------------------------------------------------

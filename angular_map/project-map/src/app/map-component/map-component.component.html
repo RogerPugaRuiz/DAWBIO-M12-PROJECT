@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>My map</title>
+<link rel="stylesheet" type="text/css" href="./map-component.component.css">
+</head>
+<body>
+    <div id="maps">
+        <div id="map"></div>
+        <div id="mapC"></div>
+    </div>
+    <div id="dataMaps">
+        <h1>Info Pollution</h1>
+        <p>no2 - Nitrogen (converted to AQI levels from µg/m3 (EPA Standard))</p>
+        <p>pm10 - (Respirable particulate matter) Suspended particles between 2.5 and 10 microns in diameter (converted to AQI levels from µg/m3 (EPA Standard))</p>
+        <p>pm25 - (Fine particulate matter) Suspended particles less than 2.5 microns in diameter (converted to AQI levels from µg/m3 (EPA Standard))</p>
+        <p>co - Carbon Monoxide (converted to AQI levels from µg/m3 (EPA Standard))</p>
+        <p>o3 - Ozone (converted to AQI levels from µg/m3 (EPA Standard))</p>
+        <p>so2 - Sulfur Dioxide (converted to AQI levels from µg/m3 (EPA Standard))</p>
+        <p>wg - Static pressure (Pressure necessary to support a column of water) (iaqi)</p>
+        <p>dew - Indirect indicator of contamination by particulate matter (iaqi)</p>
+        <p>t - Temperature (Celsius)</p>
+        <p>w - Wind (m/s)</p>
+        <p>r - Rain</p>
+        <p>p - Pressure (Hectopascals)</p>
+        <p>h - Humidity (%)</p>
+    </div>
+    <div id="rankingMaps">
+        <h1 id="titleRankings">Rankings</h1>
+        <div id="selectDiv">
+            <select name="cars" id="selectRankings" [(ngModel)]="rankingPollutant" (change)="changeRankings()">
+                <option value="air_quality_level">Air Quality Level</option>
+                <option value="no2">NO2</option>
+                <option value="pm10">PM10</option>
+                <option value="pm25">PM25</option>
+                <option value="co">CO</option>
+                <option value="o3">O3</option>
+                <option value="so2">SO2</option>
+                <option value="dew">DEW</option>
+                <option value="wg">Static Pressure</option>
+                <option value="t">Temperature</option>
+                <option value="w">Wind</option>
+                <option value="r">Rain</option>
+                <option value="p">Pressure</option>
+                <option value="h">Humidity</option>
+            </select>
+        </div>
+        <div id="datePicker">
+            <mat-form-field appearance="fill">
+                <mat-label>Choose a date</mat-label>
+                <input [(ngModel)]="actualDate" (dateChange)="changeRankings()"  matInput [matDatepicker]="datePicker" [min] = "minDateRanking" [max] = "maxDateRanking" onkeydown="return false" >
+                <mat-datepicker-toggle [for]="datePicker" matSuffix></mat-datepicker-toggle>
+                <mat-datepicker #datePicker></mat-datepicker>
+            </mat-form-field>              
+        </div>
+        <div class="containter">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Ranking</th>
+                        <th>Location Name</th>
+                        <th>Date</th>
+                        <th>{{rankingPollutant}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let ranking_data of rankingArray; let i = index">
+                        <td><span>{{i+1}}</span></td>
+                        <td><span>{{ranking_data.location_name}}</span></td>
+                        <td><span>{{ranking_data.date_day_info}}</span></td>
+                        <td><span>{{ranking_data.value}}</span></td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient} from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
 
-
-
 @Injectable({
   providedIn: 'root'
 })
@@ -29,10 +27,18 @@ export class ConnectBackendApiService  {
   }
 
   get_location_data(location: string): Observable<any> {
-      return this.http.post<any>(this.ROOT_URL + "getData", {location_name: location });
+      return this.http.post<any>(this.ROOT_URL + "getData", {location_name: location});
+  }
+
+  get_ranking(pollutant: string, date: string | undefined): Observable<any> {
+    return this.http.post<any>(this.ROOT_URL + "getRankings", {pollutant: pollutant, date: date});
+  } 
+
+  get_date_range(): Observable<any> {
+    return this.http.get<any>(this.ROOT_URL + "getDateRange");
   }
   
  
   
 
-}  
+} 

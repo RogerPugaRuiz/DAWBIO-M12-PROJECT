@@ -1,0 +1,13 @@
+no2 - Nitrogen (converted to AQI levels from µg/m3 (EPA Standard)) 
+pm10 - (Respirable particulate matter) Suspended particles between 2.5 and 10 microns in diameter (converted to AQI levels from µg/m3 (EPA Standard))
+pm25 - (Fine particulate matter) Suspended particles less than 2.5 microns in diameter (converted to AQI levels from µg/m3 (EPA Standard))
+co - Carbon Monoxide (converted to AQI levels from µg/m3 (EPA Standard))
+o3 - Ozone (converted to AQI levels from µg/m3 (EPA Standard))
+so2 - Sulfur Dioxide (converted to AQI levels from µg/m3 (EPA Standard))
+wg - Static pressure (Pressure necessary to support a column of water) (iaqi)
+dew - Indirect indicator of contamination by particulate matter (iaqi)
+t - Temperature (Celsius)
+w - Wind (m/s)
+r - Rain
+p - Pressure (Hectopascals)
+h - Humidity (%)
