@@ -1,5 +1,5 @@
 @import "~bootstrap/dist/css/bootstrap.css";
-@import "~font-awesome/css/font-awesome.css";
+
 
 #maps{
     position: absolute;
@@ -61,15 +61,15 @@
     height: 500px;
 }
 
-#pollutantInfo > p {
+#pollutantInfo{
     margin-left: 10px;
-    margin-bottom: 12px;
-
+    margin-top: 10px;
+    margin-right: 10px;
+    padding-right: 10px;
 }
 
-#pollutantInfo > h1 {
-    margin-left: 10px;
-
+#pollutantInfo > p{
+    margin-bottom: 7px;
 }
 
 #locationData{

@@ -289,6 +289,38 @@ def get_all_air_pollution_data():
         print("An exception occurred - " + format(e))
     return result_array
 
+def get_air_pollution_data(location_name: str, date: str):
+    """ 
+    Get air pollution data - Get pollution data given the location_name and the date
+
+    Returns:
+    result_array (tuple): Array with all data
+    
+    """
+    result_array = []
+    try: 
+        db: sql.MySQLConnection = connection("spainAirPollution")
+        cursor = db.cursor(prepared=True)
+        info_tuple: tuple = (utils.add_backslashes_in_special_characters(location_name), date)
+        print(info_tuple)
+        cursor.execute(SQLQueries.get_location_data_where_location_name_and_date % info_tuple)
+        rows = cursor.fetchall()
+        columnNames = [column[0] for column in cursor.description]
+        for row in rows:
+            dict_row = OrderedDict(zip(columnNames, row))
+            for key, value in dict_row.items():
+                if(type(value) == decimal.Decimal):
+                    dict_row[key]= float(value)
+                if(type(value) == date or type(value) == timedelta):
+                    dict_row[key] = str(value)
+            result_array.append(dict_row)
+        cursor.close()
+        db.commit()    
+        db.close()
+    except Exception as e:
+        print("An exception occurred - " + format(e))
+    return result_array
+
 def get_unique_locations():
     """ 
     Get unique locations - Get unique locations in database table "info_air_pollution"
@@ -328,38 +360,6 @@ def get_unique_location_info_data():
         return unique_locations_info_data
     except Exception as e:
         print("An exception occurred - " + format(e))
-        
-def get_air_pollution_data(location_name: str, date: str):
-    """ 
-    Get air pollution data - Get pollution data given the location_name and the date
-
-    Returns:
-    result_array (tuple): Array with all data
-    
-    """
-    result_array = []
-    try: 
-        db: sql.MySQLConnection = connection("spainAirPollution")
-        cursor = db.cursor(prepared=True)
-        info_tuple: tuple = (utils.add_backslashes_in_special_characters(location_name), date)
-        print(info_tuple)
-        cursor.execute(SQLQueries.get_location_data_where_location_name_and_date % info_tuple)
-        rows = cursor.fetchall()
-        columnNames = [column[0] for column in cursor.description]
-        for row in rows:
-            dict_row = OrderedDict(zip(columnNames, row))
-            for key, value in dict_row.items():
-                if(type(value) == decimal.Decimal):
-                    dict_row[key]= float(value)
-                if(type(value) == date or type(value) == timedelta):
-                    dict_row[key] = str(value)
-            result_array.append(dict_row)
-        cursor.close()
-        db.commit()    
-        db.close()
-    except Exception as e:
-        print("An exception occurred - " + format(e))
-    return result_array
 
 def get_rankings_data(pollutant: str, date: str):
     """ 
@@ -390,9 +390,31 @@ def get_rankings_data(pollutant: str, date: str):
         print("An exception occurred - " + format(e))
     return result_array
 
-def get_date_range():
+def get_nearest_location_data_date(location_name: str):
     """ 
-    Get date range - Get the minimum and maximum date of the data in the database table 'info_air_pollution'
+    Get nearest location data date - Get the most recent data date with a given location in the database table 'info_air_pollution'
+
+    Returns:
+    most_recent_date (tuple): Array with most recent date
+    
+    """
+    try: 
+        db: sql.MySQLConnection = connection("spainAirPollution")
+        cursor = db.cursor(prepared=True)
+        info_tuple: tuple = (utils.add_backslashes_in_special_characters(location_name))
+        cursor.execute(SQLQueries.get_nearest_location_data_date % info_tuple) 
+        date_range = cursor.fetchall()
+        print(date_range)
+        cursor.close()
+        db.commit()    
+        db.close()
+        return date_range
+    except Exception as e:
+        print("An exception occurred - " + format(e))
+
+def get_ranking_date_range():
+    """ 
+    Get ranking date range - Get the minimum and maximum date of the data in the database table 'info_air_pollution'
 
     Returns:
     unique_locations_data (tuple): Array with max and min date

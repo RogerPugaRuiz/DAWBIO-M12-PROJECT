@@ -6,11 +6,11 @@
 <link rel="stylesheet" type="text/css" href="./map-component.component.css">
 </head>
 <body>
-    <div id="maps">
+    <div id="maps" style="margin-left: 15px; margin-top: 15px;">
         <div id="map"></div>
         <div id="mapC"></div>
     </div>
-    <div id="dataMaps">
+    <div id="dataMaps" style="margin-top: 15px;">
         <div id="pollutantInfo">
             <h1>Info Pollution</h1>
             <p>no2 - Nitrogen (converted to AQI levels from µg/m3 (EPA Standard))</p>
@@ -35,22 +35,23 @@
             <p *ngIf="dataPollution">Longitud: {{dataPollution.longitude}}</p>
             <p *ngIf="dataPollution">Date Info: {{dataPollution.date_day_info}}</p>
             <p *ngIf="dataPollution">Date Time: {{dataPollution.date_time_info}}</p>
-            <p *ngIf="dataPollution">NO2: {{dataPollution.no2}}</p>
-            <p *ngIf="dataPollution">PM10: {{dataPollution.pm10}}</p>
-            <p *ngIf="dataPollution">PM25: {{dataPollution.pm25}}</p>
-            <p *ngIf="dataPollution">CO: {{dataPollution.pm10}}</p>
-            <p *ngIf="dataPollution">O3: {{dataPollution.o3}}</p>
-            <p *ngIf="dataPollution">SO2: {{dataPollution.so2}}</p>
-            <p *ngIf="dataPollution">WG: {{dataPollution.wg}}</p>
-            <p *ngIf="dataPollution">DEW: {{dataPollution.dew}}</p>
-            <p *ngIf="dataPollution">T: {{dataPollution.t}}</p>
-            <p *ngIf="dataPollution">W: {{dataPollution.w}}</p>
-            <p *ngIf="dataPollution">R: {{dataPollution.r}}</p>
-            <p *ngIf="dataPollution">P: {{dataPollution.p}}</p>
-            <p *ngIf="dataPollution">H: {{dataPollution.h}}</p>
+            <span *ngIf="dataPollution"><p *ngIf="dataPollution.no2; else elseContentdataPollution">NO2: {{dataPollution.no2}}</p></span>
+            <span *ngIf="dataPollution"><p *ngIf="dataPollution.pm10; else elseContentdataPollution">PM10: {{dataPollution.pm10}}</p></span>
+            <span *ngIf="dataPollution"><p *ngIf="dataPollution.pm25; else elseContentdataPollution">PM25: {{dataPollution.pm25}}</p></span>
+            <span *ngIf="dataPollution"><p *ngIf="dataPollution.co; else elseContentdataPollution">CO: {{dataPollution.co}}</p></span>
+            <span *ngIf="dataPollution"><p *ngIf="dataPollution.o3; else elseContentdataPollution">O3: {{dataPollution.o3}}</p></span>
+            <span *ngIf="dataPollution"><p *ngIf="dataPollution.so2; else elseContentdataPollution">SO2: {{dataPollution.so2}}</p></span>
+            <span *ngIf="dataPollution"><p *ngIf="dataPollution.wg; else elseContentdataPollution">WG: {{dataPollution.wg}}</p></span>
+            <span *ngIf="dataPollution"><p *ngIf="dataPollution.dew; else elseContentdataPollution">DEW: {{dataPollution.dew}}</p></span>
+            <span *ngIf="dataPollution"><p *ngIf="dataPollution.t; else elseContentdataPollution">T: {{dataPollution.t}}</p></span>
+            <span *ngIf="dataPollution"><p *ngIf="dataPollution.w; else elseContentdataPollution">W: {{dataPollution.w}}</p></span>
+            <span *ngIf="dataPollution"><p *ngIf="dataPollution.r; else elseContentdataPollution">R: {{dataPollution.r}}</p></span>
+            <span *ngIf="dataPollution"><p *ngIf="dataPollution.p; else elseContentdataPollution">P: {{dataPollution.p}}</p></span>
+            <span *ngIf="dataPollution"><p *ngIf="dataPollution.h; else elseContentdataPollution">H: {{dataPollution.h}}</p></span>
+            <ng-template #elseContentdataPollution></ng-template>
         </div>
     </div>
-    <div id="rankingMaps">
+    <div id="rankingMaps" style="margin-left: 15px;">
         <h1 id="titleRankings">Rankings</h1>
         <div id="selectDiv">
             <select name="cars" id="selectRankings" [(ngModel)]="rankingPollutant" (change)="changeRankings()">
@@ -82,10 +83,10 @@
             <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        <th>Ranking</th>
-                        <th>Location Name</th>
-                        <th>Date</th>
-                        <th>{{rankingPollutant}}</th>
+                        <th style="width: 10%">Ranking</th>
+                        <th style="width: 40%">Location Name</th>
+                        <th style="width: 30%">Date</th>
+                        <th style="width: 20%">{{rankingPollutant}}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -93,7 +94,8 @@
                         <td><span>{{i+1}}</span></td>
                         <td><span>{{ranking_data.location_name}}</span></td>
                         <td><span>{{ranking_data.date_day_info}}</span></td>
-                        <td><span>{{ranking_data.value}}</span></td>
+                        <td><span *ngIf="ranking_data.value; else elseContentNoValue" >{{ranking_data.value}}</span></td>
+                        <ng-template #elseContentNoValue>NO DATA</ng-template>
                     </tr>
                 </tbody>
             </table>
