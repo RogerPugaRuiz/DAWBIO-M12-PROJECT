@@ -309,6 +309,18 @@ public class UserService {
         userRepo.deleteUsers(ids);
     }
 
+    @Transactional
+    /**
+     * Method to add new role
+     * @param role
+     * @return void
+     */
+    public void addRole(Role role) {
+        // info add new role
+        logger.info("add new role: " + role.getName());
+        roleRepo.addRole(role);
+    }
+
 
     /**
      * Method find message by id

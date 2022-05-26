@@ -30,6 +30,8 @@ import { EditUserComponent } from './edit-user/edit-user.component';
 import { DeleteUserComponent } from './delete-user/delete-user.component';
 import { InfoComponent } from './info/info.component';
 import { MapComponent } from './map/map.component';
+import { NewsComponent } from './news/news.component';
+import { NewsGeneratorComponent } from './news-generator/news-generator.component';
 
 
 
@@ -57,6 +59,8 @@ import { MapComponent } from './map/map.component';
     DeleteUserComponent,
     InfoComponent,
     MapComponent,
+    NewsComponent,
+    NewsGeneratorComponent,
   ],
   imports: [
     BrowserModule,

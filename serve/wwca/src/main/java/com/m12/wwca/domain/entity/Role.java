@@ -17,7 +17,7 @@ import java.util.List;
 @Entity(name = "roles")
 public class Role {
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id; // id for hibernate
 
     @Column(nullable = false, unique = true)
