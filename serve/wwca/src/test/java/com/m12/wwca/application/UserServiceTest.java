@@ -65,6 +65,11 @@ public class UserServiceTest {
             assert false;
         }
     }
+    @Test
+    void testAddRole(){
+        Role role = new Role("resercher");
+        userService.addRole(role);
+    }
 
     @Test
     void testAddChatContact() {

@@ -15,11 +15,10 @@
                 <span *ngIf="signInForm.get('password')?.errors?.['pattern']">Invalid password </span>
             </div>
             <input type="submit" value="Sign In" name="sign-in" id="sign-in">
-            <div class="error" *ngIf="signInForm?.invalid && (signInForm?.dirty || signInForm?.touched) ">
-                <span *ngIf="signInForm?.errors?.['required']">Password is required</span>
-                <span *ngIf="signInForm?.errors?.['pattern']">Invalid password </span>
-                <span>{{this.invalidForm}}</span>
+            <div class="error" *ngIf="signInForm?.invalid">
+                <span>{{this.textInvalidSignIn}}</span>
             </div>
+
         </form>
         <form class="sign-up" [formGroup]="this.signUpForm" (ngSubmit)="this.signUp()">
             <div class="group">
@@ -63,6 +62,9 @@
                 <span *ngIf="signUpForm.get('signUpConfirmPassword')?.errors?.['notmatched']">* Confirm Password is not the
                     same as the password</span>
                 <!-- <span *ngIf="signUpForm.getError('notmatched') as error"></span> -->
+            </div>
+            <div class="error" *ngIf="this.signUpForm?.invalid">
+                <span>{{this.textInvalidSignUp}}</span>
             </div>
         </form>
     </div>

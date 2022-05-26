@@ -18,13 +18,26 @@
             </a>
         </li>
         <li>
-            <a class="menu-element" (click)="this.setMenu(5)">
+            <a class="menu-element maps" (click)="this.setMenu(5)">
                 <i class='fas fa-map' [ngClass]="this.menu == 5 ? 'activate-menu' : ''"></i></a>
         </li>
         <li><a class="menu-element">
                 <i class="fa fa-user" (click)="this.setMenu(3)" [ngClass]="this.menu == 3 ? 'activate-menu' : ''"></i>
             </a>
         </li>
+
+        <div class="expand" *ngIf="this.menu == 2">
+            <a class="expand-element" [routerLink]="[]">
+                News
+            </a>
+            <a class="expand-element" [routerLink]="[]">
+                Forums
+            </a>
+        </div>
+
+        <div class="expand" *ngIf="this.menu == 5">
+            <a class="expand-element" [routerLink]="['map/pollution']">Pollution</a>
+        </div>
 
         <div class="expand" *ngIf="this.menu == 3 && this.isRegistered()">
             <a class="expand-element" [routerLink]="['myAccount']">My Account</a>
@@ -36,6 +49,7 @@
             <a class="expand-element" [routerLink]="['/register']">Register</a>
             <a class="expand-element" [routerLink]="['settings']">Settings</a>
         </div>
+
         <div class="expand" *ngIf="this.menu == 4">
             <app-chat [isCompOpen]="this.menu == 4" [confirmAddContactList]="this.confirmAddContactList"
                 [contactList]="this.getContactList()" [responseList]="this.responseList"
@@ -44,4 +58,3 @@
     </ul>
 
 </nav>
-

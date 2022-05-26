@@ -21,8 +21,8 @@ import utils.utils as utils
 # Local DataBase connection parameters 
 
 host: str = "localhost"
-user: str = "provenusr"
-password: str = "provenpass"
+user: str = "wwcauser"
+password: str = "Qhe{T7UgezJu9?3X"
 
 #Database Functions
 

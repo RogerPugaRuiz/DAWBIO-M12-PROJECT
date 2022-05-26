@@ -80,7 +80,7 @@ export class CreateUserComponent implements OnInit {
           }
         });
     } else {
-      // this.invalidForm = 'Invalid username, email or password';
+      this.invalidForm = '* Invalid form';
     }
   }
 
