@@ -43,5 +43,9 @@
                 same as the password</span>
             <!-- <span *ngIf="signUpForm.getError('notmatched') as error"></span> -->
         </div>
+        <div class="error"
+            *ngIf="this.signUpForm?.invalid">
+            <span >{{this.invalidForm}}</span>
+        </div>
     </form>
 </div>

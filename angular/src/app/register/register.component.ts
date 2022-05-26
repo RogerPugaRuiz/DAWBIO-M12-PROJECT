@@ -16,7 +16,8 @@ import { passwordMatchingValidatior } from '../validators/must-match.validator';
 })
 export class RegisterComponent implements OnInit {
 
-  invalidForm: String = '';
+  textInvalidSignIn: String = '';
+  textInvalidSignUp: String = '';
   usernameAlreadyExists: string = '';
   emailAlreadyExists: string = '';
   stompClient?: any;
@@ -96,14 +97,14 @@ export class RegisterComponent implements OnInit {
               this.router.navigate(['/myAccount']);
             }
             if (data.ok == false) {
-              this.invalidForm = 'Invalid username, email or password';
+              this.textInvalidSignIn = 'Invalid username, email or password';
               this.signInForm.setErrors({ 'invalidForm': true });
             }
             
             
           },
           error: (data) => {
-            this.invalidForm = 'Invalid username, email or password';
+            this.textInvalidSignIn = 'Invalid username, email or password';
             this.signInForm.setErrors({ 'invalidForm': true });
           },
           complete: () => {
@@ -115,7 +116,8 @@ export class RegisterComponent implements OnInit {
         
         );
       }else{
-        this.invalidForm = 'Invalid username, email or password';
+        // this.signUpForm.setErrors({ 'invalidForm': true });
+        this.textInvalidSignIn = '* Invalid form';
 
       }
 
@@ -138,12 +140,13 @@ export class RegisterComponent implements OnInit {
 
             }
             else {
-              this.invalidForm = data.messages;
+              this.textInvalidSignUp = data.messages;
             }
           }
         });
     } else {
-      // this.invalidForm = 'Invalid username, email or password';
+      // this.signUpForm.setErrors({ 'invalidForm': true });
+      this.textInvalidSignUp = '* Invalid form';
     }
   }
 
