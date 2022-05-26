@@ -12,6 +12,7 @@ import { AdminGuard } from './guards/admin.guard';
 import { RegisterGuard } from './guards/register.guard';
 import { UserGuard } from './guards/user.guard';
 import { HomeComponent } from './home/home.component';
+import { MapComponent } from './map/map.component';
 import { MapsComponent } from './maps/maps.component';
 import { MyAccountComponent } from './my-account/my-account.component';
 import { RegisterComponent } from './register/register.component';
@@ -30,6 +31,7 @@ const routes: Routes = [
   { path: "admin", component: AdminComponent, canActivate: [AdminGuard]},
   { path: "admin/edit-user/:id", component: EditUserComponent, canActivate: [AdminGuard]},
   { path: "admin/create-user", component: CreateUserComponent, canActivate: [AdminGuard]},
+  { path: "map/pollution", component: MapComponent},
   { path: '**', component: ErrorComponent, data: { status: 404 }},
 ];
 
