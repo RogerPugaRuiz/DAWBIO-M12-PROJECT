@@ -1,6 +1,8 @@
 #Imports
 
 import mysql.connector as sql
+import os
+
 
 import decimal
 from datetime import date, timedelta
@@ -21,8 +23,8 @@ import utils.utils as utils
 # Local DataBase connection parameters 
 
 host: str = "localhost"
-user: str = "wwcauser"
-password: str = "Qhe{T7UgezJu9?3X"
+user: str = "provenusr"
+password: str = "provenpass"
 
 #Database Functions
 
@@ -64,6 +66,20 @@ def create_database(db_name: str = "spainAirPollution"):
         db.commit()
         cursor.close()
         db.close()
+    except Exception as e:
+        print("An exception occurred - " + format(e))
+        
+def export_database(db_name: str = "spainAirPollution"):
+    """ 
+    Export Database Function - Export a database to SQL file with the given name (default = "spainAirPollution")
+
+    Parameters:
+    db_name (string): Name of the database to export
+    
+    """
+    try:
+        tuple_info = (user, password, db_name, db_name)
+        os.system(SQLQueries.export_database_query % tuple_info)
     except Exception as e:
         print("An exception occurred - " + format(e))
 

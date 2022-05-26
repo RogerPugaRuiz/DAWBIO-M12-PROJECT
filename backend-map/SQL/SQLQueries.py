@@ -21,6 +21,7 @@ DATABASE Amazon Web Services INFO:
 
 #SQL Queries
 
+export_database_query: str = """mysqldump -u %s -p%s %s > %s.sql"""
 create_database_query: str = """CREATE DATABASE %s DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci"""
 drop_database_query: str = """DROP DATABASE %s"""
 create_table_air_pollution_query: str = """CREATE TABLE info_air_pollution (

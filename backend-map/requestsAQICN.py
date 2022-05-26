@@ -36,4 +36,6 @@ if this_module == main_module:
    utilsDB.insert_forecast_air_pollution_data(objectsForecast)
    #Delete duplicated data (in case a duplicate row has been inserted by mistake)
    utilsDB.delete_duplicated_data_pollution()
+   #Export database to sql file
+   utilsDB.export_database()
 # ---------------------------------------------------------------------
