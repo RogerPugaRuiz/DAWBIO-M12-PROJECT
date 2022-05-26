@@ -209,7 +209,6 @@ def delete_duplicated_forecast_data(unique_location_names: tuple):
         db: sql.MySQLConnection = connection("spainAirPollution")
         print("Deleting duplicate forecast data if exist...")
         for ufln in unique_location_names:
-            print(ufln)
             cursor = db.cursor(prepared=True)
             cursor.execute(SQLQueries.delete_forecast_duplicated_data % utils.add_backslashes_in_special_characters(ufln))
             cursor.close()
@@ -302,7 +301,6 @@ def get_air_pollution_data(location_name: str, date: str):
         db: sql.MySQLConnection = connection("spainAirPollution")
         cursor = db.cursor(prepared=True)
         info_tuple: tuple = (utils.add_backslashes_in_special_characters(location_name), date)
-        print(info_tuple)
         cursor.execute(SQLQueries.get_location_data_where_location_name_and_date % info_tuple)
         rows = cursor.fetchall()
         columnNames = [column[0] for column in cursor.description]
@@ -321,12 +319,77 @@ def get_air_pollution_data(location_name: str, date: str):
         print("An exception occurred - " + format(e))
     return result_array
 
+def get_air_pollution_statistical_data(location_name: str, date: str):
+    """ 
+    Get air pollution statistical data - Get pollution statistical data (AVG, MAX, MIN) given the location_name and the date
+
+    Returns:
+    result_array (tuple): Array with all statistical data
+    
+    """
+    result_array = []
+    try: 
+        db: sql.MySQLConnection = connection("spainAirPollution")
+        cursor = db.cursor(prepared=True)
+        info_tuple: tuple = (utils.add_backslashes_in_special_characters(location_name), date)
+        cursor.execute(SQLQueries.get_location_statistical_data_where_location_name_and_date % info_tuple)
+        rows = cursor.fetchall()
+        columnNames = [column[0] for column in cursor.description]
+        for row in rows:
+            dict_row = OrderedDict(zip(columnNames, row))
+            for key, value in dict_row.items():
+                if(type(value) == decimal.Decimal):
+                    dict_row[key]= float(value)
+                if(type(value) == date or type(value) == timedelta):
+                    dict_row[key] = str(value)
+            result_array.append(dict_row)
+        cursor.close()
+        db.commit()    
+        db.close()
+    except Exception as e:
+        print("An exception occurred - " + format(e))
+    return result_array
+
+def get_air_pollution_forecast_data(location_name: str ,pollutant: str, date: str):
+    """ 
+    Get air pollution forecast data - Get pollution forecast data given the pollutant, date and location_name
+
+    Returns:
+    result_array (tuple): Array with all statistical data
+    
+    """
+    result_array = []
+    try: 
+        db: sql.MySQLConnection = connection("spainAirPollution")
+        cursor = db.cursor(prepared=True)
+        info_tuple: tuple = (utils.add_backslashes_in_special_characters(location_name),pollutant, date)
+        cursor.execute(SQLQueries.get_location_forecast_data_where_pollutant_and_date_and_location_date % info_tuple)
+        rows = cursor.fetchall()
+        columnNames = [column[0] for column in cursor.description]
+        for row in rows:
+            dict_row = OrderedDict(zip(columnNames, row))
+            for key, value in dict_row.items():
+                if(type(value) == decimal.Decimal):
+                    dict_row[key]= float(value)
+                if(type(value) == date or type(value) == timedelta):
+                    dict_row[key] = str(value)
+            result_array.append(dict_row)
+        cursor.close()
+        db.commit()    
+        db.close()
+    except Exception as e:
+        print("An exception occurred - " + format(e))
+    return result_array
+
+
+
+
 def get_unique_locations():
     """ 
     Get unique locations - Get unique locations in database table "info_air_pollution"
 
     Returns:
-    unique locations (tuple): Array with unique locations
+    unique_locations (tuple): Array with unique locations
     
     """
     try: 
@@ -403,12 +466,11 @@ def get_nearest_location_data_date(location_name: str):
         cursor = db.cursor(prepared=True)
         info_tuple: tuple = (utils.add_backslashes_in_special_characters(location_name))
         cursor.execute(SQLQueries.get_nearest_location_data_date % info_tuple) 
-        date_range = cursor.fetchall()
-        print(date_range)
+        most_recent_date = cursor.fetchall()
         cursor.close()
         db.commit()    
         db.close()
-        return date_range
+        return most_recent_date
     except Exception as e:
         print("An exception occurred - " + format(e))
 
@@ -417,7 +479,7 @@ def get_ranking_date_range():
     Get ranking date range - Get the minimum and maximum date of the data in the database table 'info_air_pollution'
 
     Returns:
-    unique_locations_data (tuple): Array with max and min date
+    date_range (tuple): Array with max and min date
     
     """
     try: 
@@ -425,7 +487,27 @@ def get_ranking_date_range():
         cursor = db.cursor(prepared=True)
         cursor.execute(SQLQueries.get_date_range)
         date_range = cursor.fetchall()
-        print(date_range)
+        cursor.close()
+        db.commit()    
+        db.close()
+        return date_range
+    except Exception as e:
+        print("An exception occurred - " + format(e))
+        
+def get_forecast_date_range(location_name: str, pollutant_name: str):
+    """ 
+    Get forecast date range - Get the minimum and maximum date of the data in the database table 'forecast_air_pollution' with the given location and pollutant
+
+    Returns:
+    unique_locations_data (tuple): Array with max and min date
+    
+    """
+    try: 
+        db: sql.MySQLConnection = connection("spainAirPollution")
+        cursor = db.cursor(prepared=True)
+        info_tuple: tuple = (utils.add_backslashes_in_special_characters(location_name), pollutant_name)
+        cursor.execute(SQLQueries.get_forecast_date_range % info_tuple)
+        date_range = cursor.fetchall()
         cursor.close()
         db.commit()    
         db.close()
