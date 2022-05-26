@@ -8,7 +8,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatDatepickerModule} from '@angular/material/datepicker';
@@ -17,6 +16,7 @@ import {MomentDateModule} from '@angular/material-moment-adapter';
 
 import { MAT_DATE_FORMATS } from '@angular/material/core';
 import { DatePipe } from '@angular/common';
+
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -45,7 +45,7 @@ export const MY_DATE_FORMATS = {
     MatDatepickerModule,
     MatNativeDateModule,
     MomentDateModule,
-    FormsModule
+    FormsModule,
   ],
   providers: [
     ConnectBackendApiService,

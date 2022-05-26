@@ -14,13 +14,27 @@ import { DatePipe } from '@angular/common';
 export class MapComponentComponent implements OnInit {
 
   constructor(private service: ConnectBackendApiService, public datepipe: DatePipe) { } 
+  currentDate = new Date()
+  forecastDefaultDate = this.currentDate.setDate(this.currentDate.getDate() + 1);
 
   dataPollution: any = null;
+  staticalDataPollution: any = null;
+  dataForecastPollution: any = null;
+  
+
+  dataPollutionActualDate: any = this.datepipe.transform(new Date(), 'YYYY-MM-dd')?.toString();
+
   rankingArray: any = [];
   rankingPollutant: string = "";
-  actualDate = this.datepipe.transform(new Date(), 'YYYY-MM-dd')?.toString();
+
+  rankingActualDate = this.datepipe.transform(new Date(), 'YYYY-MM-dd')?.toString();
   minDateRanking: string = "";
   maxDateRanking: string = "";
+
+  selectedForecastPollutant: string = "";
+  forecastActualDate = this.datepipe.transform(this.forecastDefaultDate , 'YYYY-MM-dd')?.toString();
+  minDateForecast: string = "";
+  maxDateForecast: string = "";
   
 
   ngOnInit(): void {
@@ -41,7 +55,7 @@ export class MapComponentComponent implements OnInit {
     })
 
     //Get default ranking (air_quality_level, today)
-    this.service.get_ranking("air_quality_level", this.datepipe.transform(this.actualDate, 'YYYY-MM-dd')?.toString()).subscribe({
+    this.service.get_ranking("air_quality_level", this.datepipe.transform(this.rankingActualDate, 'YYYY-MM-dd')?.toString()).subscribe({
       next: (response: any) => {
         this.rankingPollutant = response[0].pollutant
         this.rankingArray = response;
@@ -134,7 +148,7 @@ export class MapComponentComponent implements OnInit {
     })).append("g");
 
 
-    //TolTip
+    //ToolTip
     var divToolTip = d3.select("body").append("div")
     .attr("class", "tooltip-donut")
     .style("opacity", 0)
@@ -203,10 +217,22 @@ export class MapComponentComponent implements OnInit {
                 .style('cursor', "pointer")
                 .on("click", (event: any) =>  {
                   this.service.get_nearest_location_data_date(event.target.id).subscribe({
-                    next: (response: any) => {
-                      this.service.get_location_data(event.target.id, response[0][0]).subscribe({
-                        next: (response: any) => {
-                          this.changeInfoData(response);
+                    next: (response_v1: any) => {
+                      this.service.get_location_data(event.target.id, response_v1[0][0]).subscribe({
+                        next: (response_v2: any) => {
+                          this.changeInfoData(response_v2);
+                          this.service.get_location_statistical_data(event.target.id, this.datepipe.transform(response_v1[0][0], 'YYYY-MM-dd')?.toString()).subscribe({
+                            next: (response_v3: any) => {
+                              this.staticalDataPollution = response_v3[0];
+                              let substring_date: string = this.staticalDataPollution["date_day_info"]
+                              this.staticalDataPollution["date_day_info"] = substring_date.substring(0, substring_date.length - 12)
+                              this.changeForecastData(this.dataPollution.location_name, "o3")
+                            },
+                            error: (err:any) => {
+                              console.log("Error on Request")  
+                            },
+                            complete: () => {}
+                          });
                         },
                         error: (err:any) => {
                           console.log("Error on Request")  
@@ -249,6 +275,8 @@ export class MapComponentComponent implements OnInit {
                 .attr("id", element[0])
                 .attr("aqilevel", element[3])
                 .attr("dominant_pollution", element[4])
+                .attr("date_day_info", element[5])
+                .attr("date_time_info", element[6])
                 .attr("class", "circlesCan")
                 // @ts-ignore
                 .attr("cx", function(d){ return projectionCan(d)[0]})
@@ -261,10 +289,30 @@ export class MapComponentComponent implements OnInit {
                 .style('cursor', "pointer")
                 .on("click", (event: any) =>  {
                   this.service.get_nearest_location_data_date(event.target.id).subscribe({
-                    next: (response: any) => {
-                      this.service.get_location_data(event.target.id, response[0][0]).subscribe({
+                    next: (response_v1: any) => {
+                      this.service.get_location_data(event.target.id, response_v1[0][0]).subscribe({
+                        next: (response_v2: any) => {
+                          this.changeInfoData(response_v2);
+                          this.service.get_location_statistical_data(event.target.id, this.datepipe.transform(response_v1[0][0], 'YYYY-MM-dd')?.toString()).subscribe({
+                            next: (response_v3: any) => {
+                              this.staticalDataPollution = response_v3[0];
+                              let substring_date: string = this.staticalDataPollution["date_day_info"]
+                              this.staticalDataPollution["date_day_info"] = substring_date.substring(0, substring_date.length - 12)
+                            },
+                            error: (err:any) => {
+                              console.log("Error on Request")  
+                            },
+                            complete: () => {}
+                          });
+                        },
+                        error: (err:any) => {
+                          console.log("Error on Request")  
+                        },
+                        complete: () => {}
+                      });
+                      this.service.get_location_forecast_data(event.target.id).subscribe({
                         next: (response: any) => {
-                          this.changeInfoData(response);
+                          
                         },
                         error: (err:any) => {
                           console.log("Error on Request")  
@@ -279,6 +327,7 @@ export class MapComponentComponent implements OnInit {
                   });
                 })
                 .on('mouseover', function (event: any) {
+                  console.log("hola")
                   divToolTip.transition()
                     .duration(350)
                     .style("opacity", .7)
@@ -311,8 +360,8 @@ export class MapComponentComponent implements OnInit {
     });
   }
 
-  changeRankings(){
-   this.service.get_ranking(this.rankingPollutant, this.datepipe.transform(this.actualDate, 'YYYY-MM-dd')?.toString()).subscribe({
+  refreshRankings(){
+   this.service.get_ranking(this.rankingPollutant, this.datepipe.transform(this.rankingActualDate, 'YYYY-MM-dd')?.toString()).subscribe({
     next: (response: any) => {
       this.rankingPollutant = response[0].pollutant
       this.rankingArray = response;
@@ -322,13 +371,109 @@ export class MapComponentComponent implements OnInit {
     },
     complete: () => {}
 
-  })
+    })
   }
 
   changeInfoData(data: any){
    this.dataPollution = data[0];
+   console.log(this.dataPollution)
    d3.select("#pollutantInfo").style("display", "none")
+   d3.select("#infoaqitable").style("display", "none")
    d3.select("#locationData").style("display", "block")
    this.dataPollution.date_day_info = this.datepipe.transform(this.dataPollution.date_day_info, 'YYYY-MM-dd')?.toString()
+  }
+
+  changeForecastData(location_name: string, pollutant: string | null){
+    this.service.get_forecast_date_range(location_name, pollutant).subscribe({
+      next: (response: any) => {
+        this.minDateForecast = response[0][0]
+        this.maxDateForecast = response[0][1]
+      },
+      error: (err:any) => {
+        console.log("Error on Request")  
+      },
+      complete: () => {}
+    });
+    this.service.get_forecast_data(this.datepipe.transform(this.forecastActualDate, 'YYYY-MM-dd')?.toString(), pollutant, location_name).subscribe({
+      next: (response: any) => {
+        this.dataForecastPollution = response[0]
+        console.log(this.dataForecastPollution)
+      },
+      error: (err:any) => {
+        console.log("Error on Request")  
+      },
+      complete: () => {}
+    });
+  }
+
+  changeInfoStaticalData(location_name: string){
+    this.service.get_location_statistical_data(location_name, this.datepipe.transform(this.dataPollutionActualDate, 'YYYY-MM-dd')?.toString()).subscribe({
+      next: (response: any) => {
+        this.staticalDataPollution = response[0];
+        let substring_date: string = this.staticalDataPollution["date_day_info"]
+        this.staticalDataPollution["date_day_info"] = substring_date.substring(0, substring_date.length - 12)
+      },
+      error: (err:any) => {
+        console.log("Error on Request")  
+      },
+      complete: () => {}
+    });
+  }
+
+  refreshInfoData(){
+    this.service.get_location_data(this.dataPollution.location_name, this.datepipe.transform(this.dataPollutionActualDate, 'YYYY-MM-dd')?.toString()).subscribe({
+      next: (response: any) => {
+        this.dataPollution = response[0];
+        this.dataPollution.date_day_info = this.datepipe.transform(this.dataPollution.date_day_info, 'YYYY-MM-dd')?.toString()
+      },
+      error: (err: any) => {
+        console.log("Error on Request")
+      },
+      complete: () => {}
+  
+      })
+      this.changeInfoStaticalData(this.dataPollution.location_name)
+  }
+  
+  showInfoPollution(){
+    d3.select("#infoaqitable").style("display", "none")
+    d3.select("#locationData").style("display", "none")
+    d3.select("#forecastData").style("display", "none")
+    d3.select("#pollutantInfo").style("display", "block")
+  }
+
+  showDataPollution(){
+    d3.select("#pollutantInfo").style("display", "none")
+    d3.select("#infoaqitable").style("display", "none")
+    d3.select("#forecastData").style("display", "none")
+    d3.select("#locationData").style("display", "block")
+  }
+
+  showForecastDataPollution(){
+    d3.select("#locationData").style("display", "none")
+    d3.select("#pollutantInfo").style("display", "none")
+    d3.select("#infoaqitable").style("display", "none")
+    d3.select("#forecastData").style("display", "block")
+  }
+
+  showAdditionalInfo(){
+    d3.select("#locationData").style("display", "none")
+    d3.select("#pollutantInfo").style("display", "none")
+    d3.select("#forecastData").style("display", "none")
+    d3.select("#infoaqitable").style("display", "block")
+  }
+
+  updateForecastData(){
+    this.service.get_forecast_data(this.datepipe.transform(this.forecastActualDate, 'YYYY-MM-dd')?.toString(), this.selectedForecastPollutant, this.dataPollution.location_name).subscribe({
+      next: (response: any) => {
+        this.dataForecastPollution = response[0]
+        console.log(this.dataForecastPollution)
+      },
+      error: (err:any) => {
+        console.log("Error on Request")  
+      },
+      complete: () => {}
+    });
+    console.log()
   }
 }

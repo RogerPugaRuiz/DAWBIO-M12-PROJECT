@@ -55,27 +55,55 @@
     margin: auto;
 }
 
-#pollutantInfo{
-    top: 0px;
-    width: 1035px;
-    height: 500px;
+#datePickerLocation {
+    position: absolute;
+    right: 20%;
+    top: 77.5%
 }
 
-#pollutantInfo{
+#datePickerForecastData{
+    position: absolute;
+    right: 20%;
+    top: 30%
+}
+
+#statisticalLocationData{
+    position: absolute;
+    right: 15%;
+    top: 12%;
+    width: 320px;
+}
+
+.dataContainer{
+    top: 0px;
+    width: 1035px;
+    height: 430px;
+}
+
+.dataContainer{
     margin-left: 10px;
     margin-top: 10px;
     margin-right: 10px;
-    padding-right: 10px;
+    padding-right: 20px;
 }
 
 #pollutantInfo > p{
-    margin-bottom: 7px;
+    margin-bottom: 2px;
+}
+
+#infoaqitable {
+    display: none;  
 }
 
 #locationData{
     display: none;
-    position: absolute;
-    top: 0px;
-    width: 1035px;
-    height: 500px;
 }
+
+#forecastData{
+    display: none;
+}
+
+
+
+
+   
