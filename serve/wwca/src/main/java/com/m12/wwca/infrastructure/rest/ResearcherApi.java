@@ -27,45 +27,57 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "*")
 @RequestMapping("/api/researcher")
 public class ResearcherApi {
-    
+
     @Autowired
     private NewsService newsService;
     @Autowired
     private UserService userService;
 
     @PostMapping("/news/add")
-    public ResponseEntity addNew(@RequestBody News news) {
-        newsService.addNews(news);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity addNew(@RequestBody News news, HttpServletRequest request) {
+        String jwt = request.getHeader("Authorization");
+        if (UserJWT.validate(jwt)) {
+            newsService.addNews(news);
+            Status status = new Status(true, "News added");
+            return ResponseEntity.status(HttpStatus.OK).body(status);
+        } else {
+            Status status = new Status(false, "Invalid token");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(status);
+        }
     }
 
     @GetMapping("/news/delete")
-    public ResponseEntity deleteNew(@RequestParam Long id) {
-        newsService.deleteNews(id);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity deleteNew(@RequestParam Long id, HttpServletRequest request) {
+        String jwt = request.getHeader("Authorization");
+        if (UserJWT.validate(jwt)) {
+            newsService.deleteNews(id);
+            Status status = new Status(true, "News deleted");
+            return ResponseEntity.ok(status);
+        } else {
+            Status status = new Status(false, "Invalid token");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(status);
+        }
     }
 
     @GetMapping("/news/find")
     public ResponseEntity findNew(@RequestParam Long id) {
         News news = newsService.findById(id);
-        return new ResponseEntity(news, HttpStatus.OK);
+        Status status = new Status(true, "News found");
+        Map<Object, Object> data = new HashMap<>();
+        data.put("news", news);
+        status.setData(data);
+        return ResponseEntity.ok(status);
     }
 
     @GetMapping("/news/findall")
-    public ResponseEntity findAll(HttpServletRequest request) {
-        String jwt = request.getHeader("Authorization");
-        if (UserJWT.validate(jwt)
-                && userService.getUser(UserJWT.getUserId(jwt)).getRole().getName().equals("researcher")) {
-            List<News> news = newsService.findAll();
-            Status status = new Status(false, "get users success");
-            Map<Object, Object> data = new HashMap<>();
-            data.put("news", news);
-            status.setData(data);
-            return ResponseEntity.status(HttpStatus.OK).body(news);
-        } else{
-            Status status = new Status(false, "you are not researcher");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(status);
-        }
+    public ResponseEntity findAll() {
+        List<News> news = newsService.findAll();
+        Status status = new Status(true, "Success");
+        Map<Object, Object> data = new HashMap<>();
+        data.put("news", news);
+        status.setData(data);
+
+        return ResponseEntity.ok(status);
     }
 
 }

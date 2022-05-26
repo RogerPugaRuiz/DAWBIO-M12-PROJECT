@@ -14,7 +14,7 @@ public class News {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String antetitle;
+    private String pretitle;
     private String title;
     private String subtitle;
     private String intro;
@@ -27,7 +27,7 @@ public class News {
     }
 
     public News(Builder builder){
-        this.antetitle = builder.antetitle;
+        this.pretitle = builder.pretitle;
         this.title = builder.title;
         this.subtitle = builder.subtitle;
         this.intro = builder.intro;
@@ -42,12 +42,14 @@ public class News {
     public void setId(Long id) {
         this.id = id;
     }
-    public String getAntetitle() {
-        return antetitle;
+    public String getPretitle() {
+        return pretitle;
     }
-    public void setAntetitle(String antetitle) {
-        this.antetitle = antetitle;
+
+    public void setPretitle(String pretitle) {
+        this.pretitle = pretitle;
     }
+    
     public String getTitle() {
         return title;
     }
@@ -81,7 +83,7 @@ public class News {
 
     public static class Builder {
         private Long id;
-        private String antetitle;
+        private String pretitle;
         private String title;
         private String subtitle;
         private String intro;
@@ -92,8 +94,8 @@ public class News {
             this.id = id;
             return this;
         }
-        public Builder antetitle(String antetitle) {
-            this.antetitle = antetitle;
+        public Builder pretitle(String pretitle) {
+            this.pretitle = pretitle;
             return this;
         }
         public Builder title(String title) {
