@@ -28,7 +28,7 @@
             <p>h - Humidity (%)</p>
         </div>
         <div id="locationData" class ="dataContainer">
-            <h1 *ngIf="dataPollution">{{dataPollution.location_name}}</h1>
+            <h1 *ngIf="dataPollutionLocationName">{{dataPollutionLocationName}}</h1>
             <table class="table table-bordered table-striped" style="width:50%; height: auto;">
                 <thead>
                     <tr>
@@ -63,55 +63,55 @@
                     </tr>
                     <tr style="line-height: 15px;">
                         <td style="padding: 0px;"><span style="font-size: 13px;">PM10</span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.pm10; else elseContentdataPollution">{{dataPollution.pm10}}</p></span></td>
+                        <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.pm10; else elseContentdataPollution">{{dataPollution.pm10}}</p></span></td>
                     </tr>
                     <tr style="line-height: 15px;">
                         <td style="padding: 0px;"><span style="font-size: 13px;">PM25</span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.pm25; else elseContentdataPollution">{{dataPollution.pm25}}</p></span></td>
+                        <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.pm25; else elseContentdataPollution">{{dataPollution.pm25}}</p></span></td>
                     </tr>
                     <tr style="line-height: 15px;">
                         <td style="padding: 0px;"><span style="font-size: 13px;">CO</span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.co; else elseContentdataPollution">{{dataPollution.co}}</p></span></td>
+                        <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.co; else elseContentdataPollution">{{dataPollution.co}}</p></span></td>
                     </tr>
                     <tr style="line-height: 15px;">
                         <td style="padding: 0px;"><span style="font-size: 13px;">O3</span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.o3; else elseContentdataPollution">{{dataPollution.o3}}</p></span></td>
+                        <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.o3; else elseContentdataPollution">{{dataPollution.o3}}</p></span></td>
                     </tr>
                     <tr style="line-height: 15px;">
                         <td style="padding: 0px;"><span style="font-size: 13px;">NO2</span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.no2; else elseContentdataPollution">{{dataPollution.no2}}</p></span></td>
+                        <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.no2; else elseContentdataPollution">{{dataPollution.no2}}</p></span></td>
                     </tr>
                     <tr style="line-height: 15px;">
                         <td style="padding: 0px;"><span style="font-size: 13px;">SO2</span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.so2; else elseContentdataPollution">{{dataPollution.so2}}</p></span></td>
+                        <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.so2; else elseContentdataPollution">{{dataPollution.so2}}</p></span></td>
                     </tr>
                     <tr style="line-height: 15px;">
                         <td style="padding: 0px;"><span style="font-size: 13px;">WG</span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.wg; else elseContentdataPollution">{{dataPollution.wg}}</p></span></td>
+                        <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.wg; else elseContentdataPollution">{{dataPollution.wg}}</p></span></td>
                     </tr>
                     <tr style="line-height: 15px;">
                         <td style="padding: 0px;"><span style="font-size: 13px;">DEW</span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.dew; else elseContentdataPollution">{{dataPollution.dew}}</p></span></td>
+                        <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.dew; else elseContentdataPollution">{{dataPollution.dew}}</p></span></td>
                     </tr>
                     <tr>
                         <td style="padding: 0px;"><span style="font-size: 13px;">T</span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.t; else elseContentdataPollution">{{dataPollution.t}}</p></span></td>
+                        <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.t; else elseContentdataPollution">{{dataPollution.t}}</p></span></td>
                     </tr>
                     <tr style="line-height: 15px;">
                         <td style="padding: 0px;"><span style="font-size: 13px;">W</span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.w; else elseContentdataPollution">{{dataPollution.w}}</p></span></td>
+                        <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.w; else elseContentdataPollution">{{dataPollution.w}}</p></span></td>
                     </tr>
                     <tr style="line-height: 15px;">
                         <td style="padding: 0px;"><span style="font-size: 13px;">R</span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.r; else elseContentdataPollution">{{dataPollution.r}}</p></span></td>
+                        <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.r; else elseContentdataPollution">{{dataPollution.r}}</p></span></td>
                     </tr>
                     <tr style="line-height: 15px;">
                         <td style="padding: 0px;"><span style="font-size: 13px;">P</span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.p; else elseContentdataPollution">{{dataPollution.p}}</p></span></td>
+                        <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.p; else elseContentdataPollution">{{dataPollution.p}}</p></span></td>
                     </tr>
                     <tr style="line-height: 15px;">
                         <td style="padding: 0px;"><span style="font-size: 13px;">H</span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.h; else elseContentdataPollution">{{dataPollution.h}}</p></span></td>
+                        <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.h; else elseContentdataPollution">{{dataPollution.h}}</p></span></td>
                     </tr>
                 </tbody>
             </table>
@@ -219,8 +219,8 @@
             </div>
         </div>
         <div id="forecastData" class ="dataContainer">
-            <div *ngIf="dataPollution; else elseContentForecastdataPollution"><h1 *ngIf="dataPollution.location_name; else elseContentForecastdataPollution">Forecast data - {{dataPollution.location_name}}</h1></div>
-                <fieldset *ngIf="dataPollution; else elseContentForecastdataPollution" style=" height: 160px; width: 500px">
+            <div *ngIf="dataPollutionLocationName"><h1 *ngIf="dataPollutionLocationName; else elseContentForecastdataPollution">Forecast data - {{dataPollutionLocationName}}</h1></div>
+                <fieldset *ngIf="dataPollutionLocationName; else elseContentForecastdataPollution" style=" height: 160px; width: 500px">
                     <legend>Select the pollutant:</legend>
                     <div>
                     <input type="radio" name="radioSelect" value="o3" [(ngModel)]="selectedForecastPollutant" (change) = "updateForecastData()"
@@ -317,10 +317,10 @@
                   <input type="button" class="nav-link" style="width: 100%; text-align: center; color:black" value="Info Pollution" (click)="showInfoPollution()">
                 </li>
                 <li class="nav-item" style="width: 25%; border-top: 1px solid black;">
-                  <input [(disabled)]="!dataPollution" type="button" class="nav-link" style="width: 100%; text-align: center; color:black" value="Data" (click)="showDataPollution()">
+                  <input [(disabled)]="!dataPollutionLocationName" type="button" class="nav-link" style="width: 100%; text-align: center; color:black" value="Data" (click)="showDataPollution()">
                 </li>
                 <li class="nav-item" style="width: 25%; border-top: 1px solid black;">
-                  <input [(disabled)]="!dataPollution"type="button" class="nav-link" style="width: 100%; text-align: center; color:black" value="Forecast Data" (click)="showForecastDataPollution()">
+                  <input [(disabled)]="!dataPollutionLocationName" type="button" class="nav-link" style="width: 100%; text-align: center; color:black" value="Forecast Data" (click)="showForecastDataPollution()">
                 </li>
                 <li class="nav-item" style="width: 25%;  border-top: 1px solid black;">
                   <input type="button" class="nav-link" style="width: 100%; text-align: center; color:black" value = "Additional Info" (click)="showAdditionalInfo()">
@@ -366,7 +366,7 @@
                         <th style="width: 10%">Ranking</th>
                         <th style="width: 40%">Location Name</th>
                         <th style="width: 30%">Date</th>
-                        <th style="width: 20%">Average - {{rankingPollutant}}</th>
+                        <th style="width: 20%">Average {{rankingPollutant}}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -379,6 +379,7 @@
                     </tr>
                 </tbody>
             </table>
+            <p style="text-align:center;" *ngIf="rankingArray==false">No data</p>
         </div>
     </div>
 

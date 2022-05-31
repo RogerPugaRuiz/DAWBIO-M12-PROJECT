@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import * as d3 from "d3";
 import * as topojson from "topojson-client";
 import { DatePipe } from '@angular/common';
+import { isEmpty } from 'rxjs';
 
 
 
@@ -23,25 +24,27 @@ export class MapComponentComponent implements OnInit {
 
   //dataPollution - Saves a specific object of pollution information for a location, used to display info in HTML
   dataPollution: any = null;
+  //Save dataPollution location Name
+  dataPollutionLocationName: any = null;
   //dataPollution - Saves a specific object of pollution statical information for a location, used to display info in HTML
   statisticalDataPollution: any = null;
   //dataForecastPollution - Saves a specific object of pollution forecast information for a location, used to display info in HTML
   dataForecastPollution: any = null;
   //rankingArray - Save array of objects for the ranking, used to display info in HTML
-  rankingArray: any = [];
+  rankingArray: any = null;
 
   //Date Variables
 
   //currentDate - Save the current date
   currentDate = new Date()
   //forecastDefaultDate - Save the default forecast date
-  forecastDefaultDate = this.currentDate.setDate(this.currentDate.getDate() + 1);
+  forecastDefaultDate: any = this.currentDate.setDate(this.currentDate.getDate() + 1);
   //dataPollutionActualDate - Save the date for dataPollution datepicker (Default -> currentDate), , used to request backend info
   dataPollutionActualDate: any = this.datepipe.transform(new Date(), 'YYYY-MM-dd')?.toString();
   //forecastActualDate - Save the date for forecast datepicker (Default -> currentDate + 1), used to request backend info
-  forecastActualDate = this.datepipe.transform(this.forecastDefaultDate , 'YYYY-MM-dd')?.toString();
+  forecastActualDate: any = this.datepipe.transform(this.forecastDefaultDate , 'YYYY-MM-dd')?.toString();
   //rankingActualDate - Save the date for ranking datepicker (Default -> currentDate), used to request backend info
-  rankingActualDate = this.datepipe.transform(new Date(), 'YYYY-MM-dd')?.toString();
+  rankingActualDate: any = this.datepipe.transform(new Date(), 'YYYY-MM-dd')?.toString();
   //minDateRanking - Save min date for ranking datepicker and dataPollution datepicker
   minDateRanking: string = "";
   //maxDateRanking - Save max date for ranking datepicker and dataPollution datepicker
@@ -107,8 +110,10 @@ export class MapComponentComponent implements OnInit {
     //Get max and min date data from backend for ranking
     this.service.get_ranking_date_range().subscribe({
       next: (response: any) => {
-        this.minDateRanking = response[0][0];
-        this.maxDateRanking = response[0][1];
+        if(response.lenght != 0){
+          this.minDateRanking = response[0][0];
+          this.maxDateRanking = response[0][1];
+        }
       },
       error: (err: any) => {
         console.log("Error on Request");
@@ -119,8 +124,10 @@ export class MapComponentComponent implements OnInit {
     //Get default ranking list(pollutant -> air_quality_level, date -> today) from backend
     this.service.get_ranking("air_quality_level", this.datepipe.transform(this.rankingActualDate, 'YYYY-MM-dd')?.toString()).subscribe({
       next: (response: any) => {
-        this.rankingPollutant = response[0].pollutant;
-        this.rankingArray = response;
+        if(response.length != 0){
+          this.rankingPollutant = response[0].pollutant;
+          this.rankingArray = response;
+        }
       },
       error: (err: any) => {
         console.log("Error on Request");
@@ -247,6 +254,7 @@ export class MapComponentComponent implements OnInit {
                 .style('cursor', "pointer")
                 //Add Event listener "click" on peninsule circles 
                 .on("click", (event: any) =>  {
+                  this.dataPollutionLocationName = event.target.id;
                   //Get nearest location data date from the backend with given location name
                   this.service.get_nearest_location_data_date(event.target.id).subscribe({
                     next: (response_v1: any) => {
@@ -335,6 +343,7 @@ export class MapComponentComponent implements OnInit {
                 .style('cursor', "pointer")
                 //Add Event listener "click" on Canary Island circles 
                 .on("click", (event: any) =>  {
+                  this.dataPollutionLocationName = event.target.id;
                   //Get nearest location data date from the backend with given location name
                   this.service.get_nearest_location_data_date(event.target.id).subscribe({
                     next: (response_v1: any) => {
@@ -421,8 +430,12 @@ export class MapComponentComponent implements OnInit {
   refreshRankings(){
    this.service.get_ranking(this.rankingPollutant, this.datepipe.transform(this.rankingActualDate, 'YYYY-MM-dd')?.toString()).subscribe({
     next: (response: any) => {
-      this.rankingPollutant = response[0].pollutant;
-      this.rankingArray = response;
+      if(response.length != 0){
+        this.rankingPollutant = response[0].pollutant;
+        this.rankingArray = response;
+      } else {
+        this.rankingArray = [];
+      }
     },
     error: (err: any) => {
       console.log("Error on Request");
@@ -444,6 +457,7 @@ export class MapComponentComponent implements OnInit {
    d3.select("#forecastData").style("display", "none");
    d3.select("#locationData").style("display", "block");
    this.dataPollution.date_day_info = this.datepipe.transform(this.dataPollution.date_day_info, 'YYYY-MM-dd')?.toString();
+   this.dataPollutionActualDate = this.dataPollution.date_day_info;
   }
 
   /*
@@ -452,10 +466,17 @@ export class MapComponentComponent implements OnInit {
 
   */
   refreshInfoData(){
-    this.service.get_location_data(this.dataPollution.location_name, this.datepipe.transform(this.dataPollutionActualDate, 'YYYY-MM-dd')?.toString()).subscribe({
+    this.service.get_location_data(this.dataPollutionLocationName, this.datepipe.transform(this.dataPollutionActualDate, 'YYYY-MM-dd')?.toString()).subscribe({
       next: (response: any) => {
-        this.dataPollution = response[0];
-        this.dataPollution.date_day_info = this.datepipe.transform(this.dataPollution.date_day_info, 'YYYY-MM-dd')?.toString();
+        if(response.length != 0){
+          this.dataPollution = response[0];
+          this.dataPollution.date_day_info = this.datepipe.transform(this.dataPollution.date_day_info, 'YYYY-MM-dd')?.toString();
+          //Get statistical data from location
+          this.changeInfoStaticalData(this.dataPollution.location_name);
+        } else {
+          this.dataPollution = null;
+          this.statisticalDataPollution = null;
+        }
       },
       error: (err: any) => {
         console.log("Error on Request");
@@ -463,8 +484,6 @@ export class MapComponentComponent implements OnInit {
       complete: () => {}
   
       })
-      //Get statistical data from location
-      this.changeInfoStaticalData(this.dataPollution.location_name);
   }
 
   /*
@@ -487,7 +506,6 @@ export class MapComponentComponent implements OnInit {
     this.service.get_forecast_data(this.datepipe.transform(this.forecastActualDate, 'YYYY-MM-dd')?.toString(), pollutant, location_name).subscribe({
       next: (response: any) => {
         this.dataForecastPollution = response[0];
-        console.log(this.dataForecastPollution);
       },
       error: (err:any) => {
         console.log("Error on Request");  
@@ -504,9 +522,14 @@ export class MapComponentComponent implements OnInit {
   changeInfoStaticalData(location_name: string){
     this.service.get_location_statistical_data(location_name, this.datepipe.transform(this.dataPollutionActualDate, 'YYYY-MM-dd')?.toString()).subscribe({
       next: (response: any) => {
-        this.statisticalDataPollution = response[0];
-        let substring_date: string = this.statisticalDataPollution["date_day_info"];
-        this.statisticalDataPollution["date_day_info"] = substring_date.substring(0, substring_date.length - 12);
+        if(response.length != 0){
+          this.statisticalDataPollution = response[0];
+          let substring_date: string = this.statisticalDataPollution["date_day_info"];
+          this.statisticalDataPollution["date_day_info"] = substring_date.substring(0, substring_date.length - 12);
+        } else {
+          this.statisticalDataPollution = null;
+        }
+
       },
       error: (err:any) => {
         console.log("Error on Request"); 
@@ -522,9 +545,14 @@ export class MapComponentComponent implements OnInit {
   */
 
   updateForecastData(){
-    this.service.get_forecast_data(this.datepipe.transform(this.forecastActualDate, 'YYYY-MM-dd')?.toString(), this.selectedForecastPollutant, this.dataPollution.location_name).subscribe({
+    this.service.get_forecast_data(this.datepipe.transform(this.forecastActualDate, 'YYYY-MM-dd')?.toString(), this.selectedForecastPollutant, this.dataPollutionLocationName).subscribe({
       next: (response: any) => {
-        this.dataForecastPollution = response[0];
+        if(response.length != 0){
+          this.dataForecastPollution = response[0];
+        } else {
+          this.dataForecastPollution = null;
+        }
+        
       },
       error: (err:any) => {
         console.log("Error on Request");
