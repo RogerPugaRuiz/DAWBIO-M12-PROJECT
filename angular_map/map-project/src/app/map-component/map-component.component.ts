@@ -3,7 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import * as d3 from "d3";
 import * as topojson from "topojson-client";
 import { DatePipe } from '@angular/common';
-import { isEmpty } from 'rxjs';
+import { SpinnerService } from '../services/spinner.service';
+import { CookieService } from 'ngx-cookie-service';
 
 
 
@@ -18,8 +19,11 @@ export class MapComponentComponent implements OnInit {
     service - Create service instance from ConnectBackendApi Service for request backend data
     datepipe - Create datePipe instance for change date format
   */
-  constructor(private service: ConnectBackendApiService, public datepipe: DatePipe) { } 
-  
+  constructor(public service: ConnectBackendApiService, public datepipe: DatePipe, private SpinnerService: SpinnerService, private CookieService: CookieService) { } 
+
+  //For check if user is Logged
+  userLogged: any = null;
+
   //Data Variables
 
   //dataPollution - Saves a specific object of pollution information for a location, used to display info in HTML
@@ -103,38 +107,61 @@ export class MapComponentComponent implements OnInit {
   }; 
 
   ngOnInit(): void {
+    //Check if user is already loged
+    if(this.CookieService.get('user')){
+      //Get cookie User
+      this.userLogged = JSON.parse(this.CookieService.get('user'))
+      //Check if user is in DataBase
+      this.service.login(this.userLogged.username, this.userLogged.password).subscribe({
+        //Wait for response
+        next: (response: any) => {
+          //If valid user is logged show content and display data
+          if(response.length > 0){
 
-    //Create map function
-    this.createMap();
+            //Display Content
+            d3.select("#mainDiv").style("display", "block");
 
-    //Get max and min date data from backend for ranking
-    this.service.get_ranking_date_range().subscribe({
-      next: (response: any) => {
-        if(response.lenght != 0){
-          this.minDateRanking = response[0][0];
-          this.maxDateRanking = response[0][1];
-        }
-      },
-      error: (err: any) => {
-        console.log("Error on Request");
-      },
-      complete: () => {}
-    });
-
-    //Get default ranking list(pollutant -> air_quality_level, date -> today) from backend
-    this.service.get_ranking("air_quality_level", this.datepipe.transform(this.rankingActualDate, 'YYYY-MM-dd')?.toString()).subscribe({
-      next: (response: any) => {
-        if(response.length != 0){
-          this.rankingPollutant = response[0].pollutant;
-          this.rankingArray = response;
-        }
-      },
-      error: (err: any) => {
-        console.log("Error on Request");
-      },
-      complete: () => {}
-
-    });
+            //Create map function
+            this.createMap();
+      
+            //Get max and min date data from backend for ranking
+            this.service.get_ranking_date_range().subscribe({
+              next: (response: any) => {
+                if(response.lenght != 0){
+                  this.minDateRanking = response[0][0];
+                  this.maxDateRanking = response[0][1];
+                }
+              },
+              error: (err: any) => {
+                console.log("Error on Request");
+              },
+              complete: () => {}
+            });
+      
+            //Get default ranking list(pollutant -> air_quality_level, date -> today) from backend
+            this.service.get_ranking("air_quality_level", this.datepipe.transform(this.rankingActualDate, 'YYYY-MM-dd')?.toString()).subscribe({
+              next: (response: any) => {
+                if(response.length != 0){
+                  this.rankingPollutant = response[0].pollutant;
+                  this.rankingArray = response;
+                }
+              },
+              error: (err: any) => {
+                console.log("Error on Request");
+              },
+              complete: () => {}
+      
+            });
+          } else {
+            this.userLogged = null; 
+          }
+        },
+        error: (err: any) => {
+          console.log("Error on Request");
+        },
+        complete: () => {}
+      })
+    }
   }
 
   createMap() {
@@ -182,6 +209,9 @@ export class MapComponentComponent implements OnInit {
     .attr("class", "tooltip-donut")
     .style("opacity", 0)
     .style("display", "none");
+
+
+    this.SpinnerService.callSpinner()
 
     //Draw Spain Maps
 
@@ -412,7 +442,7 @@ export class MapComponentComponent implements OnInit {
             error: (err: any) => {
               console.log("Error on Request");
             },
-            complete: () => {}
+            complete: () => {this.SpinnerService.stopSpinner()}
         });    
       },
       error: (err: any) => {
@@ -431,6 +461,7 @@ export class MapComponentComponent implements OnInit {
    this.service.get_ranking(this.rankingPollutant, this.datepipe.transform(this.rankingActualDate, 'YYYY-MM-dd')?.toString()).subscribe({
     next: (response: any) => {
       if(response.length != 0){
+        console.log(response)
         this.rankingPollutant = response[0].pollutant;
         this.rankingArray = response;
       } else {

@@ -62,7 +62,7 @@ def create_database(db_name: str = "spainAirPollution"):
     try:
         db: sql.MySQLConnection = connection()
         cursor = db.cursor()
-        cursor.execute(SQLQueries.create_database_query % (db_name))
+        cursor.execute(SQLQueries.create_database_query, (db_name,))
         db.commit()
         cursor.close()
         db.close()
@@ -79,7 +79,7 @@ def export_database(db_name: str = "spainAirPollution"):
     """
     try:
         tuple_info = (user, password, db_name, db_name)
-        os.system(SQLQueries.export_database_query % tuple_info)
+        os.system(SQLQueries.export_database_query, tuple_info)
     except Exception as e:
         print("An exception occurred - " + format(e))
 
@@ -94,7 +94,28 @@ def drop_database(db_name: str = "spainAirPollution"):
     try:
         db: sql.MySQLConnection = connection()
         cursor = db.cursor()
-        cursor.execute(SQLQueries.drop_database_query % (db_name))
+        cursor.execute(SQLQueries.drop_database_query, (db_name,))
+        db.commit()
+        cursor.close()
+        db.close()
+    except Exception as e:
+        print("An exception occurred - " + format(e))
+        
+def create_users_table():
+    """ 
+    Create Air Pollution Table - Create air pollution table with the following parameters:
+    
+    id: int - Identifier(Primary Key)
+    username: string - Username 
+    password: string - Password 
+    name: string - User Name
+    surname: string - User Surname
+    
+    """
+    try:
+        db: sql.MySQLConnection = connection("spainAirPollution")
+        cursor = db.cursor()
+        cursor.execute(SQLQueries.create_users_table_query)
         db.commit()
         cursor.close()
         db.close()
@@ -160,6 +181,37 @@ def create_forecast_air_pollution_table():
         db.close()
     except Exception as e:
         print("An exception occurred - " + format(e))
+        
+def login(username: str, password: str):
+    """
+    Login - Return an user if is user is in database
+    
+    Parameters
+        username (str): User Name string
+        password (str): User Password string
+
+    Returns:
+        user(obj): User object if found
+    """
+    result_array = []
+    try: 
+        db: sql.MySQLConnection = connection("spainAirPollution")
+        cursor = db.cursor(prepared=True)
+        info_tuple: tuple = (username, password)
+        cursor.execute(SQLQueries.login_query, info_tuple)
+        users = cursor.fetchall()
+        columnNames = [column[0] for column in cursor.description]
+        for row in users:
+            user = OrderedDict(zip(columnNames, row))
+            result_array.append(user)
+        cursor.close()
+        db.commit()    
+        db.close()
+        return result_array
+    except Exception as e:
+        print("An exception occurred - " + format(e))
+   
+    
 
 def insert_air_pollution_data(array_object: tuple):
     """ 
@@ -180,7 +232,7 @@ def insert_air_pollution_data(array_object: tuple):
                 #Save object info into array
                 info_tuple: tuple = (pi.air_quality_level, pi.dominant_pollution, utils.add_backslashes_in_special_characters(pi.location_name), pi.date_day_info, pi.date_time_info, pi.latitude, pi.longitude
                                         , pi.no2, pi.pm10, pi.pm25, pi.co, pi.o3, pi.so2, pi.wg, pi.dew, pi.t, pi.w, pi.r, pi.p, pi.h)
-                cursor.execute(SQLQueries.insert_info_air_pollution_query % info_tuple)   
+                cursor.execute(SQLQueries.insert_info_air_pollution_query, info_tuple)   
                 print("\t\t -Data inserted")
             else:
                 print("\t\t -Data not inserted")
@@ -205,7 +257,7 @@ def insert_forecast_air_pollution_data(array_object: tuple):
             print("Inserting " + fpi.location_name + " forecast data")
             #Save object info into array
             info_tuple: tuple = (utils.add_backslashes_in_special_characters(fpi.location_name), fpi.date_day_info, fpi.pollutant, fpi.pollutant_avg, fpi.pollutant_max, fpi.pollutant_min)
-            cursor.execute(SQLQueries.insert_info_forecast_air_pollution_query % info_tuple) 
+            cursor.execute(SQLQueries.insert_info_forecast_air_pollution_query, info_tuple) 
             print("Data inserted")  
             cursor.close()
         db.commit()    
@@ -226,7 +278,7 @@ def delete_duplicated_forecast_data(unique_location_names: tuple):
         print("Deleting duplicate forecast data if exist...")
         for ufln in unique_location_names:
             cursor = db.cursor(prepared=True)
-            cursor.execute(SQLQueries.delete_forecast_duplicated_data % utils.add_backslashes_in_special_characters(ufln))
+            cursor.execute(SQLQueries.delete_forecast_duplicated_data, utils.add_backslashes_in_special_characters(ufln))
             cursor.close()
             db.commit()    
         db.close()
@@ -249,7 +301,7 @@ def check_duplicated_data_info_air_pollution(pi: pollutionInfo) -> bool:
         db: sql.MySQLConnection = connection("spainAirPollution")
         cursor = db.cursor(prepared=True)
         info_tuple: tuple = (utils.add_backslashes_in_special_characters(pi.location_name), pi.date_day_info, pi.date_time_info)
-        cursor.execute(SQLQueries.check_if_duplicated_info_air_pollution_query % info_tuple)
+        cursor.execute(SQLQueries.check_if_duplicated_info_air_pollution_query, info_tuple)
         if(len(cursor.fetchall()) != 0):   
             result = True
         cursor.close()
@@ -317,7 +369,7 @@ def get_air_pollution_data(location_name: str, date: str):
         db: sql.MySQLConnection = connection("spainAirPollution")
         cursor = db.cursor(prepared=True)
         info_tuple: tuple = (utils.add_backslashes_in_special_characters(location_name), date)
-        cursor.execute(SQLQueries.get_location_data_where_location_name_and_date % info_tuple)
+        cursor.execute(SQLQueries.get_location_data_where_location_name_and_date, info_tuple)
         rows = cursor.fetchall()
         columnNames = [column[0] for column in cursor.description]
         for row in rows:
@@ -348,7 +400,7 @@ def get_air_pollution_statistical_data(location_name: str, date: str):
         db: sql.MySQLConnection = connection("spainAirPollution")
         cursor = db.cursor(prepared=True)
         info_tuple: tuple = (utils.add_backslashes_in_special_characters(location_name), date)
-        cursor.execute(SQLQueries.get_location_statistical_data_where_location_name_and_date % info_tuple)
+        cursor.execute(SQLQueries.get_location_statistical_data_where_location_name_and_date, info_tuple)
         rows = cursor.fetchall()
         columnNames = [column[0] for column in cursor.description]
         for row in rows:
@@ -379,7 +431,7 @@ def get_air_pollution_forecast_data(location_name: str ,pollutant: str, date: st
         db: sql.MySQLConnection = connection("spainAirPollution")
         cursor = db.cursor(prepared=True)
         info_tuple: tuple = (utils.add_backslashes_in_special_characters(location_name),pollutant, date)
-        cursor.execute(SQLQueries.get_location_forecast_data_where_pollutant_and_date_and_location_date % info_tuple)
+        cursor.execute(SQLQueries.get_location_forecast_data_where_pollutant_and_date_and_location_date, info_tuple)
         rows = cursor.fetchall()
         columnNames = [column[0] for column in cursor.description]
         for row in rows:
@@ -480,8 +532,8 @@ def get_nearest_location_data_date(location_name: str):
     try: 
         db: sql.MySQLConnection = connection("spainAirPollution")
         cursor = db.cursor(prepared=True)
-        info_tuple: tuple = (utils.add_backslashes_in_special_characters(location_name))
-        cursor.execute(SQLQueries.get_nearest_location_data_date % info_tuple) 
+        info_tuple: tuple = (utils.add_backslashes_in_special_characters(location_name),)
+        cursor.execute(SQLQueries.get_nearest_location_data_date, info_tuple) 
         most_recent_date = cursor.fetchall()
         cursor.close()
         db.commit()    
@@ -522,7 +574,7 @@ def get_forecast_date_range(location_name: str, pollutant_name: str):
         db: sql.MySQLConnection = connection("spainAirPollution")
         cursor = db.cursor(prepared=True)
         info_tuple: tuple = (utils.add_backslashes_in_special_characters(location_name), pollutant_name)
-        cursor.execute(SQLQueries.get_forecast_date_range % info_tuple)
+        cursor.execute(SQLQueries.get_forecast_date_range, info_tuple)
         date_range = cursor.fetchall()
         cursor.close()
         db.commit()    

@@ -17,6 +17,7 @@ if this_module == main_module:
    
    #utilsDB.drop_database()
    #utilsDB.create_database()
+   #utilsDB.create_users_table()
    #utilsDB.create_air_pollution_table()
    #utilsDB.create_forecast_air_pollution_table()
    

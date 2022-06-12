@@ -24,11 +24,22 @@ limiter = Limiter(app,key_func=get_remote_address)
 def mainPage():
     return "API Main Page"
 
+@app.route("/login", methods=['POST'])
+@limiter.limit("30/second")
+def login():
+    username = ""
+    password = ""
+    if(request.method == 'POST'):
+        username = request.json['username']
+        password = request.json['password']
+    return jsonify(utilsDB.login(username, password))
+     
 @app.route("/GeoJson/provinces")
 @limiter.limit("30/second")
 def getGeoJSONProvinces():
     json_file = open("data/provinces.json")
     json_object = json.load(json_file)
+    json_file.close()
     return jsonify(json_object)
 
 @app.route("/GeoJson/autonomous_regions")
@@ -36,6 +47,7 @@ def getGeoJSONProvinces():
 def getGeoJSONAutonomousRegions():
     json_file = open("data/autonomous_regions.json")
     json_object = json.load(json_file)
+    json_file.close()
     return jsonify(json_object)
 
 @app.route("/getAllData")
@@ -74,8 +86,6 @@ def getForecastData():
         pollutant = request.json['pollutant_name']
         date = request.json['date']
     return jsonify(utilsDB.get_air_pollution_forecast_data(location_name,pollutant, date))
-
-
 
 @app.route("/getNearestLocationDataDate", methods=['POST'])
 @limiter.limit("30/second")

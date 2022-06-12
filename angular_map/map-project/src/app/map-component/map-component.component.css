@@ -1,25 +1,29 @@
 @import "~bootstrap/dist/css/bootstrap.css";
 
+#mainDiv{
+    display: none;
+}
+
 #maps{
-    position: absolute;
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
     width: 753px;
     height: 503px;
 }
-#map{
-    position: absolute;
-    width: 753px;
-    height: 503px;
-}
+
 #mapC{
     position: absolute;
     top: 380px;
     left: 510px;
 }
 
+
 #dataMaps{
     border: 1px solid black;
-    position: absolute;
-    left: 800px;
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
     width: 1035px;
     height: 500px;
     background-color: aliceblue;
@@ -27,8 +31,7 @@
 
 #rankingMaps{
     border: 1px solid black;
-    position: absolute;
-    top: 530px;
+    margin-bottom: 50px;
     width: 1820px;
     background-color: aliceblue;
 }

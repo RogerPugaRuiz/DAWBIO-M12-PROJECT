@@ -6,382 +6,385 @@
 <link rel="stylesheet" type="text/css" href="./map-component.component.css">
 </head>
 <body>
-    <div id="maps" style="margin-left: 15px; margin-top: 15px;">
-        <div id="map"></div>
-        <div id="mapC"></div>
-    </div>
-    <div id="dataMaps" style="margin-top: 15px;">
-        <div id="pollutantInfo" class ="dataContainer">
-            <h1>Info Pollution</h1>
-            <p>no2 - Nitrogen (converted to AQI levels from µg/m3 (EPA Standard))</p>
-            <p>pm10 - (Respirable particulate matter) Suspended particles between 2.5 and 10 microns in diameter (converted to AQI levels from µg/m3 (EPA Standard))</p>
-            <p>pm25 - (Fine particulate matter) Suspended particles less than 2.5 microns in diameter (converted to AQI levels from µg/m3 (EPA Standard))</p>
-            <p>co - Carbon Monoxide (converted to AQI levels from µg/m3 (EPA Standard))</p>
-            <p>o3 - Ozone (converted to AQI levels from µg/m3 (EPA Standard))</p>
-            <p>so2 - Sulfur Dioxide (converted to AQI levels from µg/m3 (EPA Standard))</p>
-            <p>wg - Static pressure (Pressure necessary to support a column of water) (iaqi)</p>
-            <p>dew - Indirect indicator of contamination by particulate matter (iaqi)</p>
-            <p>t - Temperature (Celsius)</p>
-            <p>w - Wind (m/s)</p>
-            <p>r - Rain</p>
-            <p>p - Pressure (Hectopascals)</p>
-            <p>h - Humidity (%)</p>
+    <div id="mainDiv">
+        <ngx-spinner type="ball-fall"><div class="spinner-border text-primary" style="height: 80px; width: 80px; margin-left: 20px;"></div> <p style="font-size: 20px; color: white">Loading Data...</p></ngx-spinner>
+        <div id="maps" style="margin-left: 15px; margin-top: 15px;">
+            <div id="map"></div>
+            <div id="mapC"></div>
         </div>
-        <div id="locationData" class ="dataContainer">
-            <h1 *ngIf="dataPollutionLocationName">{{dataPollutionLocationName}}</h1>
-            <table class="table table-bordered table-striped" style="width:50%; height: auto;">
-                <thead>
-                    <tr>
-                        <th style="width: 50%;">Data</th>
-                        <th style="width: 50%;">Value</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr style="line-height: 15px;">
-                        <td style="padding: 0px;"><span style="font-size: 13px;">Air Quality Level</span></td>
-                        <td style="padding: 0px;"><span style="font-size: 13px;" *ngIf="dataPollution; else elseContentdataPollution">{{dataPollution.air_quality_level}}</span></td>
-                    </tr>
-                    <tr style="line-height: 15px;">
-                        <td style="padding: 0px;"><span style="font-size: 13px;">Dominant Pollution</span></td>
-                        <td style="padding: 0px;"><span style="font-size: 13px;" *ngIf="dataPollution; else elseContentdataPollution">{{dataPollution.dominant_pollution}}</span></td>
-                    </tr>
-                    <tr style="line-height: 15px;">
-                        <td style="padding: 0px;"><span style="font-size: 13px;">Latitude</span></td>
-                        <td style="padding: 0px;"><span style="font-size: 13px;" *ngIf="dataPollution; else elseContentdataPollution">{{dataPollution.latitude}}</span></td>
-                    </tr>
-                    <tr style="line-height: 15px;">
-                        <td style="padding: 0px;"><span style="font-size: 13px;">Longitude</span></td>
-                        <td style="padding: 0px;"><span style="font-size: 13px;" *ngIf="dataPollution; else elseContentdataPollution">{{dataPollution.longitude}}</span></td>
-                    </tr>
-                    <tr style="line-height: 15px;">
-                        <td style="padding: 0px;"><span style="font-size: 13px;">Date</span></td>
-                        <td style="padding: 0px;"><span style="font-size: 13px;" *ngIf="dataPollution; else elseContentdataPollution">{{dataPollution.date_day_info}}</span></td>
-                    </tr>
-                    <tr style="line-height: 15px;">
-                        <td style="padding: 0px;"><span style="font-size: 13px;">Time</span></td>
-                        <td style="padding: 0px;"><span style="font-size: 13px;" *ngIf="dataPollution; else elseContentdataPollution">{{dataPollution.date_time_info}}</span></td>
-                    </tr>
-                    <tr style="line-height: 15px;">
-                        <td style="padding: 0px;"><span style="font-size: 13px;">PM10</span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.pm10; else elseContentdataPollution">{{dataPollution.pm10}}</p></span></td>
-                    </tr>
-                    <tr style="line-height: 15px;">
-                        <td style="padding: 0px;"><span style="font-size: 13px;">PM25</span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.pm25; else elseContentdataPollution">{{dataPollution.pm25}}</p></span></td>
-                    </tr>
-                    <tr style="line-height: 15px;">
-                        <td style="padding: 0px;"><span style="font-size: 13px;">CO</span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.co; else elseContentdataPollution">{{dataPollution.co}}</p></span></td>
-                    </tr>
-                    <tr style="line-height: 15px;">
-                        <td style="padding: 0px;"><span style="font-size: 13px;">O3</span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.o3; else elseContentdataPollution">{{dataPollution.o3}}</p></span></td>
-                    </tr>
-                    <tr style="line-height: 15px;">
-                        <td style="padding: 0px;"><span style="font-size: 13px;">NO2</span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.no2; else elseContentdataPollution">{{dataPollution.no2}}</p></span></td>
-                    </tr>
-                    <tr style="line-height: 15px;">
-                        <td style="padding: 0px;"><span style="font-size: 13px;">SO2</span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.so2; else elseContentdataPollution">{{dataPollution.so2}}</p></span></td>
-                    </tr>
-                    <tr style="line-height: 15px;">
-                        <td style="padding: 0px;"><span style="font-size: 13px;">WG</span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.wg; else elseContentdataPollution">{{dataPollution.wg}}</p></span></td>
-                    </tr>
-                    <tr style="line-height: 15px;">
-                        <td style="padding: 0px;"><span style="font-size: 13px;">DEW</span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.dew; else elseContentdataPollution">{{dataPollution.dew}}</p></span></td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 0px;"><span style="font-size: 13px;">T</span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.t; else elseContentdataPollution">{{dataPollution.t}}</p></span></td>
-                    </tr>
-                    <tr style="line-height: 15px;">
-                        <td style="padding: 0px;"><span style="font-size: 13px;">W</span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.w; else elseContentdataPollution">{{dataPollution.w}}</p></span></td>
-                    </tr>
-                    <tr style="line-height: 15px;">
-                        <td style="padding: 0px;"><span style="font-size: 13px;">R</span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.r; else elseContentdataPollution">{{dataPollution.r}}</p></span></td>
-                    </tr>
-                    <tr style="line-height: 15px;">
-                        <td style="padding: 0px;"><span style="font-size: 13px;">P</span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.p; else elseContentdataPollution">{{dataPollution.p}}</p></span></td>
-                    </tr>
-                    <tr style="line-height: 15px;">
-                        <td style="padding: 0px;"><span style="font-size: 13px;">H</span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.h; else elseContentdataPollution">{{dataPollution.h}}</p></span></td>
-                    </tr>
-                </tbody>
-            </table>
-            <div id="datePickerLocation">
-                <mat-form-field appearance="fill">
-                    <mat-label>Choose a date</mat-label>
-                    <input [(ngModel)]="dataPollutionActualDate" (dateChange)="refreshInfoData()"  matInput [matDatepicker]="datePicker" [min] = "minDateRanking" [max] = "maxDateRanking" onkeydown="return false" >
-                    <mat-datepicker-toggle [for]="datePicker" matSuffix></mat-datepicker-toggle>
-                    <mat-datepicker #datePicker></mat-datepicker>
-                </mat-form-field>              
+        <div id="dataMaps" style="margin-top: 15px;">
+            <div id="pollutantInfo" class ="dataContainer">
+                <h1>Info Pollution</h1>
+                <p>no2 - Nitrogen (converted to AQI levels from µg/m3 (EPA Standard))</p>
+                <p>pm10 - (Respirable particulate matter) Suspended particles between 2.5 and 10 microns in diameter (converted to AQI levels from µg/m3 (EPA Standard))</p>
+                <p>pm25 - (Fine particulate matter) Suspended particles less than 2.5 microns in diameter (converted to AQI levels from µg/m3 (EPA Standard))</p>
+                <p>co - Carbon Monoxide (converted to AQI levels from µg/m3 (EPA Standard))</p>
+                <p>o3 - Ozone (converted to AQI levels from µg/m3 (EPA Standard))</p>
+                <p>so2 - Sulfur Dioxide (converted to AQI levels from µg/m3 (EPA Standard))</p>
+                <p>wg - Static pressure (Pressure necessary to support a column of water) (iaqi)</p>
+                <p>dew - Indirect indicator of contamination by particulate matter (iaqi)</p>
+                <p>t - Temperature (Celsius)</p>
+                <p>w - Wind (m/s)</p>
+                <p>r - Rain</p>
+                <p>p - Pressure (Hectopascals)</p>
+                <p>h - Humidity (%)</p>
             </div>
-            <div id="statisticalLocationData">
-                <h5>Location Statistics</h5>
-                <span *ngIf="statisticalDataPollution; else elseContentdataPollution"><h6 *ngIf="statisticalDataPollution['date_day_info']; else elseContentdataPollution">{{statisticalDataPollution['date_day_info']}}</h6></span>
+            <div id="locationData" class ="dataContainer">
+                <h1 *ngIf="dataPollutionLocationName">{{dataPollutionLocationName}}</h1>
+                <table class="table table-bordered table-striped" style="width:50%; height: auto;">
+                    <thead>
+                        <tr>
+                            <th style="width: 50%;">Data</th>
+                            <th style="width: 50%;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="line-height: 15px;">
+                            <td style="padding: 0px;"><span style="font-size: 13px;">Air Quality Level</span></td>
+                            <td style="padding: 0px;"><span style="font-size: 13px;" *ngIf="dataPollution; else elseContentdataPollution">{{dataPollution.air_quality_level}}</span></td>
+                        </tr>
+                        <tr style="line-height: 15px;">
+                            <td style="padding: 0px;"><span style="font-size: 13px;">Dominant Pollution</span></td>
+                            <td style="padding: 0px;"><span style="font-size: 13px;" *ngIf="dataPollution; else elseContentdataPollution">{{dataPollution.dominant_pollution}}</span></td>
+                        </tr>
+                        <tr style="line-height: 15px;">
+                            <td style="padding: 0px;"><span style="font-size: 13px;">Latitude</span></td>
+                            <td style="padding: 0px;"><span style="font-size: 13px;" *ngIf="dataPollution; else elseContentdataPollution">{{dataPollution.latitude}}</span></td>
+                        </tr>
+                        <tr style="line-height: 15px;">
+                            <td style="padding: 0px;"><span style="font-size: 13px;">Longitude</span></td>
+                            <td style="padding: 0px;"><span style="font-size: 13px;" *ngIf="dataPollution; else elseContentdataPollution">{{dataPollution.longitude}}</span></td>
+                        </tr>
+                        <tr style="line-height: 15px;">
+                            <td style="padding: 0px;"><span style="font-size: 13px;">Date</span></td>
+                            <td style="padding: 0px;"><span style="font-size: 13px;" *ngIf="dataPollution; else elseContentdataPollution">{{dataPollution.date_day_info}}</span></td>
+                        </tr>
+                        <tr style="line-height: 15px;">
+                            <td style="padding: 0px;"><span style="font-size: 13px;">Time</span></td>
+                            <td style="padding: 0px;"><span style="font-size: 13px;" *ngIf="dataPollution; else elseContentdataPollution">{{dataPollution.date_time_info}}</span></td>
+                        </tr>
+                        <tr style="line-height: 15px;">
+                            <td style="padding: 0px;"><span style="font-size: 13px;">PM10</span></td>
+                            <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.pm10; else elseContentdataPollution">{{dataPollution.pm10}}</p></span></td>
+                        </tr>
+                        <tr style="line-height: 15px;">
+                            <td style="padding: 0px;"><span style="font-size: 13px;">PM25</span></td>
+                            <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.pm25; else elseContentdataPollution">{{dataPollution.pm25}}</p></span></td>
+                        </tr>
+                        <tr style="line-height: 15px;">
+                            <td style="padding: 0px;"><span style="font-size: 13px;">CO</span></td>
+                            <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.co; else elseContentdataPollution">{{dataPollution.co}}</p></span></td>
+                        </tr>
+                        <tr style="line-height: 15px;">
+                            <td style="padding: 0px;"><span style="font-size: 13px;">O3</span></td>
+                            <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.o3; else elseContentdataPollution">{{dataPollution.o3}}</p></span></td>
+                        </tr>
+                        <tr style="line-height: 15px;">
+                            <td style="padding: 0px;"><span style="font-size: 13px;">NO2</span></td>
+                            <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.no2; else elseContentdataPollution">{{dataPollution.no2}}</p></span></td>
+                        </tr>
+                        <tr style="line-height: 15px;">
+                            <td style="padding: 0px;"><span style="font-size: 13px;">SO2</span></td>
+                            <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.so2; else elseContentdataPollution">{{dataPollution.so2}}</p></span></td>
+                        </tr>
+                        <tr style="line-height: 15px;">
+                            <td style="padding: 0px;"><span style="font-size: 13px;">WG</span></td>
+                            <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.wg; else elseContentdataPollution">{{dataPollution.wg}}</p></span></td>
+                        </tr>
+                        <tr style="line-height: 15px;">
+                            <td style="padding: 0px;"><span style="font-size: 13px;">DEW</span></td>
+                            <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.dew; else elseContentdataPollution">{{dataPollution.dew}}</p></span></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0px;"><span style="font-size: 13px;">T</span></td>
+                            <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.t; else elseContentdataPollution">{{dataPollution.t}}</p></span></td>
+                        </tr>
+                        <tr style="line-height: 15px;">
+                            <td style="padding: 0px;"><span style="font-size: 13px;">W</span></td>
+                            <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.w; else elseContentdataPollution">{{dataPollution.w}}</p></span></td>
+                        </tr>
+                        <tr style="line-height: 15px;">
+                            <td style="padding: 0px;"><span style="font-size: 13px;">R</span></td>
+                            <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.r; else elseContentdataPollution">{{dataPollution.r}}</p></span></td>
+                        </tr>
+                        <tr style="line-height: 15px;">
+                            <td style="padding: 0px;"><span style="font-size: 13px;">P</span></td>
+                            <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.p; else elseContentdataPollution">{{dataPollution.p}}</p></span></td>
+                        </tr>
+                        <tr style="line-height: 15px;">
+                            <td style="padding: 0px;"><span style="font-size: 13px;">H</span></td>
+                            <td style="padding: 0px;"><span *ngIf="dataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="dataPollution.h; else elseContentdataPollution">{{dataPollution.h}}</p></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div id="datePickerLocation">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Choose a date</mat-label>
+                        <input [(ngModel)]="dataPollutionActualDate" (dateChange)="refreshInfoData()"  matInput [matDatepicker]="datePicker" [min] = "minDateRanking" [max] = "maxDateRanking" onkeydown="return false" >
+                        <mat-datepicker-toggle [for]="datePicker" matSuffix></mat-datepicker-toggle>
+                        <mat-datepicker #datePicker></mat-datepicker>
+                    </mat-form-field>              
+                </div>
+                <div id="statisticalLocationData">
+                    <h5>Location Statistics</h5>
+                    <span *ngIf="statisticalDataPollution; else elseContentdataPollution"><h6 *ngIf="statisticalDataPollution['date_day_info']; else elseContentdataPollution">{{statisticalDataPollution['date_day_info']}}</h6></span>
+                    <table class="table table-bordered table-striped" style="width:100%; height: auto;">
+                        <thead>
+                            <tr>
+                                <th style="width: 40%;">Pollutant</th>
+                                <th style="width: 20%;">AVG</th>
+                                <th style="width: 20%;">MAX</th>
+                                <th style="width: 20%;">MIN</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="line-height: 15px;">
+                                <td style="padding: 0px;"><span style="font-size: 13px;">Air Quality Level</span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['AVG(air_quality_level)']; else elseContentdataPollution">{{statisticalDataPollution['AVG(air_quality_level)']}}</p></span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MAX(air_quality_level)']; else elseContentdataPollution">{{statisticalDataPollution['MAX(air_quality_level)']}}</p></span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MIN(air_quality_level)']; else elseContentdataPollution">{{statisticalDataPollution['MIN(air_quality_level)']}}</p></span></td>
+                            </tr>
+                            <tr style="line-height: 15px;">
+                                <td style="padding: 0px;"><span style="font-size: 13px;">PM10</span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['AVG(pm10)']; else elseContentdataPollution">{{statisticalDataPollution['AVG(pm10)']}}</p></span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MAX(pm10)']; else elseContentdataPollution">{{statisticalDataPollution['MAX(pm10)']}}</p></span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MIN(pm10)']; else elseContentdataPollution">{{statisticalDataPollution['MIN(pm10)']}}</p></span></td>
+                            </tr>
+                            <tr style="line-height: 15px;">
+                                <td style="padding: 0px;"><span style="font-size: 13px;">PM25</span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['AVG(pm25)']; else elseContentdataPollution">{{statisticalDataPollution['AVG(pm25)']}}</p></span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MAX(pm25)']; else elseContentdataPollution">{{statisticalDataPollution['MAX(pm25)']}}</p></span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MIN(pm25)']; else elseContentdataPollution">{{statisticalDataPollution['MIN(pm25)']}}</p></span></td>
+                            </tr>
+                            <tr style="line-height: 15px;">
+                                <td style="padding: 0px;"><span style="font-size: 13px;">CO</span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['AVG(co)']; else elseContentdataPollution">{{statisticalDataPollution['AVG(co)']}}</p></span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MAX(co)']; else elseContentdataPollution">{{statisticalDataPollution['MAX(co)']}}</p></span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MIN(co)']; else elseContentdataPollution">{{statisticalDataPollution['MIN(co)']}}</p></span></td>
+                            </tr>
+                            <tr style="line-height: 15px;">
+                                <td style="padding: 0px;"><span style="font-size: 13px;">O3</span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['AVG(o3)']; else elseContentdataPollution">{{statisticalDataPollution['AVG(o3)']}}</p></span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MAX(o3)']; else elseContentdataPollution">{{statisticalDataPollution['MAX(o3)']}}</p></span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MIN(o3)']; else elseContentdataPollution">{{statisticalDataPollution['MIN(o3)']}}</p></span></td>
+                            </tr>
+                            <tr style="line-height: 15px;">
+                                <td style="padding: 0px;"><span style="font-size: 13px;">NO2</span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['AVG(no2)']; else elseContentdataPollution">{{statisticalDataPollution['AVG(no2)']}}</p></span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MAX(no2)']; else elseContentdataPollution">{{statisticalDataPollution['MAX(no2)']}}</p></span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MIN(no2)']; else elseContentdataPollution">{{statisticalDataPollution['MIN(no2)']}}</p></span></td>
+                            </tr>
+                            <tr style="line-height: 15px;">
+                                <td style="padding: 0px;"><span style="font-size: 13px;">WG</span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['AVG(wg)']; else elseContentdataPollution">{{statisticalDataPollution['AVG(wg)']}}</p></span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MAX(wg)']; else elseContentdataPollution">{{statisticalDataPollution['MAX(wg)']}}</p></span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MIN(wg)']; else elseContentdataPollution">{{statisticalDataPollution['MIN(wg)']}}</p></span></td>
+                            </tr>
+                            <tr style="line-height: 15px;">
+                                <td style="padding: 0px;"><span style="font-size: 13px;">DEW</span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['AVG(dew)']; else elseContentdataPollution">{{statisticalDataPollution['AVG(dew)']}}</p></span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MAX(dew)']; else elseContentdataPollution">{{statisticalDataPollution['MAX(dew)']}}</p></span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MIN(dew)']; else elseContentdataPollution">{{statisticalDataPollution['MIN(dew)']}}</p></span></td>
+                            </tr>
+                            <tr style="line-height: 15px;">
+                                <td style="padding: 0px;"><span style="font-size: 13px;">T</span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['AVG(t)']; else elseContentdataPollution">{{statisticalDataPollution['AVG(t)']}}</p></span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MAX(t)']; else elseContentdataPollution">{{statisticalDataPollution['MAX(t)']}}</p></span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MIN(t)']; else elseContentdataPollution">{{statisticalDataPollution['MIN(t)']}}</p></span></td>
+                            </tr>
+                            <tr style="line-height: 15px;">
+                                <td style="padding: 0px;"><span style="font-size: 13px;">W</span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['AVG(w)']; else elseContentdataPollution">{{statisticalDataPollution['AVG(w)']}}</p></span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MAX(w)']; else elseContentdataPollution">{{statisticalDataPollution['MAX(w)']}}</p></span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MIN(w)']; else elseContentdataPollution">{{statisticalDataPollution['MIN(w)']}}</p></span></td>
+                            </tr>
+                            <tr style="line-height: 15px;">
+                                <td style="padding: 0px;"><span style="font-size: 13px;">R</span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['AVG(r)']; else elseContentdataPollution">{{statisticalDataPollution['AVG(r)']}}</p></span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MAX(r)']; else elseContentdataPollution">{{statisticalDataPollution['MAX(r)']}}</p></span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MIN(r)']; else elseContentdataPollution">{{statisticalDataPollution['MIN(r)']}}</p></span></td>
+                            </tr>
+                            <tr style="line-height: 15px;">
+                                <td style="padding: 0px;"><span style="font-size: 13px;">P</span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['AVG(p)']; else elseContentdataPollution">{{statisticalDataPollution['AVG(p)']}}</p></span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MAX(p)']; else elseContentdataPollution">{{statisticalDataPollution['MAX(p)']}}</p></span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MIN(p)']; else elseContentdataPollution">{{statisticalDataPollution['MIN(p)']}}</p></span></td>
+                            </tr>
+                            <tr style="line-height: 15px;">
+                                <td style="padding: 0px;"><span style="font-size: 13px;">H</span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['AVG(h)']; else elseContentdataPollution">{{statisticalDataPollution['AVG(h)']}}</p></span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MAX(h)']; else elseContentdataPollution">{{statisticalDataPollution['MAX(h)']}}</p></span></td>
+                                <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MIN(h)']; else elseContentdataPollution">{{statisticalDataPollution['MIN(h)']}}</p></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="forecastData" class ="dataContainer">
+                <div *ngIf="dataPollutionLocationName"><h1 *ngIf="dataPollutionLocationName; else elseContentForecastdataPollution">Forecast data - {{dataPollutionLocationName}}</h1></div>
+                    <fieldset *ngIf="dataPollutionLocationName; else elseContentForecastdataPollution" style=" height: 160px; width: 500px">
+                        <legend>Select the pollutant:</legend>
+                        <div>
+                        <input type="radio" name="radioSelect" value="o3" [(ngModel)]="selectedForecastPollutant" (change) = "updateForecastData()"
+                                checked>
+                        <label for="o3">O3</label>
+                        </div>
+                        <div>
+                        <input type="radio" name="radioSelect" value="pm10" [(ngModel)]="selectedForecastPollutant" (change) = "updateForecastData()">
+                        <label for="pm10">PM10</label>
+                        </div>
+                        <div>
+                        <input type="radio" name="radioSelect" value="pm25" [(ngModel)]="selectedForecastPollutant" (change) = "updateForecastData()">
+                        <label for="pm25">PM25</label>
+                        </div>
+                        <div>
+                        <input type="radio" name="radioSelect" value="uvi" [(ngModel)]="selectedForecastPollutant" (change) = "updateForecastData()">
+                        <label for="uvi">UVI</label>
+                        </div>
+                    </fieldset>
                 <table class="table table-bordered table-striped" style="width:100%; height: auto;">
                     <thead>
                         <tr>
-                            <th style="width: 40%;">Pollutant</th>
+                            <th style="width: 10%;">Pollutant</th>
+                            <th style="width: 30%"> Date</th>
                             <th style="width: 20%;">AVG</th>
                             <th style="width: 20%;">MAX</th>
                             <th style="width: 20%;">MIN</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr style="line-height: 15px;">
-                            <td style="padding: 0px;"><span style="font-size: 13px;">Air Quality Level</span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['AVG(air_quality_level)']; else elseContentdataPollution">{{statisticalDataPollution['AVG(air_quality_level)']}}</p></span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MAX(air_quality_level)']; else elseContentdataPollution">{{statisticalDataPollution['MAX(air_quality_level)']}}</p></span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MIN(air_quality_level)']; else elseContentdataPollution">{{statisticalDataPollution['MIN(air_quality_level)']}}</p></span></td>
-                        </tr>
-                        <tr style="line-height: 15px;">
-                            <td style="padding: 0px;"><span style="font-size: 13px;">PM10</span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['AVG(pm10)']; else elseContentdataPollution">{{statisticalDataPollution['AVG(pm10)']}}</p></span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MAX(pm10)']; else elseContentdataPollution">{{statisticalDataPollution['MAX(pm10)']}}</p></span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MIN(pm10)']; else elseContentdataPollution">{{statisticalDataPollution['MIN(pm10)']}}</p></span></td>
-                        </tr>
-                        <tr style="line-height: 15px;">
-                            <td style="padding: 0px;"><span style="font-size: 13px;">PM25</span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['AVG(pm25)']; else elseContentdataPollution">{{statisticalDataPollution['AVG(pm25)']}}</p></span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MAX(pm25)']; else elseContentdataPollution">{{statisticalDataPollution['MAX(pm25)']}}</p></span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MIN(pm25)']; else elseContentdataPollution">{{statisticalDataPollution['MIN(pm25)']}}</p></span></td>
-                        </tr>
-                        <tr style="line-height: 15px;">
-                            <td style="padding: 0px;"><span style="font-size: 13px;">CO</span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['AVG(co)']; else elseContentdataPollution">{{statisticalDataPollution['AVG(co)']}}</p></span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MAX(co)']; else elseContentdataPollution">{{statisticalDataPollution['MAX(co)']}}</p></span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MIN(co)']; else elseContentdataPollution">{{statisticalDataPollution['MIN(co)']}}</p></span></td>
-                        </tr>
-                        <tr style="line-height: 15px;">
-                            <td style="padding: 0px;"><span style="font-size: 13px;">O3</span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['AVG(o3)']; else elseContentdataPollution">{{statisticalDataPollution['AVG(o3)']}}</p></span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MAX(o3)']; else elseContentdataPollution">{{statisticalDataPollution['MAX(o3)']}}</p></span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MIN(o3)']; else elseContentdataPollution">{{statisticalDataPollution['MIN(o3)']}}</p></span></td>
-                        </tr>
-                        <tr style="line-height: 15px;">
-                            <td style="padding: 0px;"><span style="font-size: 13px;">NO2</span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['AVG(no2)']; else elseContentdataPollution">{{statisticalDataPollution['AVG(no2)']}}</p></span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MAX(no2)']; else elseContentdataPollution">{{statisticalDataPollution['MAX(no2)']}}</p></span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MIN(no2)']; else elseContentdataPollution">{{statisticalDataPollution['MIN(no2)']}}</p></span></td>
-                        </tr>
-                        <tr style="line-height: 15px;">
-                            <td style="padding: 0px;"><span style="font-size: 13px;">WG</span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['AVG(wg)']; else elseContentdataPollution">{{statisticalDataPollution['AVG(wg)']}}</p></span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MAX(wg)']; else elseContentdataPollution">{{statisticalDataPollution['MAX(wg)']}}</p></span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MIN(wg)']; else elseContentdataPollution">{{statisticalDataPollution['MIN(wg)']}}</p></span></td>
-                        </tr>
-                        <tr style="line-height: 15px;">
-                            <td style="padding: 0px;"><span style="font-size: 13px;">DEW</span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['AVG(dew)']; else elseContentdataPollution">{{statisticalDataPollution['AVG(dew)']}}</p></span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MAX(dew)']; else elseContentdataPollution">{{statisticalDataPollution['MAX(dew)']}}</p></span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MIN(dew)']; else elseContentdataPollution">{{statisticalDataPollution['MIN(dew)']}}</p></span></td>
-                        </tr>
-                        <tr style="line-height: 15px;">
-                            <td style="padding: 0px;"><span style="font-size: 13px;">T</span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['AVG(t)']; else elseContentdataPollution">{{statisticalDataPollution['AVG(t)']}}</p></span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MAX(t)']; else elseContentdataPollution">{{statisticalDataPollution['MAX(t)']}}</p></span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MIN(t)']; else elseContentdataPollution">{{statisticalDataPollution['MIN(t)']}}</p></span></td>
-                        </tr>
-                        <tr style="line-height: 15px;">
-                            <td style="padding: 0px;"><span style="font-size: 13px;">W</span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['AVG(w)']; else elseContentdataPollution">{{statisticalDataPollution['AVG(w)']}}</p></span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MAX(w)']; else elseContentdataPollution">{{statisticalDataPollution['MAX(w)']}}</p></span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MIN(w)']; else elseContentdataPollution">{{statisticalDataPollution['MIN(w)']}}</p></span></td>
-                        </tr>
-                        <tr style="line-height: 15px;">
-                            <td style="padding: 0px;"><span style="font-size: 13px;">R</span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['AVG(r)']; else elseContentdataPollution">{{statisticalDataPollution['AVG(r)']}}</p></span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MAX(r)']; else elseContentdataPollution">{{statisticalDataPollution['MAX(r)']}}</p></span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MIN(r)']; else elseContentdataPollution">{{statisticalDataPollution['MIN(r)']}}</p></span></td>
-                        </tr>
-                        <tr style="line-height: 15px;">
-                            <td style="padding: 0px;"><span style="font-size: 13px;">P</span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['AVG(p)']; else elseContentdataPollution">{{statisticalDataPollution['AVG(p)']}}</p></span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MAX(p)']; else elseContentdataPollution">{{statisticalDataPollution['MAX(p)']}}</p></span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MIN(p)']; else elseContentdataPollution">{{statisticalDataPollution['MIN(p)']}}</p></span></td>
-                        </tr>
-                        <tr style="line-height: 15px;">
-                            <td style="padding: 0px;"><span style="font-size: 13px;">H</span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['AVG(h)']; else elseContentdataPollution">{{statisticalDataPollution['AVG(h)']}}</p></span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MAX(h)']; else elseContentdataPollution">{{statisticalDataPollution['MAX(h)']}}</p></span></td>
-                            <td style="padding: 0px;"><span *ngIf="statisticalDataPollution; else elseContentdataPollution"><p style="margin: 0px; font-size: 13px;" *ngIf="statisticalDataPollution['MIN(h)']; else elseContentdataPollution">{{statisticalDataPollution['MIN(h)']}}</p></span></td>
+                        <tr style="line-height: 30px;">
+                            <td style="padding: 0px;"><span *ngIf="dataForecastPollution; else elseContentForecastdataPollution"><p style="margin: 0px; font-size: 23px;" *ngIf="dataForecastPollution['pollutant']; else elseContentForecastdataPollution">{{dataForecastPollution['pollutant']}}</p></span></td>
+                            <td style="padding: 0px;"><span *ngIf="dataForecastPollution; else elseContentForecastdataPollution"><p style="margin: 0px; font-size: 23px;" *ngIf="dataForecastPollution['date_day_info']; else elseContentForecastdataPollution">{{dataForecastPollution['date_day_info']}}</p></span></td>
+                            <td style="padding: 0px;"><span *ngIf="dataForecastPollution; else elseContentForecastdataPollution"><p style="margin: 0px; font-size: 23px;" *ngIf="dataForecastPollution['avg']; else elseContentForecastdataPollution">{{dataForecastPollution['avg']}}</p></span></td>
+                            <td style="padding: 0px;"><span *ngIf="dataForecastPollution; else elseContentForecastdataPollution"><p style="margin: 0px; font-size: 23px;" *ngIf="dataForecastPollution['max']; else elseContentForecastdataPollution">{{dataForecastPollution['max']}}</p></span></td>
+                            <td style="padding: 0px;"><span *ngIf="dataForecastPollution; else elseContentForecastdataPollution"><p style="margin: 0px; font-size: 23px;" *ngIf="dataForecastPollution['min'] >= 0; else elseContentForecastdataPollution">{{dataForecastPollution['min']}}</p></span></td>
                         </tr>
                     </tbody>
                 </table>
+                <div id="datePickerForecastData">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Choose a date</mat-label>
+                        <input [(ngModel)]="forecastActualDate" (dateChange)="updateForecastData()"  matInput [matDatepicker]="datePicker2" [min] = "minDateForecast" [max] = "maxDateForecast" onkeydown="return false" >
+                        <mat-datepicker-toggle [for]="datePicker2" matSuffix></mat-datepicker-toggle>
+                        <mat-datepicker #datePicker2></mat-datepicker>
+                    </mat-form-field>              
+                </div>
             </div>
-        </div>
-        <div id="forecastData" class ="dataContainer">
-            <div *ngIf="dataPollutionLocationName"><h1 *ngIf="dataPollutionLocationName; else elseContentForecastdataPollution">Forecast data - {{dataPollutionLocationName}}</h1></div>
-                <fieldset *ngIf="dataPollutionLocationName; else elseContentForecastdataPollution" style=" height: 160px; width: 500px">
-                    <legend>Select the pollutant:</legend>
-                    <div>
-                    <input type="radio" name="radioSelect" value="o3" [(ngModel)]="selectedForecastPollutant" (change) = "updateForecastData()"
-                            checked>
-                    <label for="o3">O3</label>
-                    </div>
-                    <div>
-                    <input type="radio" name="radioSelect" value="pm10" [(ngModel)]="selectedForecastPollutant" (change) = "updateForecastData()">
-                    <label for="pm10">PM10</label>
-                    </div>
-                    <div>
-                    <input type="radio" name="radioSelect" value="pm25" [(ngModel)]="selectedForecastPollutant" (change) = "updateForecastData()">
-                    <label for="pm25">PM25</label>
-                    </div>
-                    <div>
-                    <input type="radio" name="radioSelect" value="uvi" [(ngModel)]="selectedForecastPollutant" (change) = "updateForecastData()">
-                    <label for="uvi">UVI</label>
-                    </div>
-                </fieldset>
-            <table class="table table-bordered table-striped" style="width:100%; height: auto;">
+            <table id="infoaqitable" class ="dataContainer">
                 <thead>
-                    <tr>
-                        <th style="width: 10%;">Pollutant</th>
-                        <th style="width: 30%"> Date</th>
-                        <th style="width: 20%;">AVG</th>
-                        <th style="width: 20%;">MAX</th>
-                        <th style="width: 20%;">MIN</th>
+                    <tr> 
+                        <td>AQI</td>
+                        <td>Air quality</td>
+                        <td>Protect your health</td>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr style="line-height: 30px;">
-                        <td style="padding: 0px;"><span *ngIf="dataForecastPollution; else elseContentForecastdataPollution"><p style="margin: 0px; font-size: 23px;" *ngIf="dataForecastPollution['pollutant']; else elseContentForecastdataPollution">{{dataForecastPollution['pollutant']}}</p></span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataForecastPollution; else elseContentForecastdataPollution"><p style="margin: 0px; font-size: 23px;" *ngIf="dataForecastPollution['date_day_info']; else elseContentForecastdataPollution">{{dataForecastPollution['date_day_info']}}</p></span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataForecastPollution; else elseContentForecastdataPollution"><p style="margin: 0px; font-size: 23px;" *ngIf="dataForecastPollution['avg']; else elseContentForecastdataPollution">{{dataForecastPollution['avg']}}</p></span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataForecastPollution; else elseContentForecastdataPollution"><p style="margin: 0px; font-size: 23px;" *ngIf="dataForecastPollution['max']; else elseContentForecastdataPollution">{{dataForecastPollution['max']}}</p></span></td>
-                        <td style="padding: 0px;"><span *ngIf="dataForecastPollution; else elseContentForecastdataPollution"><p style="margin: 0px; font-size: 23px;" *ngIf="dataForecastPollution['min'] >= 0; else elseContentForecastdataPollution">{{dataForecastPollution['min']}}</p></span></td>
-                    </tr>
-                </tbody>
+                    <tbody>
+                        <tr style="background-color:#009966;color:white">
+                            <td nowrap="true">0 - 50</td>
+                            <td>Good</td>
+                            <td>No health impacts are anticipated when air quality is in this range. </td>
+                        </tr> 
+                        <tr style="background-color:#ffde33"> 
+                            <td nowrap="true">51 -100</td> 
+                            <td>Moderate</td>
+                            <td>Extraordinarily sensitive people should consider limiting excessive and prolonged physical exertion outdoors.</td>
+                        </tr> 
+                        <tr style="background-color:#ff9933;color:white"> 
+                            <td nowrap="true">101-150</td>
+                            <td>Harmful to the Health of Sensitive Groups</td> 
+                            <td>Active children and adults, and people with respiratory diseases such as asthma, should avoid excessive and prolonged physical exertion outdoors. </td>
+                        </tr> 
+                        <tr style="background-color:#cc0033;color:white">
+                            <td nowrap="true">151-200</td>
+                            <td>Harmful to health</td>
+                            <td>Active children and adults, and people with respiratory diseases such as asthma, should avoid prolonged excessive exertion outdoors; Other people, especially children, should limit excessive and prolonged physical exertion outdoors.</td>
+                        </tr> 
+                        <tr style="background-color:#660099;color:white"> 
+                            <td nowrap="true">201-300</td>
+                            <td>Very Harmful to Health</td>
+                            <td>Active children and adults, and people with respiratory conditions such as asthma, should avoid all excessive exertion outdoors; Other people, especially children, should limit excessive physical exertion outdoors.</td>
+                        </tr>
+                        <tr style="background-color:#7e0023;color:white"> 
+                            <td nowrap="true">300+</td> 
+                            <td>Risky</td> 
+                            <td>Excessively harmful to health</td>
+                        </tr> 
+                    </tbody>
             </table>
-            <div id="datePickerForecastData">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light" style="padding-top: 0px;padding-bottom: 0px; position:absolute; width: 100%; bottom: 0px; right: 0px;">
+                <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav" style="width: 100%;">
+                    <li class="nav-item active" style="width: 25%;border-top: 1px solid black;">
+                    <input type="button" class="nav-link" style="width: 100%; text-align: center; color:black" value="Info Pollution" (click)="showInfoPollution()">
+                    </li>
+                    <li class="nav-item" style="width: 25%; border-top: 1px solid black;">
+                    <input [(disabled)]="!dataPollutionLocationName" type="button" class="nav-link" style="width: 100%; text-align: center; color:black" value="Data" (click)="showDataPollution()">
+                    </li>
+                    <li class="nav-item" style="width: 25%; border-top: 1px solid black;">
+                    <input [(disabled)]="!dataPollutionLocationName" type="button" class="nav-link" style="width: 100%; text-align: center; color:black" value="Forecast Data" (click)="showForecastDataPollution()">
+                    </li>
+                    <li class="nav-item" style="width: 25%;  border-top: 1px solid black;">
+                    <input type="button" class="nav-link" style="width: 100%; text-align: center; color:black" value = "Additional Info" (click)="showAdditionalInfo()">
+                    </li>
+                </ul>
+                </div>
+            </nav>
+            <ng-template #elseContentForecastdataPollution ><span>NO DATA</span></ng-template>
+            <ng-template #elseContentdataPollution ><span style="font-size: 13px;">NO DATA</span></ng-template>
+        </div>
+        <div id="rankingMaps" style="margin-left: 15px;">
+            <h1 id="titleRankings">Rankings</h1>
+            <div id="selectDiv">
+                <select name="pollutants" id="selectRankings" [(ngModel)]="rankingPollutant" (change)="refreshRankings()">
+                    <option value="air_quality_level">Air Quality Level</option>
+                    <option value="no2">NO2</option>
+                    <option value="pm10">PM10</option>
+                    <option value="pm25">PM25</option>
+                    <option value="co">CO</option>
+                    <option value="o3">O3</option>
+                    <option value="so2">SO2</option>
+                    <option value="dew">DEW</option>
+                    <option value="wg">Static Pressure</option>
+                    <option value="t">Temperature</option>
+                    <option value="w">Wind</option>
+                    <option value="r">Rain</option>
+                    <option value="p">Pressure</option>
+                    <option value="h">Humidity</option>
+                </select>
+            </div>
+            <div id="datePicker">
                 <mat-form-field appearance="fill">
                     <mat-label>Choose a date</mat-label>
-                    <input [(ngModel)]="forecastActualDate" (dateChange)="updateForecastData()"  matInput [matDatepicker]="datePicker2" [min] = "minDateForecast" [max] = "maxDateForecast" onkeydown="return false" >
-                    <mat-datepicker-toggle [for]="datePicker2" matSuffix></mat-datepicker-toggle>
-                    <mat-datepicker #datePicker2></mat-datepicker>
+                    <input [(ngModel)]="rankingActualDate" (dateChange)="refreshRankings()"  matInput [matDatepicker]="datePicker3" [min] = "minDateRanking" [max] = "maxDateRanking" onkeydown="return false" >
+                    <mat-datepicker-toggle [for]="datePicker3" matSuffix></mat-datepicker-toggle>
+                    <mat-datepicker #datePicker3></mat-datepicker>
                 </mat-form-field>              
             </div>
-        </div>
-        <table id="infoaqitable" class ="dataContainer">
-            <thead>
-                <tr> 
-                    <td>AQI</td>
-                    <td>Air quality</td>
-                    <td>Protect your health</td>
-                </tr>
-            </thead>
-                <tbody>
-                    <tr style="background-color:#009966;color:white">
-                        <td nowrap="true">0 - 50</td>
-                        <td>Good</td>
-                        <td>No health impacts are anticipated when air quality is in this range. </td>
-                    </tr> 
-                    <tr style="background-color:#ffde33"> 
-                        <td nowrap="true">51 -100</td> 
-                        <td>Moderate</td>
-                        <td>Extraordinarily sensitive people should consider limiting excessive and prolonged physical exertion outdoors.</td>
-                    </tr> 
-                    <tr style="background-color:#ff9933;color:white"> 
-                        <td nowrap="true">101-150</td>
-                        <td>Harmful to the Health of Sensitive Groups</td> 
-                        <td>Active children and adults, and people with respiratory diseases such as asthma, should avoid excessive and prolonged physical exertion outdoors. </td>
-                    </tr> 
-                    <tr style="background-color:#cc0033;color:white">
-                        <td nowrap="true">151-200</td>
-                        <td>Harmful to health</td>
-                        <td>Active children and adults, and people with respiratory diseases such as asthma, should avoid prolonged excessive exertion outdoors; Other people, especially children, should limit excessive and prolonged physical exertion outdoors.</td>
-                    </tr> 
-                    <tr style="background-color:#660099;color:white"> 
-                        <td nowrap="true">201-300</td>
-                        <td>Very Harmful to Health</td>
-                        <td>Active children and adults, and people with respiratory conditions such as asthma, should avoid all excessive exertion outdoors; Other people, especially children, should limit excessive physical exertion outdoors.</td>
-                    </tr>
-                    <tr style="background-color:#7e0023;color:white"> 
-                        <td nowrap="true">300+</td> 
-                        <td>Risky</td> 
-                        <td>Excessively harmful to health</td>
-                    </tr> 
-                </tbody>
-        </table>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light" style="padding-top: 0px;padding-bottom: 0px; position:absolute; width: 100%; bottom: 0px; right: 0px;">
-            <div class="collapse navbar-collapse" id="navbarNav">
-              <ul class="navbar-nav" style="width: 100%;">
-                <li class="nav-item active" style="width: 25%;border-top: 1px solid black;">
-                  <input type="button" class="nav-link" style="width: 100%; text-align: center; color:black" value="Info Pollution" (click)="showInfoPollution()">
-                </li>
-                <li class="nav-item" style="width: 25%; border-top: 1px solid black;">
-                  <input [(disabled)]="!dataPollutionLocationName" type="button" class="nav-link" style="width: 100%; text-align: center; color:black" value="Data" (click)="showDataPollution()">
-                </li>
-                <li class="nav-item" style="width: 25%; border-top: 1px solid black;">
-                  <input [(disabled)]="!dataPollutionLocationName" type="button" class="nav-link" style="width: 100%; text-align: center; color:black" value="Forecast Data" (click)="showForecastDataPollution()">
-                </li>
-                <li class="nav-item" style="width: 25%;  border-top: 1px solid black;">
-                  <input type="button" class="nav-link" style="width: 100%; text-align: center; color:black" value = "Additional Info" (click)="showAdditionalInfo()">
-                </li>
-              </ul>
+            <div class="containter">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%">Ranking</th>
+                            <th style="width: 40%">Location Name</th>
+                            <th style="width: 30%">Date</th>
+                            <th style="width: 20%">Average {{rankingPollutant}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let ranking_data of rankingArray; let i = index">
+                            <td><span>{{i+1}}</span></td>
+                            <td><span>{{ranking_data.location_name}}</span></td>
+                            <td><span>{{ranking_data.date_day_info}}</span></td>
+                            <td><span *ngIf="ranking_data.value; else elseContentNoValue" >{{ranking_data.value}}</span></td>
+                            <ng-template #elseContentNoValue>NO DATA</ng-template>
+                        </tr>
+                    </tbody>
+                </table>
+                <p style="text-align:center;" *ngIf="rankingArray==false">No data</p>
             </div>
-        </nav>
-        <ng-template #elseContentForecastdataPollution ><span>NO DATA</span></ng-template>
-        <ng-template #elseContentdataPollution ><span style="font-size: 13px;">NO DATA</span></ng-template>
-    </div>
-    <div id="rankingMaps" style="margin-left: 15px;">
-        <h1 id="titleRankings">Rankings</h1>
-        <div id="selectDiv">
-            <select name="pollutants" id="selectRankings" [(ngModel)]="rankingPollutant" (change)="refreshRankings()">
-                <option value="air_quality_level">Air Quality Level</option>
-                <option value="no2">NO2</option>
-                <option value="pm10">PM10</option>
-                <option value="pm25">PM25</option>
-                <option value="co">CO</option>
-                <option value="o3">O3</option>
-                <option value="so2">SO2</option>
-                <option value="dew">DEW</option>
-                <option value="wg">Static Pressure</option>
-                <option value="t">Temperature</option>
-                <option value="w">Wind</option>
-                <option value="r">Rain</option>
-                <option value="p">Pressure</option>
-                <option value="h">Humidity</option>
-            </select>
-        </div>
-        <div id="datePicker">
-            <mat-form-field appearance="fill">
-                <mat-label>Choose a date</mat-label>
-                <input [(ngModel)]="rankingActualDate" (dateChange)="refreshRankings()"  matInput [matDatepicker]="datePicker3" [min] = "minDateRanking" [max] = "maxDateRanking" onkeydown="return false" >
-                <mat-datepicker-toggle [for]="datePicker3" matSuffix></mat-datepicker-toggle>
-                <mat-datepicker #datePicker3></mat-datepicker>
-            </mat-form-field>              
-        </div>
-        <div class="containter">
-            <table class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th style="width: 10%">Ranking</th>
-                        <th style="width: 40%">Location Name</th>
-                        <th style="width: 30%">Date</th>
-                        <th style="width: 20%">Average {{rankingPollutant}}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let ranking_data of rankingArray; let i = index">
-                        <td><span>{{i+1}}</span></td>
-                        <td><span>{{ranking_data.location_name}}</span></td>
-                        <td><span>{{ranking_data.date_day_info}}</span></td>
-                        <td><span *ngIf="ranking_data.value; else elseContentNoValue" >{{ranking_data.value}}</span></td>
-                        <ng-template #elseContentNoValue>NO DATA</ng-template>
-                    </tr>
-                </tbody>
-            </table>
-            <p style="text-align:center;" *ngIf="rankingArray==false">No data</p>
         </div>
     </div>
-
+    <h4 *ngIf="!userLogged" style="color:red; margin: 30px;">Need to login to Show Map</h4>
 </body>
 </html>

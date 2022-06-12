@@ -1,0 +1,17 @@
+<div id="page">
+    <div id="topMenu">
+        <ul>
+            <li><a id="menutitle">ProvenSoft</a></li>
+            <li class="menuop"><a routerLink="/home">Home</a></li>
+            <li class="menuop" *ngIf="!userLogged"><a routerLink="/login">Login</a></li>
+            <li class="menuop" *ngIf="userLogged"><a routerLink="/map">Map</a></li>
+            <li class="menuop" *ngIf="userLogged"><a href="" (click)="logout()">Logout</a></li>
+        </ul>
+    </div>
+    <div id="content">
+        <router-outlet></router-outlet>
+    </div>
+    <div id="footer">
+        <p id="footerText">Developed by ProvenSoft 2021-2022</p>
+    </div>
+</div>

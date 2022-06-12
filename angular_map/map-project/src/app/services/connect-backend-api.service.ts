@@ -1,21 +1,44 @@
 import { Injectable } from '@angular/core';
-import { HttpClient} from '@angular/common/http';
-import { Observable, catchError, throwError } from 'rxjs';
+import { HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import { Observable, catchError, throwError, BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ConnectBackendApiService  {
-
+export class ConnectBackendApiService{
+  
+  isLoggedin: boolean = false;
   //Backend Root Url 
   ROOT_URL: string = "http://localhost:8085/";
-  
+
   /*
   Constructor:
     http - Create HttpClient instance for do requests to backend
   */
-  constructor(private http : HttpClient){
+  constructor(private http : HttpClient, private CookieService: CookieService){
   } 
+
+  //Function: Login Function
+  login(username: string | null, password: string | null): Observable<any> {
+    return this.http.post<any>(this.ROOT_URL + "login", {username: username, password: password})
+  }
+  
+  logout(){
+    // remove user from local storage to log user out
+    localStorage.removeItem('currentUser');
+    this.isLoggedin = false;
+  }
+
+  setCookie(user: any) {
+    this.CookieService.set("user", JSON.stringify(user));
+  }
+  
+  getCookie() {
+    return JSON.parse(this.CookieService.get("user"));
+  }
+
 
   //Function: Return Spain Autonomous Regions GEOJSON object from backend
   get_autonomous_regions(): Observable<any> {
