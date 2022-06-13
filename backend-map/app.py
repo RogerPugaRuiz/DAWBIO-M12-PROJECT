@@ -2,7 +2,7 @@
 
 from asyncio import subprocess
 from tabnanny import check
-from flask import Flask, jsonify, request, Response
+from flask import Flask, jsonify, render_template, request
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_cors import CORS, cross_origin
@@ -17,8 +17,8 @@ import utils.utilsDB as utilsDB
 
 #Flask Settings
 
-app = Flask(__name__)
-cors = CORS(app, resources={r"/*":{"origins": "http://localhost:4200"}})
+app = Flask(__name__,  template_folder="templates")
+cors = CORS(app, resources={r"/*":{"origins": "http://localhost:8085"}})
 app.config['JSON_SORT_KEYS'] = False
 limiter = Limiter(app,key_func=get_remote_address)
 
@@ -27,7 +27,11 @@ limiter = Limiter(app,key_func=get_remote_address)
 @app.route("/")
 @limiter.limit("30/second")
 def mainPage():
-    return "API Main Page"
+    return render_template('index.html')
+
+@app.route('/<path:page>')
+def fallback(page):
+    return render_template('index.html')
 
 @app.route("/login", methods=['POST'])
 @limiter.limit("30/second")
@@ -159,8 +163,6 @@ def getForecastDateRange():
         location = request.json['location_name']
         pollutant = request.json['pollutant_name']
     return jsonify(utilsDB.get_forecast_date_range(location, pollutant))
-
-
 
 
 # Main
