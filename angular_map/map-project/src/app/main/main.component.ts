@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { Router } from '@angular/router';
+import { ConnectBackendApiService } from '../services/connect-backend-api.service';
 
 @Component({
   selector: 'app-main',
@@ -9,19 +10,31 @@ import { Router } from '@angular/router';
 })
 export class MainComponent implements OnInit {
 
-
+  //Variable to save logged user info
   userLogged: any = null;
-  constructor(private CookieService: CookieService, private Router: Router) { }
+  //Boolean to check if logged user have admin role
+  isAdminUser: boolean = false;
+
+  constructor(private Router: Router, private service: ConnectBackendApiService) { }
 
   ngOnInit(): void {
-    if(this.CookieService.get('user')){
-      //Get cookie User
-      this.userLogged = JSON.parse(this.CookieService.get('user'))
+    //Check if user cookie exist
+    if(this.service.getCookie('user')){
+      //If exists get cookie user and save user in local variable
+      this.userLogged = JSON.parse(this.service.getCookie('user'))
+      //Check if cookie user have admin role
+      if(this.userLogged.role == 'admin'){
+        //If user have admin role set local variable to true
+        this.isAdminUser = true;
+      }
     }
   }
 
+  //Logout function
   logout(){
-    this.CookieService.delete('user');
+    //Delete cookie user
+    this.service.deleteCookie('user');
+    //Redirect to home
     this.Router.navigateByUrl('/home').then(() => {
       window.location.reload();
     });;

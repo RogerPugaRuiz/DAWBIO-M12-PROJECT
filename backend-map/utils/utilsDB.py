@@ -50,138 +50,7 @@ def connection(db_name: str = '') -> sql.MySQLConnection:
     except Exception as e:
         print("An exception occurred - " + format(e))
         return None
-        
-def create_database(db_name: str = "spainAirPollution"):
-    """ 
-    Create Database Function - Create a database with the given name (default = "spainAirPollution")
 
-    Parameters:
-    db_name (string): Name of the database to create it
-    
-    """
-    try:
-        db: sql.MySQLConnection = connection()
-        cursor = db.cursor()
-        cursor.execute(SQLQueries.create_database_query, (db_name,))
-        db.commit()
-        cursor.close()
-        db.close()
-    except Exception as e:
-        print("An exception occurred - " + format(e))
-        
-def export_database(db_name: str = "spainAirPollution"):
-    """ 
-    Export Database Function - Export a database to SQL file with the given name (default = "spainAirPollution")
-
-    Parameters:
-    db_name (string): Name of the database to export
-    
-    """
-    try:
-        tuple_info = (user, password, db_name, db_name)
-        os.system(SQLQueries.export_database_query, tuple_info)
-    except Exception as e:
-        print("An exception occurred - " + format(e))
-
-def drop_database(db_name: str = "spainAirPollution"):
-    """ 
-    Drop Database Function - Drop a database with the given name (default = "spainAirPollution")
-
-    Parameters:
-    db_name (string): Name of the database to drop it
-    
-    """
-    try:
-        db: sql.MySQLConnection = connection()
-        cursor = db.cursor()
-        cursor.execute(SQLQueries.drop_database_query, (db_name,))
-        db.commit()
-        cursor.close()
-        db.close()
-    except Exception as e:
-        print("An exception occurred - " + format(e))
-        
-def create_users_table():
-    """ 
-    Create Air Pollution Table - Create air pollution table with the following parameters:
-    
-    id: int - Identifier(Primary Key)
-    username: string - Username 
-    password: string - Password 
-    name: string - User Name
-    surname: string - User Surname
-    
-    """
-    try:
-        db: sql.MySQLConnection = connection("spainAirPollution")
-        cursor = db.cursor()
-        cursor.execute(SQLQueries.create_users_table_query)
-        db.commit()
-        cursor.close()
-        db.close()
-    except Exception as e:
-        print("An exception occurred - " + format(e))
-        
-def create_air_pollution_table():
-    """ 
-    Create Air Pollution Table - Create air pollution table with the following parameters:
-    
-    id: int - Identifier (Primary Key)
-    air_quality_level: int - AQI value
-    dominant_pollution: string - Dominant Pollution 
-    location_name: string - Name of the place where the data comes from
-    date_day_info: date - Data date
-    date_time_info: date - Data time
-    latitude: float - Latitude where the data comes from
-    longitude: float - Longitude where the data comes from
-    no2: float - Nitrogen (converted to AQI levels from µg/m3 (EPA Standard)) 
-    pm10: float - (Respirable particulate matter) Suspended particles between 2.5 and 10 microns in diameter (converted to AQI levels from µg/m3 (EPA Standard))
-    pm25: float - (Fine particulate matter) Suspended particles less than 2.5 microns in diameter (converted to AQI levels from µg/m3 (EPA Standard))
-    co: float - Carbon Monoxide (converted to AQI levels from µg/m3 (EPA Standard))
-    o3: float - Ozone (converted to AQI levels from µg/m3 (EPA Standard))
-    so2: float - Sulfur Dioxide (converted to AQI levels from µg/m3 (EPA Standard))
-    wg: float - Static pressure (Pressure necessary to support a column of water) (iaqi)
-    dew: float - Indirect indicator of contamination by particulate matter (iaqi)
-    t: float - Temperature (Celsius)
-    w: float - Wind (m/s)
-    r: float - rain
-    p: float - Pressure (Hectopascals)
-    h: float - Humidity (%)
-    
-    """
-    try:
-        db: sql.MySQLConnection = connection("spainAirPollution")
-        cursor = db.cursor()
-        cursor.execute(SQLQueries.create_table_air_pollution_query)
-        db.commit()
-        cursor.close()
-        db.close()
-    except Exception as e:
-        print("An exception occurred - " + format(e))
-        
-def create_forecast_air_pollution_table():
-    """ 
-    Create Forecast Air Pollution Table - Create forecast air pollution table with the following parameters:
-    
-    id: int - Identifier (Primary Key)
-    location_name: string - Name of the place where the data comes from
-    date_day_info: date - Data date
-    pollutant: string - Pollutant name
-    avg: int - Pollutant forecast avg value
-    max: int - Pollutant forecast max value
-    min: int - Pollutant forecast min value
-    
-    """
-    try:
-        db: sql.MySQLConnection = connection("spainAirPollution")
-        cursor = db.cursor()
-        cursor.execute(SQLQueries.create_forecast_table_air_pollution_query)
-        db.commit()
-        cursor.close()
-        db.close()
-    except Exception as e:
-        print("An exception occurred - " + format(e))
-        
 def login(username: str, password: str):
     """
     Login - Return an user if is user is in database
@@ -211,7 +80,83 @@ def login(username: str, password: str):
     except Exception as e:
         print("An exception occurred - " + format(e))
    
+def saveProcessPid(pid: int):
+    """
+    Save Process Pid - Save the pid of the script task in the database
     
+    Parameters
+        pid (int): PID of the script task
+        
+    """
+    try: 
+        db: sql.MySQLConnection = connection("spainAirPollution")
+        cursor = db.cursor(prepared=True)
+        cursor.execute(SQLQueries.pid_delete_query)
+        cursor.close()
+        
+        cursor = db.cursor(prepared=True)
+        cursor.execute(SQLQueries.pid_insert_query, (pid,))
+        cursor.close()
+        
+        db.commit()    
+        db.close()
+    except Exception as e:
+        print("An exception occurred - " + format(e))
+        
+def getProcessPid():
+    """
+    Get Process Pid - Get the pid of the script task from the database
+    
+    Returns:
+        pid (tuple): PID of the script task
+        
+    """
+    try: 
+        db: sql.MySQLConnection = connection("spainAirPollution")
+        cursor = db.cursor(prepared=True)
+        cursor.execute(SQLQueries.pid_select_query)
+        result = cursor.fetchone()
+        cursor.close()
+        db.commit()    
+        db.close()
+    except Exception as e:
+        print("An exception occurred - " + format(e))
+    return result
+
+def getScriptCount():
+    """
+    Get Script Count - Get times that script executed
+    
+    Returns:
+        scriptcount (tuple): Times that script executed
+        
+    """
+    try: 
+        db: sql.MySQLConnection = connection("spainAirPollution")
+        cursor = db.cursor(prepared=True)
+        cursor.execute(SQLQueries.script_count_query)
+        scriptcount = cursor.fetchone()
+        cursor.close()
+        db.commit()    
+        db.close()
+    except Exception as e:
+        print("An exception occurred - " + format(e))
+    return scriptcount
+        
+def export_database(db_name: str = "spainAirPollution"):
+    """ 
+    Export Database Function - Export a database to SQL file with the given name (default = "spainAirPollution")
+
+    Parameters:
+    db_name (string): Name of the database to export
+    
+    """
+    try:
+        tuple_info = (user, password, db_name, db_name)
+        print("Exporting DB to SQL file...")
+        os.system(SQLQueries.export_database_query % tuple_info)
+    except Exception as e:
+        print("An exception occurred - " + format(e))  
 
 def insert_air_pollution_data(array_object: tuple):
     """ 
@@ -223,19 +168,16 @@ def insert_air_pollution_data(array_object: tuple):
     """
     try:
         db: sql.MySQLConnection = connection("spainAirPollution")
+        #Iterate array_object
+        print("Inserting info air pollution data...")
         for pi in array_object:
             cursor = db.cursor(prepared=True)
-            print("Inserting " + pi.location_name + " data")
-            print("\t -Checking if " + pi.location_name + " data is already in dataBase...")
-            duplicated: bool = check_duplicated_data_info_air_pollution(pi) #Check if the data is already in the database "info_air_pollution"
-            if(duplicated == False):
-                #Save object info into array
-                info_tuple: tuple = (pi.air_quality_level, pi.dominant_pollution, utils.add_backslashes_in_special_characters(pi.location_name), pi.date_day_info, pi.date_time_info, pi.latitude, pi.longitude
-                                        , pi.no2, pi.pm10, pi.pm25, pi.co, pi.o3, pi.so2, pi.wg, pi.dew, pi.t, pi.w, pi.r, pi.p, pi.h)
-                cursor.execute(SQLQueries.insert_info_air_pollution_query, info_tuple)   
-                print("\t\t -Data inserted")
-            else:
-                print("\t\t -Data not inserted")
+            ##Check if rows is already in the database "info_air_pollution"
+            #duplicated: bool = check_duplicated_data_info_air_pollution(pi)
+            #Save object info into array
+            info_tuple: tuple = (pi.air_quality_level, pi.dominant_pollution, utils.add_backslashes_in_special_characters(pi.location_name), pi.date_day_info, pi.date_time_info, pi.latitude, pi.longitude
+                                    , pi.no2, pi.pm10, pi.pm25, pi.co, pi.o3, pi.so2, pi.wg, pi.dew, pi.t, pi.w, pi.r, pi.p, pi.h)
+            cursor.execute(SQLQueries.insert_info_air_pollution_query % info_tuple)   
             cursor.close()
         db.commit()    
         db.close()
@@ -252,13 +194,12 @@ def insert_forecast_air_pollution_data(array_object: tuple):
     """
     try:
         db: sql.MySQLConnection = connection("spainAirPollution")
+        print("Inserting forecast data...")
         for fpi in array_object:
             cursor = db.cursor(prepared=True)
-            print("Inserting " + fpi.location_name + " forecast data")
             #Save object info into array
             info_tuple: tuple = (utils.add_backslashes_in_special_characters(fpi.location_name), fpi.date_day_info, fpi.pollutant, fpi.pollutant_avg, fpi.pollutant_max, fpi.pollutant_min)
-            cursor.execute(SQLQueries.insert_info_forecast_air_pollution_query, info_tuple) 
-            print("Data inserted")  
+            cursor.execute(SQLQueries.insert_info_forecast_air_pollution_query % info_tuple) 
             cursor.close()
         db.commit()    
         db.close()
@@ -276,9 +217,10 @@ def delete_duplicated_forecast_data(unique_location_names: tuple):
     try: 
         db: sql.MySQLConnection = connection("spainAirPollution")
         print("Deleting duplicate forecast data if exist...")
+        #Iterate array with location names
         for ufln in unique_location_names:
             cursor = db.cursor(prepared=True)
-            cursor.execute(SQLQueries.delete_forecast_duplicated_data, utils.add_backslashes_in_special_characters(ufln))
+            cursor.execute(SQLQueries.delete_forecast_duplicated_data, (utils.add_backslashes_in_special_characters(ufln),))
             cursor.close()
             db.commit()    
         db.close()
@@ -448,9 +390,6 @@ def get_air_pollution_forecast_data(location_name: str ,pollutant: str, date: st
     except Exception as e:
         print("An exception occurred - " + format(e))
     return result_array
-
-
-
 
 def get_unique_locations():
     """ 

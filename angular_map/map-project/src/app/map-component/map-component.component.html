@@ -226,7 +226,7 @@
                         <legend>Select the pollutant:</legend>
                         <div>
                         <input type="radio" name="radioSelect" value="o3" [(ngModel)]="selectedForecastPollutant" (change) = "updateForecastData()"
-                                checked>
+                            checked="checked">
                         <label for="o3">O3</label>
                         </div>
                         <div>
@@ -385,6 +385,6 @@
             </div>
         </div>
     </div>
-    <h4 *ngIf="!userLogged" style="color:red; margin: 30px;">Need to login to Show Map</h4>
+    <h4 id="errorMessage" *ngIf="!userLogged" style="color:red; margin: 30px;">You need to login to show map</h4>
 </body>
 </html>

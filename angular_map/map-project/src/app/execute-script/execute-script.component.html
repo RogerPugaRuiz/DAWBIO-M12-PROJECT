@@ -1,0 +1,8 @@
+<div *ngIf="userLogged" id="content script">
+    <ngx-spinner *ngIf="userLogged.role == 'admin'" type="ball-fall"><div class="spinner-border text-primary" style="height: 80px; width: 80px; margin-left: 50px;"></div> <p style="font-size: 20px; color: white; margin-left: 8px;">Running script...</p><input (click)="cancelScript()" type="button" value="Stop Script" style="width: 200px;"></ngx-spinner>
+    <h4 *ngIf="userLogged.role == 'admin'"> Call script to Update Map Data</h4>
+    <button *ngIf="userLogged.role == 'admin'" (click)="callScript()">Run Script</button>
+</div>
+<h4 *ngIf="requestsCount" style="margin-top: 100px;">The script has been executed {{requestsCount}} times</h4>
+<h4 *ngIf="!userLogged" style="color:red;">You need to login to run the script</h4>
+<div *ngIf="userLogged"><h4 *ngIf="userLogged.role != 'admin'" style="color:red;">Only admin users can execute the script</h4></div>

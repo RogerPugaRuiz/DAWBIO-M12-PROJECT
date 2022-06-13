@@ -134,3 +134,16 @@ def add_backslashes_in_special_characters(location_name: str) -> str:
     """
     result = location_name.replace("'", "''")
     return result
+
+def add_comas(string: str) -> str:
+    """ 
+    Add comas - Add "\'" in the start and the end of the string 
+
+    Parameters:
+    string: (string): String indeterminate
+
+    Returns:
+    result (string): String with comas added
+    """
+    result = "'" + string + "'"
+    return result

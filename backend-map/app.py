@@ -1,12 +1,17 @@
 #Imports
 
-from flask import Flask, jsonify, request
+from asyncio import subprocess
+from tabnanny import check
+from flask import Flask, jsonify, request, Response
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_cors import CORS, cross_origin
 
-import datetime 
+
 import json
+import subprocess
+import os
+import signal
 
 import utils.utilsDB as utilsDB
 
@@ -34,6 +39,32 @@ def login():
         password = request.json['password']
     return jsonify(utilsDB.login(username, password))
      
+@app.route("/executeScript")
+@limiter.limit("30/second")
+def executeScript():   
+        process = subprocess.Popen("python3.9 ./requestsAQICN.py", stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
+        utilsDB.saveProcessPid(process.pid)
+        while True:
+            output = process.stdout.readline()
+            if output == '' and process.poll() is not None:
+                break
+            if output:
+                print(output.decode("utf-8").strip())
+        rc = process.poll()
+        return jsonify("Complete")  
+    
+@app.route("/killScript")
+@limiter.limit("30/second")
+def killScript():
+        pid = utilsDB.getProcessPid()   
+        os.killpg(os.getpgid(pid[0]), signal.SIGTERM)
+        return jsonify("Complete")  
+    
+@app.route("/getScriptCount")
+@limiter.limit("30/second")
+def getScriptCount():
+        return jsonify(utilsDB.getScriptCount())
+
 @app.route("/GeoJson/provinces")
 @limiter.limit("30/second")
 def getGeoJSONProvinces():

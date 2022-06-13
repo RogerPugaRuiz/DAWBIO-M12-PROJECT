@@ -1,4 +1,3 @@
 crontab -e
 0 * * * * python3.9 /home/ivandmn/Escritorio/Proyecto/DAWBIO-M12-PROJECT/backend-map/requestsAQICN.py
-
 grep CRON /var/log/syslog

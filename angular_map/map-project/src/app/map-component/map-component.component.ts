@@ -4,8 +4,6 @@ import * as d3 from "d3";
 import * as topojson from "topojson-client";
 import { DatePipe } from '@angular/common';
 import { SpinnerService } from '../services/spinner.service';
-import { CookieService } from 'ngx-cookie-service';
-
 
 
 @Component({
@@ -18,21 +16,22 @@ export class MapComponentComponent implements OnInit {
   Constructor:
     service - Create service instance from ConnectBackendApi Service for request backend data
     datepipe - Create datePipe instance for change date format
+    SpinnerService - Create SpinnerService instance for show/hide loading data spinner
   */
-  constructor(public service: ConnectBackendApiService, public datepipe: DatePipe, private SpinnerService: SpinnerService, private CookieService: CookieService) { } 
+  constructor(public service: ConnectBackendApiService, public datepipe: DatePipe, private SpinnerService: SpinnerService) { } 
 
-  //For check if user is Logged
+  //Variable to save logged user info
   userLogged: any = null;
 
   //Data Variables
 
   //dataPollution - Saves a specific object of pollution information for a location, used to display info in HTML
   dataPollution: any = null;
-  //Save dataPollution location Name
+  //dataPollutionLocationName - Save location Name of current pollution data
   dataPollutionLocationName: any = null;
-  //dataPollution - Saves a specific object of pollution statical information for a location, used to display info in HTML
+  //dataPollution - Saves a specific object of pollution statical information for current location, used to display info in HTML
   statisticalDataPollution: any = null;
-  //dataForecastPollution - Saves a specific object of pollution forecast information for a location, used to display info in HTML
+  //dataForecastPollution - Saves a specific object of pollution forecast information for current location, used to display info in HTML
   dataForecastPollution: any = null;
   //rankingArray - Save array of objects for the ranking, used to display info in HTML
   rankingArray: any = null;
@@ -61,7 +60,7 @@ export class MapComponentComponent implements OnInit {
   //Select Data Variables
 
   //rankingPollutant - Save current pollutant for the ranking, used to request backend info
-  rankingPollutant: string = "";
+  rankingPollutant: string = "air_quality_level";
   //selectedForecastPollutant - Save current pollutant for the forecast, used to request backend info
   selectedForecastPollutant: string = "";
 
@@ -107,346 +106,384 @@ export class MapComponentComponent implements OnInit {
   }; 
 
   ngOnInit(): void {
-    //Check if user is already loged
-    if(this.CookieService.get('user')){
-      //Get cookie User
-      this.userLogged = JSON.parse(this.CookieService.get('user'))
-      //Check if user is in DataBase
+    //Check if user cookie exist
+    if(this.service.getCookie('user')){
+      //If exist get user cookie
+      this.userLogged = JSON.parse(this.service.getCookie('user'))
+      //Check if user from cookie is in DataBase
       this.service.login(this.userLogged.username, this.userLogged.password).subscribe({
         //Wait for response
         next: (response: any) => {
-          //If valid user is logged show content and display data
+          //If a valid user is logged show content and display data
           if(response.length > 0){
-
             //Display Content
             d3.select("#mainDiv").style("display", "block");
 
             //Create map function
             this.createMap();
       
-            //Get max and min date data from backend for ranking
-            this.service.get_ranking_date_range().subscribe({
-              next: (response: any) => {
-                if(response.lenght != 0){
-                  this.minDateRanking = response[0][0];
-                  this.maxDateRanking = response[0][1];
-                }
-              },
-              error: (err: any) => {
-                console.log("Error on Request");
-              },
-              complete: () => {}
-            });
+            //Get min and max date for ranking datePicker
+            this.getRankingDateRange();
       
-            //Get default ranking list(pollutant -> air_quality_level, date -> today) from backend
-            this.service.get_ranking("air_quality_level", this.datepipe.transform(this.rankingActualDate, 'YYYY-MM-dd')?.toString()).subscribe({
-              next: (response: any) => {
-                if(response.length != 0){
-                  this.rankingPollutant = response[0].pollutant;
-                  this.rankingArray = response;
-                }
-              },
-              error: (err: any) => {
-                console.log("Error on Request");
-              },
-              complete: () => {}
-      
-            });
+            //Get default rankings for display in HTML
+            this.getDefaultRankings();
+
           } else {
             this.userLogged = null; 
           }
         },
         error: (err: any) => {
-          console.log("Error on Request");
+          console.log("Request Error - " + err.message);
         },
         complete: () => {}
       })
     }
   }
 
+  /*
+
+  createMap - Create D3 Map of Spain
+
+  */
   createMap() {
     
-    //D3 Peninsula Map
+    //Create SVG for Peninsula Map
     
-    //Projection, Path, Map of Peninsula
-    let projection: d3.GeoProjection = d3.geoMercator().translate([410,2140]).scale(2500);
-    let path: d3.GeoPath<any, d3.GeoPermissibleObjects> = d3.geoPath().projection(projection);
-    let map: any = d3.select("#map").append("svg").attr("id", "peninsulaMap").attr("width", this.wmap).attr("height", this.hmap).style("border", "1px solid black").style("background-color", "#7fcdff");
+      //Projection, Path, Map of Peninsula
+      let projection: d3.GeoProjection = d3.geoMercator().translate([410,2140]).scale(2500);
+      let path: d3.GeoPath<any, d3.GeoPermissibleObjects> = d3.geoPath().projection(projection);
+      let map: any = d3.select("#map").append("svg").attr("id", "peninsulaMap").attr("width", this.wmap).attr("height", this.hmap).style("border", "1px solid black").style("background-color", "#7fcdff");
     
-    //D3 Canary Island Map
+    //Create SVG for Canary Island Map
 
-    //Projection, Path, Map of Canary Island
-    let projectionCan: d3.GeoProjection = d3.geoMercator().translate([810, 1350]).scale(2500);
-    let pathCan: d3.GeoPath<any, d3.GeoPermissibleObjects> = d3.geoPath().projection(projectionCan);
-    let mapCan: any = d3.select("#mapC").append("svg").attr("id", "isleMap").attr("width", this.wCan).attr("height", this.hCan).style("border", "1px solid black").style("background-color", "#7fcdff");
+      //Projection, Path, Map of Canary Island
+      let projectionCan: d3.GeoProjection = d3.geoMercator().translate([810, 1350]).scale(2500);
+      let pathCan: d3.GeoPath<any, d3.GeoPermissibleObjects> = d3.geoPath().projection(projectionCan);
+      let mapCan: any = d3.select("#mapC").append("svg").attr("id", "isleMap").attr("width", this.wCan).attr("height", this.hCan).style("border", "1px solid black").style("background-color", "#7fcdff");
 
     //Zoom Functions Peninsula Map
 
-    //Set zoom with max scale 25
-    map = map.call(d3.zoom().scaleExtent([1,25]).translateExtent([[0,0],[this.wmap,this.hmap]]).on("zoom", () => {
-      //On zoom event apply zoomTransform
-      map.attr("transform", d3.zoomTransform(map.node()))
-        //Change location points size depending on zoom scale level
-        let scale = d3.zoomTransform(map.node()).k;
-        let scale_int = Math.round(scale)
-        d3.selectAll('.circlesPeninsula').attr("r" , this.scale[scale_int]).attr("stroke-width", this.scale[scale_int])
-    })).append("g");
+      //Set zoom with max scale 25 and center map
+      map = map.call(d3.zoom().scaleExtent([1,25]).translateExtent([[0,0],[this.wmap,this.hmap]]).on("zoom", () => {
+        //On zoom event change location points size depending on zoom scale level
+        map.attr("transform", d3.zoomTransform(map.node()))
+          //Get Map Scale level
+          let scale = d3.zoomTransform(map.node()).k;
+          //Round Map Scale Level
+          let scale_int = Math.round(scale);
+          //Apply Scale on location points
+          d3.selectAll('.circlesPeninsula').attr("r" , this.scale[scale_int]).attr("stroke-width", this.scale[scale_int]);
+      })).append("g");
 
     //Zoom Functions Canary Island Map
 
-    mapCan = mapCan.call(d3.zoom().scaleExtent([1,15]).translateExtent([[0,0],[this.wCan,this.hCan]]).on("zoom", () =>{
-      //On zoom event apply zoomTransform
-      mapCan.attr("transform", d3.zoomTransform(mapCan.node()))
-        //Change location points size depending on zoom scale level
-        let scale = d3.zoomTransform(mapCan.node()).k;
-        let scale_int = Math.round(scale)
-        d3.selectAll('.circlesCan').attr("r" , this.scale[scale_int]).attr("stroke-width", this.scale[scale_int])
-    })).append("g");
+      //Set zoom with max scale 25 and center map
+      mapCan = mapCan.call(d3.zoom().scaleExtent([1,15]).translateExtent([[0,0],[this.wCan,this.hCan]]).on("zoom", () =>{
+        //On zoom event change location points size depending on zoom scale level
+        mapCan.attr("transform", d3.zoomTransform(mapCan.node()))
+          //Get Map Scale level
+          let scale = d3.zoomTransform(mapCan.node()).k;
+          //Round Map Scale Level
+          let scale_int = Math.round(scale);
+          //Apply Scale on location points
+          d3.selectAll('.circlesCan').attr("r" , this.scale[scale_int]).attr("stroke-width", this.scale[scale_int]);
+      })).append("g");
 
 
     //Generate div that is displayed with info when hovering over some map location point
-    var divToolTip = d3.select("body").append("div")
-    .attr("class", "tooltip-donut")
-    .style("opacity", 0)
-    .style("display", "none");
+      var divToolTip = d3.select("body").append("div")
+      .attr("class", "tooltip-donut")
+      .style("opacity", 0)
+      .style("display", "none");
 
-
-    this.SpinnerService.callSpinner()
+    //Call Loading Spinner 
+      this.SpinnerService.callSpinner()
 
     //Draw Spain Maps
 
-    //Get Spain Provinces GEOJSON from backend
+    //Get Spain Provinces GEOJSON from backend (GEOJSON if required to draw the map of the location)
     this.service.get_provinces().subscribe({
+      //Wait for response
       next: (response: any) => {
-        //Read GEOJSON with topojson extension
+        //Read response (GEOJSON object) as topojson feature to draw map in d3
         let prov = topojson.feature(response, response.objects["provinces"]);
+        //Draw the shape of the Canary Islands map using topojson feature
+          map
+            .selectAll("#map path")
+            // @ts-ignore
+            .data(prov.features)
+            .enter()
+            .append("path")
+            .attr("class", "path")
+            .attr("d", path)
+            .attr("fill", "#aba56d")
+            .attr("stroke", "#000000")
+            .attr("stroke-width", 0.6);
 
-        //Draw Peninsula Map
-
-        map
-          .selectAll("#map path")
-          // @ts-ignore
-          .data(prov.features)
-          .enter()
-          .append("path")
-          .attr("class", "path")
-          .attr("d", path)
-          .attr("fill", "#aba56d")
-          .attr("stroke", "#000000")
-          .attr("stroke-width", 0.6);
-
-        //Draw Canary Island Map
-
-        mapCan
-          .selectAll("#mapC path")
-          // @ts-ignore
-          .data(prov.features)
-          .enter()
-          .append("path")
-          .attr("class", "path")
-          .attr("d", pathCan)
-          .attr("fill", "#aba56d")
-          .attr("stroke", "#000000")
-          .attr("stroke-width", 0.6);
-
-
+        //Draw the shape of the Canary Islands mapusing topojson feature
+          mapCan
+            .selectAll("#mapC path")
+            // @ts-ignore
+            .data(prov.features)
+            .enter()
+            .append("path")
+            .attr("class", "path")
+            .attr("d", pathCan)
+            .attr("fill", "#aba56d")
+            .attr("stroke", "#000000")
+            .attr("stroke-width", 0.6);
 
         //Insert Station Points
-
-          //Get locations_info from backend
+          //Get locations relevant info from backend(location name, latitude, longitude, last date data, last aqilevel data, last dominant pollution)
           this.service.get_locations_info().subscribe({
+            //Wait for response
             next: (response: any) => {
-              //Iterate response from backend
+              //Iterate response from backend for create location points 1 by 1
               response.forEach((element: any) => {
+
                 //Insert Peninsula Station Points
-                map
-                .selectAll("circles")
-                //Set Latitude and longitude in data
-                .data([[element[2], element[1]]])
-                .enter()
-                .append("circle")
-                //Set as id the location_name
-                .attr("id", element[0])
-                .attr("aqilevel", element[3])
-                .attr("dominant_pollution", element[4])
-                .attr("date_day_info", element[5])
-                .attr("date_time_info", element[6])
-                .attr("class", "circlesPeninsula")
-                //Get projection of points from latitude and longitude 
-                // @ts-ignore
-                .attr("cx", function(d){ return projection(d)[0] })
-                // @ts-ignore
-                .attr("cy", function(d){ return projection(d)[1] })
-                .attr("r", 3)
-                .style("fill", "black")
-                .attr("stroke", "#69b3a2")
-                .attr("stroke-width", 3)
-                .style('cursor', "pointer")
-                //Add Event listener "click" on peninsule circles 
-                .on("click", (event: any) =>  {
-                  this.dataPollutionLocationName = event.target.id;
-                  //Get nearest location data date from the backend with given location name
-                  this.service.get_nearest_location_data_date(event.target.id).subscribe({
-                    next: (response_v1: any) => {
-                      //Wait for response
-                      //Get location data from the backend with given location name and date
-                      this.service.get_location_data(event.target.id, response_v1[0][0]).subscribe({
-                        next: (response_v2: any) => {
-                          //Wait for response
-                          //Change info of object dataPollution 
-                          this.changeInfoData(response_v2);
-                          //Get statistical data of the location from the backend with given location and date
-                          this.service.get_location_statistical_data(event.target.id, this.datepipe.transform(response_v1[0][0], 'YYYY-MM-dd')?.toString()).subscribe({
-                            next: (response_v3: any) => {
-                              //Wait for response
-                              //Change info of object statisticalDataPollution
-                              this.statisticalDataPollution = response_v3[0];
-                              //Set date to 'YYYY-MM-DD' format
-                              let substring_date: string = this.statisticalDataPollution["date_day_info"];
-                              this.statisticalDataPollution["date_day_info"] = substring_date.substring(0, substring_date.length - 12);
-                              //Change info of object dataForecastPollution calling a function
-                              this.changeForecastData(this.dataPollution.location_name, "o3");
-                            },
-                            error: (err:any) => {
-                              console.log("Error on Request");  
-                            },
-                            complete: () => {}
-                          });
-                        },
-                        error: (err:any) => {
-                          console.log("Error on Request");  
-                        },
-                        complete: () => {}
-                      });
-                    },
-                    error: (err:any) => {
-                      console.log("Error on Request");  
-                    },
-                    complete: () => {}
+                  map
+                  .selectAll("circles")
+                  //Set Latitude and longitude in data to position points
+                  .data([[element[2], element[1]]])
+                  .enter()
+                  .append("circle")
+                  //Set as id the location_name an add relevat info in circle attributes
+                  .attr("id", element[0])
+                  .attr("aqilevel", element[3])
+                  .attr("dominant_pollution", element[4])
+                  .attr("date_day_info", element[5])
+                  .attr("date_time_info", element[6])
+                  .attr("class", "circlesPeninsula")
+                  //Get projection of points from latitude and longitude 
+                  // @ts-ignore
+                  .attr("cx", function(d){ return projection(d)[0] })
+                  // @ts-ignore
+                  .attr("cy", function(d){ return projection(d)[1] })
+                  .attr("r", 3)
+                  .style("fill", "black")
+                  .attr("stroke", "#69b3a2")
+                  .attr("stroke-width", 3)
+                  .style('cursor', "pointer")
+                  //Add Event listener "click" on peninsule circles 
+                  .on("click", (event: any) =>  {
+                    //Get location name of clicked circle
+                    this.dataPollutionLocationName = event.target.id;
+                    //Get nearest location data date from the backend with given location name
+                    this.service.get_nearest_location_data_date(event.target.id).subscribe({
+                      next: (response_v1: any) => {
+                        //Wait for response
+                        //Get location data from the backend with given location name and date
+                        this.service.get_location_data(event.target.id, response_v1[0][0]).subscribe({
+                          next: (response_v2: any) => {
+                            //Wait for response
+                            //Change info of object dataPollution 
+                            this.changeInfoData(response_v2);
+                            //Get statistical data of the location from the backend with given location and date
+                            this.service.get_location_statistical_data(event.target.id, this.datepipe.transform(response_v1[0][0], 'YYYY-MM-dd')?.toString()).subscribe({
+                              next: (response_v3: any) => {
+                                //Wait for response
+                                //Change info of object statisticalDataPollution
+                                this.statisticalDataPollution = response_v3[0];
+                                //Set date to 'YYYY-MM-DD' format
+                                let substring_date: string = this.statisticalDataPollution["date_day_info"];
+                                this.statisticalDataPollution["date_day_info"] = substring_date.substring(0, substring_date.length - 12);
+                                //Change info of object dataForecastPollution calling a function
+                                this.changeForecastData(this.dataPollution.location_name, "o3");
+                              },
+                              error: (err:any) => {
+                                console.log("Request Error - " + err.message);  
+                              },
+                              complete: () => {}
+                            });
+                          },
+                          error: (err:any) => {
+                            console.log("Request Error - " + err.message);  
+                          },
+                          complete: () => {}
+                        });
+                      },
+                      error: (err:any) => {
+                        console.log("Request Error - " + err.message);  
+                      },
+                      complete: () => {}
+                    });
+                  })
+                  //Add Event listener "mouseover" peninsule on circles for display tooltip with location info
+                  .on('mouseover', function (event: any) {
+                    //Set visible the toolTip div that is displayed with info when hovering over some map location point
+                    divToolTip.transition()
+                      .duration(350)
+                      .style("opacity", .7)
+                      .style("display", "block")
+                    //Add relevant data to toolTip div and display the div near to cursor location
+                    divToolTip.html("<h2 style=\"margin-bottom:0px\">" + event.target.id + "</h2>" + "Air Quality Level - " + event.target.attributes["aqilevel"]["nodeValue"]  + "<br>" +
+                    "Dominant Pollution - " + event.target.attributes["dominant_pollution"]["nodeValue"] + "<br>" + "Data date - " + event.target.attributes["date_day_info"]["nodeValue"]
+                    + "<br>" + "Date time - " + event.target.attributes["date_time_info"]["nodeValue"])
+                      .style("box-sizing", "border-box")
+                      .style("padding", "5px")
+                      .style("background-color" , "white")
+                      .style("position", "absolute")
+                      .style("left", event.pageX + 20 + "px")
+                      .style("top", event.pageY - 28 + "px");
+                  })
+                  //Add Event listener "mouseout" peninsule on circles
+                  .on('mouseout', function () {
+                    //Hide the toolTip div that is displayed with info when hovering over some map location point
+                    divToolTip.style("opacity", 0).style("display", "none");
                   });
-                })
-                //Add Event listener "mouseover" peninsule on circles
-                .on('mouseover', function (event: any) {
-                  //Set visible the toolTip div that is displayed with info when hovering over some map location point
-                  divToolTip.transition()
-                    .duration(350)
-                    .style("opacity", .7)
-                    .style("display", "block")
-                  //Add relevant data to toolTip div and display the div near to cursor location
-                  divToolTip.html("<h2 style=\"margin-bottom:0px\">" + event.target.id + "</h2>" + "Air Quality Level - " + event.target.attributes["aqilevel"]["nodeValue"]  + "<br>" +
-                  "Dominant Pollution - " + event.target.attributes["dominant_pollution"]["nodeValue"] + "<br>" + "Data date - " + event.target.attributes["date_day_info"]["nodeValue"]
-                   + "<br>" + "Date time - " + event.target.attributes["date_time_info"]["nodeValue"])
-                    .style("box-sizing", "border-box")
-                    .style("padding", "5px")
-                    .style("background-color" , "white")
-                    .style("position", "absolute")
-                    .style("left", event.pageX + 20 + "px")
-                    .style("top", event.pageY - 28 + "px");
-                })
-                //Add Event listener "mouseout" peninsule on circles
-                .on('mouseout', function () {
-                  //Hide the toolTip div that is displayed with info when hovering over some map location point
-                  divToolTip.style("opacity", 0).style("display", "none");
-                });
         
                 //Insert Canary Island Stations Points
         
-                mapCan
-                .selectAll("circles")
-                .data([[element[2], element[1]]])
-                .enter()
-                .append("circle")
-                .attr("id", element[0])
-                .attr("aqilevel", element[3])
-                .attr("dominant_pollution", element[4])
-                .attr("date_day_info", element[5])
-                .attr("date_time_info", element[6])
-                .attr("class", "circlesCan")
-                // @ts-ignore
-                .attr("cx", function(d){ return projectionCan(d)[0]})
-                // @ts-ignore
-                .attr("cy", function(d){ return projectionCan(d)[1] })
-                .attr("r", 3) 
-                .style("fill", "black")
-                .attr("stroke", "#69b3a2")
-                .attr("stroke-width", 3)
-                .style('cursor', "pointer")
-                //Add Event listener "click" on Canary Island circles 
-                .on("click", (event: any) =>  {
-                  this.dataPollutionLocationName = event.target.id;
-                  //Get nearest location data date from the backend with given location name
-                  this.service.get_nearest_location_data_date(event.target.id).subscribe({
-                    next: (response_v1: any) => {
-                      //Wait for response
-                      //Get location data from the backend with given location name and date
-                      this.service.get_location_data(event.target.id, response_v1[0][0]).subscribe({
-                        next: (response_v2: any) => {
-                          //Wait for response
-                          //Change info of object dataPollution 
-                          this.changeInfoData(response_v2);
-                          //Get statistical data of the location from the backend with given location and date
-                          this.service.get_location_statistical_data(event.target.id, this.datepipe.transform(response_v1[0][0], 'YYYY-MM-dd')?.toString()).subscribe({
-                            next: (response_v3: any) => {
-                              //Wait for response
-                              //Change info of object statisticalDataPollution
-                              this.statisticalDataPollution = response_v3[0];
-                              //Set date to 'YYYY-MM-DD' format
-                              let substring_date: string = this.statisticalDataPollution["date_day_info"];
-                              this.statisticalDataPollution["date_day_info"] = substring_date.substring(0, substring_date.length - 12);
-                              //Change info of object dataForecastPollution calling a function
-                              this.changeForecastData(this.dataPollution.location_name, "o3");
-                            },
-                            error: (err:any) => {
-                              console.log("Error on Request");  
-                            },
-                            complete: () => {}
-                          });
-                        },
-                        error: (err:any) => {
-                          console.log("Error on Request");  
-                        },
-                        complete: () => {}
-                      });
-                    },
-                    error: (err:any) => {
-                      console.log("Error on Request"); 
-                    },
-                    complete: () => {}
+                  mapCan
+                  .selectAll("circles")
+                  //Set Latitude and longitude in data to position point
+                  .data([[element[2], element[1]]])
+                  .enter()
+                  .append("circle")
+                  //Set as id the location_name an add relevat info in circle attributes
+                  .attr("id", element[0])
+                  .attr("aqilevel", element[3])
+                  .attr("dominant_pollution", element[4])
+                  .attr("date_day_info", element[5])
+                  .attr("date_time_info", element[6])
+                  .attr("class", "circlesCan")
+                  //Get projection of points from latitude and longitude 
+                  // @ts-ignore
+                  .attr("cx", function(d){ return projectionCan(d)[0]})
+                  // @ts-ignore
+                  .attr("cy", function(d){ return projectionCan(d)[1] })
+                  .attr("r", 3) 
+                  .style("fill", "black")
+                  .attr("stroke", "#69b3a2")
+                  .attr("stroke-width", 3)
+                  .style('cursor', "pointer")
+                  //Add Event listener "click" on Canary Island circles 
+                  .on("click", (event: any) =>  {
+                    this.dataPollutionLocationName = event.target.id;
+                    //Get nearest location data date from the backend with given location name
+                    this.service.get_nearest_location_data_date(event.target.id).subscribe({
+                      next: (response_v1: any) => {
+                        //Wait for response
+                        //Get location data from the backend with given location name and date
+                        this.service.get_location_data(event.target.id, response_v1[0][0]).subscribe({
+                          next: (response_v2: any) => {
+                            //Wait for response
+                            //Change info of object dataPollution 
+                            this.changeInfoData(response_v2);
+                            //Get statistical data of the location from the backend with given location and date
+                            this.service.get_location_statistical_data(event.target.id, this.datepipe.transform(response_v1[0][0], 'YYYY-MM-dd')?.toString()).subscribe({
+                              next: (response_v3: any) => {
+                                //Wait for response
+                                //Change info of object statisticalDataPollution
+                                this.statisticalDataPollution = response_v3[0];
+                                //Set date to 'YYYY-MM-DD' format
+                                let substring_date: string = this.statisticalDataPollution["date_day_info"];
+                                this.statisticalDataPollution["date_day_info"] = substring_date.substring(0, substring_date.length - 12);
+                                //Change info of object dataForecastPollution calling a function
+                                this.changeForecastData(this.dataPollution.location_name, "o3");
+                              },
+                              error: (err:any) => {
+                                console.log("Request Error - " + err.message);  
+                              },
+                              complete: () => {}
+                            });
+                          },
+                          error: (err:any) => {
+                            console.log("Request Error - " + err.message);  
+                          },
+                          complete: () => {}
+                        });
+                      },
+                      error: (err:any) => {
+                        console.log("Request Error - " + err.message); 
+                      },
+                      complete: () => {}
+                    });
+                  })
+                  //Add Event listener "mouseover" on Canary Island circles for display tooltip with location info
+                  .on('mouseover', function (event: any) {
+                    //Set visible the toolTip div that is displayed with info when hovering over some map location point
+                    divToolTip.transition()
+                      .duration(350)
+                      .style("opacity", .7)
+                      .style("display", "block");
+                    //Add relevant data to toolTip div and display the div near to cursor location
+                    divToolTip.html("<h2 style=\"margin-bottom:0px\">" + event.target.id + "</h2>" + "Air Quality Level - " + event.target.attributes["aqilevel"]["nodeValue"]  + "<br>" +
+                    "Dominant Pollution - " + event.target.attributes["dominant_pollution"]["nodeValue"] + "<br>" + "Data date - " + event.target.attributes["date_day_info"]["nodeValue"]
+                    + "<br>" + "Date time - " + event.target.attributes["date_time_info"]["nodeValue"])
+                      .style("box-sizing", "border-box")
+                      .style("padding", "5px")
+                      .style("background-color" , "white")
+                      .style("position", "absolute")
+                      .style("left", event.pageX + 20 + "px")
+                      .style("top", event.pageY - 28 + "px");
+                  })
+                  //Add Event listener "mouseout" Canary Island on circles
+                  .on('mouseout', function () {
+                    //Hide the toolTip div that is displayed with info when hovering over some map location point
+                    divToolTip.style("opacity", 0).style("display", "none");
                   });
-                })
-                //Add Event listener "mouseover" on Canary Island circles
-                .on('mouseover', function (event: any) {
-                  //Set visible the toolTip div that is displayed with info when hovering over some map location point
-                  divToolTip.transition()
-                    .duration(350)
-                    .style("opacity", .7)
-                    .style("display", "block");
-                  //Add relevant data to toolTip div and display the div near to cursor location
-                  divToolTip.html("<h2 style=\"margin-bottom:0px\">" + event.target.id + "</h2>" + "Air Quality Level - " + event.target.attributes["aqilevel"]["nodeValue"]  + "<br>" +
-                  "Dominant Pollution - " + event.target.attributes["dominant_pollution"]["nodeValue"] + "<br>" + "Data date - " + event.target.attributes["date_day_info"]["nodeValue"]
-                   + "<br>" + "Date time - " + event.target.attributes["date_time_info"]["nodeValue"])
-                    .style("box-sizing", "border-box")
-                    .style("padding", "5px")
-                    .style("background-color" , "white")
-                    .style("position", "absolute")
-                    .style("left", event.pageX + 20 + "px")
-                    .style("top", event.pageY - 28 + "px");
-                })
-                //Add Event listener "mouseout" Canary Island on circles
-                .on('mouseout', function () {
-                  //Hide the toolTip div that is displayed with info when hovering over some map location point
-                  divToolTip.style("opacity", 0).style("display", "none");
-                });
+
               });
             },
             error: (err: any) => {
-              console.log("Error on Request");
+              console.log("Request Error - " + err.message);
             },
+            //When maps are created stop loading Spinner
             complete: () => {this.SpinnerService.stopSpinner()}
         });    
       },
       error: (err: any) => {
-        console.log("Error on Request");
+        console.log("Request Error - " + err.message);
+      },
+      complete: () => {}
+    });
+  }
+
+  /*
+
+  getDefaultRankings - Get default ranking list(pollutant -> air_quality_level, date -> today) from backend
+
+  */
+  getDefaultRankings(){
+    //Request rankings to backend
+    this.service.get_ranking(this.rankingPollutant, this.datepipe.transform(this.rankingActualDate, 'YYYY-MM-dd')?.toString()).subscribe({
+      //Wait for response
+      next: (response: any) => {
+        //If response is not null enter if
+        if(response.length != 0){
+          //Set rankingArray  with the backend response data
+          this.rankingArray = response;
+        }
+      },
+      error: (err: any) => {
+        console.log("Request error - " + err.message);
+      },
+      complete: () => {}
+    });
+  }
+
+
+  /*
+
+  getRankingDateRange - Get max and min date data from backend for ranking datePicker
+
+  */
+  getRankingDateRange(){
+    //Request ranking date range to backend
+    this.service.get_ranking_date_range().subscribe({
+      //Wait for response
+      next: (response: any) => {
+        //If response is not null enter if
+        if(response.lenght != 0){
+          //Set mix and max date for ranking datepicker
+          this.minDateRanking = response[0][0];
+          this.maxDateRanking = response[0][1];
+        }
+      },
+      error: (err: any) => {
+        console.log("Request Error - " + err.message);
       },
       complete: () => {}
     });
@@ -461,15 +498,13 @@ export class MapComponentComponent implements OnInit {
    this.service.get_ranking(this.rankingPollutant, this.datepipe.transform(this.rankingActualDate, 'YYYY-MM-dd')?.toString()).subscribe({
     next: (response: any) => {
       if(response.length != 0){
-        console.log(response)
-        this.rankingPollutant = response[0].pollutant;
         this.rankingArray = response;
       } else {
         this.rankingArray = [];
       }
     },
     error: (err: any) => {
-      console.log("Error on Request");
+      console.log("Request Error - " + err.message);
     },
     complete: () => {}
 
@@ -510,7 +545,7 @@ export class MapComponentComponent implements OnInit {
         }
       },
       error: (err: any) => {
-        console.log("Error on Request");
+        console.log("Request Error - " + err.message);
       },
       complete: () => {}
   
@@ -530,7 +565,7 @@ export class MapComponentComponent implements OnInit {
         this.maxDateForecast = response[0][1];
       },
       error: (err:any) => {
-        console.log("Error on Request");  
+        console.log("Request Error - " + err.message);  
       },
       complete: () => {}
     });
@@ -539,7 +574,7 @@ export class MapComponentComponent implements OnInit {
         this.dataForecastPollution = response[0];
       },
       error: (err:any) => {
-        console.log("Error on Request");  
+        console.log("Request Error - " + err.message);  
       },
       complete: () => {}
     });
@@ -563,7 +598,7 @@ export class MapComponentComponent implements OnInit {
 
       },
       error: (err:any) => {
-        console.log("Error on Request"); 
+        console.log("Request Error - " + err.message); 
       },
       complete: () => {}
     });
@@ -586,7 +621,7 @@ export class MapComponentComponent implements OnInit {
         
       },
       error: (err:any) => {
-        console.log("Error on Request");
+        console.log("Request Error - " + err.message);
       },
       complete: () => {}
     });

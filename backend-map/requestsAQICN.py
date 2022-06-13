@@ -13,14 +13,6 @@ main_module: str = "__main__"
 
 if this_module == main_module:
    
-   # DataBase Create Functions
-   
-   #utilsDB.drop_database()
-   #utilsDB.create_database()
-   #utilsDB.create_users_table()
-   #utilsDB.create_air_pollution_table()
-   #utilsDB.create_forecast_air_pollution_table()
-   
    #Get spain data
    data: tuple = utilsWAQIApi.get_spain_stations_data()
    

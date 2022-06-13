@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
-import { Observable, catchError, throwError, BehaviorSubject } from 'rxjs';
-import { map } from 'rxjs';
+import { HttpClient} from '@angular/common/http';
+import { Observable} from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
@@ -9,34 +8,50 @@ import { CookieService } from 'ngx-cookie-service';
 })
 export class ConnectBackendApiService{
   
-  isLoggedin: boolean = false;
   //Backend Root Url 
   ROOT_URL: string = "http://localhost:8085/";
 
   /*
   Constructor:
     http - Create HttpClient instance for do requests to backend
+    CookieService - Create CookieService instance for work with the browser cookies
   */
   constructor(private http : HttpClient, private CookieService: CookieService){
   } 
 
-  //Function: Login Function
+
+  //Function: Return user object from backend
   login(username: string | null, password: string | null): Observable<any> {
     return this.http.post<any>(this.ROOT_URL + "login", {username: username, password: password})
   }
   
-  logout(){
-    // remove user from local storage to log user out
-    localStorage.removeItem('currentUser');
-    this.isLoggedin = false;
-  }
-
+  //Function: Set cookie to save logged user info
   setCookie(user: any) {
     this.CookieService.set("user", JSON.stringify(user));
   }
+
+  //Function: Get cookie with logged user info
+  getCookie(cookie: string) {
+    return this.CookieService.get(cookie);
+  }
   
-  getCookie() {
-    return JSON.parse(this.CookieService.get("user"));
+  //Function: Delete cookie with logged user info
+  deleteCookie(cookie:string){
+    this.CookieService.delete(cookie)
+  }
+  
+  //Function: Call backend Script to update map data
+  callScript(): Observable<any> {
+    return this.http.get<any>(this.ROOT_URL + "executeScript");
+  }
+
+  //Function: Kill backend Script process to update map data
+  killScript(): Observable<any> {
+    return this.http.get<any>(this.ROOT_URL + "killScript");
+  }
+
+  getScriptCount(): Observable<any> {
+    return this.http.get<any>(this.ROOT_URL + "getScriptCount");
   }
 
 
@@ -94,10 +109,4 @@ export class ConnectBackendApiService{
   get_forecast_date_range(location: string, pollutant: string | null): Observable<any> {
       return this.http.post<any>(this.ROOT_URL + "getForecastDateRange", {location_name: location, pollutant_name: pollutant});
   }
-
-
-  
- 
-  
-
 } 

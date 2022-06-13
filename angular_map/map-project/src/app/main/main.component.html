@@ -5,6 +5,7 @@
             <li class="menuop"><a routerLink="/home">Home</a></li>
             <li class="menuop" *ngIf="!userLogged"><a routerLink="/login">Login</a></li>
             <li class="menuop" *ngIf="userLogged"><a routerLink="/map">Map</a></li>
+            <li class="menuop" *ngIf="userLogged"><a *ngIf="isAdminUser" routerLink="/executeScript">Data Script</a></li>
             <li class="menuop" *ngIf="userLogged"><a href="" (click)="logout()">Logout</a></li>
         </ul>
     </div>
